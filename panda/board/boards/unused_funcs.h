@@ -9,12 +9,12 @@ void unused_set_fan_enabled(bool enabled) {
   UNUSED(enabled);
 }
 
-void unused_set_phone_power(bool enabled) {
+void unused_set_siren(bool enabled) {
   UNUSED(enabled);
 }
 
-void unused_set_siren(bool enabled) {
-  UNUSED(enabled);
+uint32_t unused_read_voltage(void) {
+  return 0U;
 }
 
 uint32_t unused_read_current(void) {
