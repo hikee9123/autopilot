@@ -569,7 +569,7 @@ UNSUPPORTED_LONGITUDINAL_CAR = LEGACY_SAFETY_MODE_CAR | {CAR.KIA_NIRO_PHEV, CAR.
 # If no points are outputted by default it might be possible to turn it on using  selfdrive/debug/hyundai_enable_radar_points.py
 DBC = {
   CAR.AZERA_6TH_GEN: dbc_dict('hyundai_kia_generic', None),
-  CAR.AZERA_HEV_6TH_GEN: dbc_dict('hyundai_kia_generic', None),
+  CAR.AZERA_HEV_6TH_GEN: dbc_dict('hyundai_kia_generic', 'hyundai_kia_mando_front_radar_generated'),    #custom
   CAR.ELANTRA: dbc_dict('hyundai_kia_generic', None),
   CAR.ELANTRA_GT_I30: dbc_dict('hyundai_kia_generic', None),
   CAR.ELANTRA_2021: dbc_dict('hyundai_kia_generic', None),

@@ -7,6 +7,8 @@ from openpilot.selfdrive.car import apply_driver_steer_torque_limits, common_fau
 from openpilot.selfdrive.car.hyundai import hyundaicanfd, hyundaican
 from openpilot.selfdrive.car.hyundai.hyundaicanfd import CanBus
 from openpilot.selfdrive.car.hyundai.values import HyundaiFlags, Buttons, CarControllerParams, CANFD_CAR, CAR
+from openpilot.selfdrive.car.hyundai.custom.carcontroller import CarControllerCustom   #custom
+
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 LongCtrlState = car.CarControl.Actuators.LongControlState
@@ -56,6 +58,9 @@ class CarController:
     self.car_fingerprint = CP.carFingerprint
     self.last_button_frame = 0
 
+    #custom
+    self.customCC = CarControllerCustom(CP)    
+
   def update(self, CC, CS, now_nanos):
     actuators = CC.actuators
     hud_control = CC.hudControl
@@ -73,9 +78,9 @@ class CarController:
       apply_steer = 0
 
     # Hold torque with induced temporary fault when cutting the actuation bit
-    torque_fault = CC.latActive and not apply_steer_req
+    #torque_fault = CC.latActive and not apply_steer_req
 
-    self.apply_steer_last = apply_steer
+    #self.apply_steer_last = apply_steer
 
     # accel + longitudinal
     accel = clip(actuators.accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
@@ -83,8 +88,8 @@ class CarController:
     set_speed_in_units = hud_control.setSpeed * (CV.MS_TO_KPH if CS.is_metric else CV.MS_TO_MPH)
 
     # HUD messages
-    sys_warning, sys_state, left_lane_warning, right_lane_warning = process_hud_alert(CC.enabled, self.car_fingerprint,
-                                                                                      hud_control)
+    #sys_warning, sys_state, left_lane_warning, right_lane_warning = process_hud_alert(CC.enabled, self.car_fingerprint,
+    #                                                                                  hud_control)
 
     can_sends = []
 
@@ -134,13 +139,15 @@ class CarController:
         # button presses
         can_sends.extend(self.create_button_messages(CC, CS, use_clu11=False))
     else:
-      can_sends.append(hyundaican.create_lkas11(self.packer, self.frame, self.car_fingerprint, apply_steer, apply_steer_req,
-                                                torque_fault, CS.lkas11, sys_warning, sys_state, CC.enabled,
-                                                hud_control.leftLaneVisible, hud_control.rightLaneVisible,
-                                                left_lane_warning, right_lane_warning))
+      #can_sends.append(hyundaican.create_lkas11(self.packer, self.frame, self.car_fingerprint, apply_steer, apply_steer_req,
+      #                                          torque_fault, CS.lkas11, sys_warning, sys_state, CC.enabled,
+      #                                          hud_control.leftLaneVisible, hud_control.rightLaneVisible,
+      #                                          left_lane_warning, right_lane_warning))
 
-      if not self.CP.openpilotLongitudinalControl:
-        can_sends.extend(self.create_button_messages(CC, CS, use_clu11=True))
+      self.customCC.custom_lkas11( can_sends, self.packer, self.frame, apply_steer, apply_steer_req, CS, CC )
+
+      #if not self.CP.openpilotLongitudinalControl:
+      #  can_sends.extend(self.create_button_messages(CC, CS, use_clu11=True))
 
       if self.frame % 2 == 0 and self.CP.openpilotLongitudinalControl:
         # TODO: unclear if this is needed
@@ -150,9 +157,11 @@ class CarController:
                                                         hud_control.leadVisible, set_speed_in_units, stopping,
                                                         CC.cruiseControl.override, use_fca))
 
+      #custom
       # 20 Hz LFA MFA message
       if self.frame % 5 == 0 and self.CP.flags & HyundaiFlags.SEND_LFA.value:
-        can_sends.append(hyundaican.create_lfahda_mfc(self.packer, CC.enabled))
+        self.customCC.custom_hda_mfc( can_sends, self.packer, CS, CC )
+        #can_sends.append(hyundaican.create_lfahda_mfc(self.packer, CC.enabled))
 
       # 5 Hz ACC options
       if self.frame % 20 == 0 and self.CP.openpilotLongitudinalControl:
@@ -162,6 +171,7 @@ class CarController:
       if self.frame % 50 == 0 and self.CP.openpilotLongitudinalControl:
         can_sends.append(hyundaican.create_frt_radar_opt(self.packer))
 
+    self.apply_steer_last = apply_steer
     new_actuators = actuators.copy()
     new_actuators.steer = apply_steer / self.params.STEER_MAX
     new_actuators.steerOutputCan = apply_steer

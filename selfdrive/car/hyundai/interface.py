@@ -6,6 +6,7 @@ from openpilot.selfdrive.car.hyundai.values import HyundaiFlags, CAR, DBC, CANFD
                                          CANFD_UNSUPPORTED_LONGITUDINAL_CAR, EV_CAR, HYBRID_CAR, LEGACY_SAFETY_MODE_CAR, \
                                          UNSUPPORTED_LONGITUDINAL_CAR, Buttons
 from openpilot.selfdrive.car.hyundai.radar_interface import RADAR_START_ADDR
+from openpilot.selfdrive.car.hyundai.custom import interface     #custom
 from openpilot.selfdrive.car import create_button_events, get_safety_config
 from openpilot.selfdrive.car.interfaces import CarInterfaceBase
 from openpilot.selfdrive.car.disable_ecu import disable_ecu
@@ -307,7 +308,9 @@ class CarInterface(CarInterfaceBase):
       if ret.flags & HyundaiFlags.CANFD_CAMERA_SCC:
         ret.safetyConfigs[-1].safetyParam |= Panda.FLAG_HYUNDAI_CAMERA_SCC
     else:
-      if candidate in LEGACY_SAFETY_MODE_CAR:
+      if interface.get_params( ret, candidate ):  #custom
+        pass      
+      elif candidate in LEGACY_SAFETY_MODE_CAR:
         # these cars require a special panda safety mode due to missing counters and checksums in the messages
         ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.hyundaiLegacy)]
       else:

@@ -9,6 +9,7 @@
 #include "common/util.h"
 #include "selfdrive/ui/ui.h"
 #include "selfdrive/ui/qt/widgets/cameraview.h"
+#include "selfdrive/ui/qt/custom/paint.h"    // #custom
 
 
 const int btn_size = 192;
@@ -96,6 +97,9 @@ private:
 
   int skip_frame_count = 0;
   bool wide_cam_requested = false;
+
+  // #custom
+  OnPaint *m_pPaint = nullptr;
 
 protected:
   void paintGL() override;

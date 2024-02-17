@@ -234,8 +234,9 @@ class Controls:
       self.events.add(EventName.resumeBlocked)
 
     # Disable on rising edge of accelerator or brake. Also disable on brake when speed > 0
+    #custom
     if (CS.gasPressed and not self.CS_prev.gasPressed and self.disengage_on_accelerator) or \
-      (CS.brakePressed and (not self.CS_prev.brakePressed or not CS.standstill)) or \
+      (CS.brakePressed and (not self.CS_prev.brakePressed or not CS.standstill) and self.disengage_on_accelerator) or \
       (CS.regenBraking and (not self.CS_prev.regenBraking or not CS.standstill)):
       self.events.add(EventName.pedalPressed)
 
@@ -731,6 +732,8 @@ class Controls:
       left_lane_visible = model_v2.laneLineProbs[1] > 0.5
       l_lane_change_prob = desire_prediction[Desire.laneChangeLeft]
       r_lane_change_prob = desire_prediction[Desire.laneChangeRight]
+      hudControl.rightLaneVisible = right_lane_visible
+      hudControl.leftLaneVisible = left_lane_visible
 
       lane_lines = model_v2.laneLines
       l_lane_close = left_lane_visible and (lane_lines[1].y[0] > -(1.08 + CAMERA_OFFSET))

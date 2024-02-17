@@ -11,6 +11,8 @@ from openpilot.selfdrive.car.hyundai.values import HyundaiFlags, CAR, DBC, CAN_G
                                                    CANFD_CAR, Buttons, CarControllerParams
 from openpilot.selfdrive.car.interfaces import CarStateBase
 
+from openpilot.selfdrive.car.hyundai.custom.carstate import CarStateCustom    #custom
+
 PREV_BUTTON_SAMPLES = 8
 CLUSTER_SAMPLE_RATE = 20  # frames
 STANDSTILL_THRESHOLD = 12 * 0.03125 * CV.KPH_TO_MS
@@ -51,6 +53,11 @@ class CarState(CarStateBase):
     self.cluster_speed_counter = CLUSTER_SAMPLE_RATE
 
     self.params = CarControllerParams(CP)
+
+    #custom
+    self.customCS = CarStateCustom( CP, self )
+
+
 
   def update(self, cp, cp_cam):
     if self.CP.carFingerprint in CANFD_CAR:
@@ -164,6 +171,8 @@ class CarState(CarStateBase):
     self.cruise_buttons.extend(cp.vl_all["CLU11"]["CF_Clu_CruiseSwState"])
     self.main_buttons.extend(cp.vl_all["CLU11"]["CF_Clu_CruiseSwMain"])
 
+    #custom
+    self.customCS.update( ret, self, cp, cp_cruise, cp_cam )
     return ret
 
   def update_canfd(self, cp, cp_cam):
@@ -295,6 +304,9 @@ class CarState(CarStateBase):
     else:
       messages.append(("LVR12", 100))
 
+    #custom
+    self.customCS.get_can_parser( messages, CP )
+
     return CANParser(DBC[CP.carFingerprint]["pt"], messages, 0)
 
   @staticmethod
@@ -314,6 +326,9 @@ class CarState(CarStateBase):
 
       if CP.flags & HyundaiFlags.USE_FCA.value:
         messages.append(("FCA11", 50))
+
+    #custom
+    CarStateCustom.get_cam_can_parser( messages, CP )
 
     return CANParser(DBC[CP.carFingerprint]["pt"], messages, 2)
 
