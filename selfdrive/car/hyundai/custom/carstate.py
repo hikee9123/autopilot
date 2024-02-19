@@ -133,7 +133,7 @@ class CarStateCustom():
 
   def update(self, ret, CS,  cp, cp_cruise, cp_cam ):
     mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
-
+    ACC_Mode = cp_cruise.vl["SCC12"]["ACCMode"] != 0
     if not mainMode_ACC:
       self.cruise_control_mode()
 
@@ -160,6 +160,8 @@ class CarStateCustom():
     
     if not self.CP.openpilotLongitudinalControl:
       if not (CS.CP.alternativeExperience & ALTERNATIVE_EXPERIENCE.DISABLE_DISENGAGE_ON_GAS):
+        pass
+      elif ACC_Mode:
         pass
       elif ret.parkingBrake:
         self.timer_engaged = 100
