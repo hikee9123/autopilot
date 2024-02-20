@@ -10,7 +10,7 @@
 #include <QTabWidget>
 #include <QObject>
 #include <QJsonArray>
-
+#include <QProcess>
 
 #include "common/params.h"
 #include "common/watchdog.h"
@@ -524,6 +524,16 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
     addItem(value);
     m_valueCtrl[ param.toStdString() ] = value;
   }
+
+
+  auto gitpruneBtn = new ButtonControl(tr("Fetch All and Prune"), tr("Sync"), "git fetch --all --prune");
+  connect(gitpruneBtn, &ButtonControl::clicked, [=]() {
+
+    QProcess::execute("sudo git fetch --all --prune");
+    //std::system("sudo git fetch --all --prune");
+  });
+  addItem(gitpruneBtn);
+
 
   QObject::connect( m_valueCtrl["CruiseMode"], &CValueControl::clicked, [=]() {
     int cruiseMode = m_jsonobj["CruiseMode"].toInt();
