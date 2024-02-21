@@ -621,15 +621,15 @@ GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) ,
   addItem(gitpruneBtn);
 
 
-  auto gitpruneBtn = new ButtonControl(tr("Update from Remote"), tr("Update"), "git fetch origin\n git reset --hard origin/master-ci");
-  connect(gitpruneBtn, &ButtonControl::clicked, [=]() {
+  auto gitremoteBtn = new ButtonControl(tr("Update from Remote"), tr("Update"), "git fetch origin\n git reset --hard origin/master-ci");
+  connect(gitremoteBtn, &ButtonControl::clicked, [=]() {
     auto current = params.get("GitBranch");
 
     QString gitCommand = "git reset --hard origin/" + current;
     QProcess::execute("git fetch origin");
     QProcess::execute( gitCommand );
   });
-  addItem(gitpruneBtn);
+  addItem(gitremoteBtn);
 
 
 
