@@ -210,7 +210,7 @@ CustomPanel::CustomPanel(SettingsWindow *parent) : QWidget(parent)
     QList<QPair<QString, QWidget *>> panels = {
         {tr("UI"), new UITab(this, m_jsonobj)},      
         {tr("Community"), new CommunityTab(this, m_jsonobj)},
-        {tr("Git"), new GitTab(this)},
+        {tr("Git"), new GitTab(this, m_jsonobj)},
         {tr("Navigation"), new NavigationTab(this, m_jsonobj)},
         {tr("Debug"), new Debug(this,m_jsonobj)},
     };
@@ -615,7 +615,7 @@ GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) ,
 
   auto gitremoteBtn = new ButtonControl(tr("Update from Remote"), tr("Update"), "git fetch origin\n git reset --hard origin/master-ci");
   connect(gitremoteBtn, &ButtonControl::clicked, [=]() {
-    auto current = params.get("GitBranch");
+    auto current = Params().get("GitBranch");
 
     QString gitCommand = "git reset --hard origin/" + current;
     QProcess::execute("git fetch origin");
