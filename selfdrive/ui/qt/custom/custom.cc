@@ -526,14 +526,6 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
   }
 
 
-  auto gitpruneBtn = new ButtonControl(tr("Fetch All and Prune"), tr("Sync"), "git fetch --all --prune");
-  connect(gitpruneBtn, &ButtonControl::clicked, [=]() {
-
-    QProcess::execute("sudo git fetch --all --prune");
-    //std::system("sudo git fetch --all --prune");
-  });
-  addItem(gitpruneBtn);
-
 
   QObject::connect( m_valueCtrl["CruiseMode"], &CValueControl::clicked, [=]() {
     int cruiseMode = m_jsonobj["CruiseMode"].toInt();
