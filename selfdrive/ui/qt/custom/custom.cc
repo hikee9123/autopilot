@@ -617,9 +617,17 @@ GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) ,
   connect(gitremoteBtn, &ButtonControl::clicked, [=]() {
     auto current = Params().get("GitBranch");
 
-    //QString gitCommand = "git reset --hard origin/" + current;
+    QString gitCommand = "git reset --hard origin/" +  QString::fromUtf8(current.toUtf8()); //current.c_str();
     QProcess::execute("git fetch origin");
-    //QProcess::execute( gitCommand );
+    QProcess::execute( gitCommand );
+
+    int exitCode = QProcess::execute("git rev-parse --verify " + current);
+    if (exitCode == 0) {
+        printf("Git command executed successfully.\n");
+    } else {
+        printf("Git command failed with exit code: %d \n" , exitCode );
+    }
+
   });
   addItem(gitremoteBtn);
 
