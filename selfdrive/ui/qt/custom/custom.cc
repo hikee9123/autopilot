@@ -608,7 +608,6 @@ GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) ,
 
     QProcess::execute("git fetch --all --prune");
     QProcess::execute("git remote prune origin");
-    //std::system("sudo git fetch --all --prune");
   });
   addItem(gitpruneBtn);
 
