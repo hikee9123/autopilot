@@ -616,12 +616,13 @@ GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) ,
   auto gitremoteBtn = new ButtonControl(tr("Update from Remote"), tr("Update"), "git fetch origin\n git reset --hard origin/master-ci");
   connect(gitremoteBtn, &ButtonControl::clicked, [=]() {
     auto current = Params().get("GitBranch");
-
     QString gitCommand = "git reset --hard origin/" +  QString::fromUtf8(current.toUtf8()); //current.c_str();
-    QProcess::execute("git fetch origin");
-    QProcess::execute( gitCommand );
 
-    int exitCode = QProcess::execute("git rev-parse --verify " + current);
+    
+    QProcess::execute("git fetch origin"); // 원격 저장소에서 최신 업데이트를 가져옴
+    QProcess::execute( gitCommand );  // 지정된 브랜치로 하드 리셋
+
+    int exitCode = QProcess::execute("git rev-parse --verify " + current);  // 실행 결과 확인
     if (exitCode == 0) {
         printf("Git command executed successfully.\n");
     } else {
