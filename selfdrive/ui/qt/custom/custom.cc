@@ -615,10 +615,8 @@ GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) ,
   auto gitremoteBtn = new ButtonControl(tr("Update from Remote"), tr("Update"), "git fetch origin\n git reset --hard origin/master-ci");
   connect(gitremoteBtn, &ButtonControl::clicked, [=]() {
     auto current = Params().get("GitBranch");
-    QString gitCommand;// = "git reset --hard origin/" +  current.c_str();
-
-    gitCommand = QString("git reset --hard origin/%1").arg(current.c_str() );
-
+   // QString gitCommand = QString("git reset --hard origin/%1").arg(current.c_str() );
+    QString gitCommand = "git reset --hard origin/"+QString::fromStdString( Params().get("GitBranch") );
     
     QProcess::execute("git fetch origin"); // 원격 저장소에서 최신 업데이트를 가져옴
     QProcess::execute( gitCommand );  // 지정된 브랜치로 하드 리셋
