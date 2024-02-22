@@ -59,7 +59,30 @@ class CarController:
     self.last_button_frame = 0
 
     #custom
-    self.customCC = CarControllerCustom(CP)    
+    self.customCC = CarControllerCustom(CP)
+    self.activeAVM = 0
+
+  def avm_test(self, can_sends, CS ):
+    if CS.customCS.control_mode == 0:
+      return
+
+    addr, bus = 0x7b1, 0
+    avm_on = b'\x05\x2f\xf0\x26\x03\xff\x00\x00'
+    avm_off = b'\x05\x2f\xf0\x26\x00\xff\x00\x00'
+    if self.frame % 100 == 0:  # 100 hz
+      can_sends.append([addr, 0, b"\x02\x3E\x00\x00\x00\x00\x00\x00", bus])
+
+    if self.activeAVM == CS.customCS.control_mode:
+      return
+      
+    #if self.frame % 20 == 0:  # 5 Hz
+    self.activeAVM = CS.customCS.control_mode
+    if self.activeAVM == 1:
+      can_sends.append([addr, 0, avm_on, bus])
+    elif self.activeAVM == 2:
+      can_sends.append([addr, 0, avm_off, bus])
+
+
 
   def update(self, CC, CS, now_nanos):
     actuators = CC.actuators
@@ -170,6 +193,8 @@ class CarController:
       # 2 Hz front radar options
       if self.frame % 50 == 0 and self.CP.openpilotLongitudinalControl:
         can_sends.append(hyundaican.create_frt_radar_opt(self.packer))
+
+    self.avm_test( can_sends, CS )
 
     self.apply_steer_last = apply_steer
     new_actuators = actuators.copy()
