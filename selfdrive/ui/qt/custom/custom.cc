@@ -617,9 +617,9 @@ GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) ,
   connect(gitremoteBtn, &ButtonControl::clicked, [=]() {
     auto current = Params().get("GitBranch");
 
-    QString gitCommand = "git reset --hard origin/" + current;
+    //QString gitCommand = "git reset --hard origin/" + current;
     QProcess::execute("git fetch origin");
-    QProcess::execute( gitCommand );
+    //QProcess::execute( gitCommand );
   });
   addItem(gitremoteBtn);
 
