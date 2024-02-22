@@ -624,9 +624,9 @@ GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) ,
 
     int exitCode = QProcess::execute("git rev-parse --verify " + current);  // 실행 결과 확인
     if (exitCode == 0) {
-        printf("Git command executed successfully.\n");
+        printf("Git command(%s) executed successfully. \n", qPrintable(gitCommand) );
     } else {
-        printf("Git command failed with exit code: %d \n" , exitCode );
+        printf("Git command(%s) failed with exit code: %d \n", qPrintable(gitCommand) , exitCode );
     }
 
   });
