@@ -235,7 +235,6 @@ private:
   QTimer *timer = nullptr;
   Params params;
   int    m_cmdIdx = 0;
-  int    m_powerflag = 1;
   int    m_time = 0;
 
 
@@ -287,6 +286,36 @@ private:
 };
 
 
+
+class GitTab : public ListWidget {
+  Q_OBJECT
+public:
+  explicit GitTab(CustomPanel *parent, QJsonObject &jsonobj);
+
+
+private:
+  std::map<std::string, CValueControl*> m_valueCtrl;
+
+
+protected:
+  virtual void showEvent(QShowEvent *event) override;
+  virtual void hideEvent(QHideEvent *event) override;
+
+
+protected:  
+
+signals:
+
+private slots:
+
+private:
+
+
+private:
+  CustomPanel *m_pCustom = nullptr;
+  QJsonObject &m_jsonobj;  
+
+};
 
 class NavigationTab : public ListWidget {
   Q_OBJECT

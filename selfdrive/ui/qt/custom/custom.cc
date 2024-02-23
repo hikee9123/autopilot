@@ -10,7 +10,7 @@
 #include <QTabWidget>
 #include <QObject>
 #include <QJsonArray>
-
+#include <QProcess>
 
 #include "common/params.h"
 #include "common/watchdog.h"
@@ -210,7 +210,7 @@ CustomPanel::CustomPanel(SettingsWindow *parent) : QWidget(parent)
     QList<QPair<QString, QWidget *>> panels = {
         {tr("UI"), new UITab(this, m_jsonobj)},      
         {tr("Community"), new CommunityTab(this, m_jsonobj)},
-        {tr("Tuning"), new QWidget(this)},
+        {tr("Git"), new GitTab(this, m_jsonobj)},
         {tr("Navigation"), new NavigationTab(this, m_jsonobj)},
         {tr("Debug"), new Debug(this,m_jsonobj)},
     };
@@ -297,10 +297,7 @@ void CustomPanel::OnTimer()
     const auto car_state = sm2["carState"].getCarState();
     float vEgo = car_state.getVEgo();
     if( vEgo > 10 )
-       m_powerflag = 0; 
-
-    //if( m_cmdIdx > 10 )
-    //  timer->stop();
+       scene.m_powerflag = 1; 
   }
   else
   {
@@ -310,9 +307,9 @@ void CustomPanel::OnTimer()
     }
 
     int PowerOff = m_jsonobj["PowerOff"].toInt();
-    if( PowerOff && (m_time > (PowerOff*10)) && (m_powerflag==0) )
+    if( PowerOff && (m_time > (PowerOff*10)) && (scene.m_powerflag==1) )
     {
-         m_powerflag = 1;
+         scene.m_powerflag = 0;
          params.putBool("DoShutdown", true);
     }
   }
@@ -525,6 +522,8 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
     m_valueCtrl[ param.toStdString() ] = value;
   }
 
+
+
   QObject::connect( m_valueCtrl["CruiseMode"], &CValueControl::clicked, [=]() {
     int cruiseMode = m_jsonobj["CruiseMode"].toInt();
     if( cruiseMode == 0 )
@@ -586,6 +585,73 @@ void CommunityTab::showEvent(QShowEvent *event)
 
 
 void CommunityTab::hideEvent(QHideEvent *event)
+{
+  QWidget::hideEvent(event);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+
+GitTab::GitTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) , m_jsonobj(jsonobj)
+{
+  m_pCustom = parent;
+
+
+
+  auto gitpruneBtn = new ButtonControl(tr("Fetch All and Prune"), tr("Sync"), "git fetch --all --prune\n git remote prune origin");
+  connect(gitpruneBtn, &ButtonControl::clicked, [=]() {
+
+    QProcess::execute("git fetch --all --prune");
+    QProcess::execute("git remote prune origin");
+  });
+  addItem(gitpruneBtn);
+
+
+  auto gitremoteBtn = new ButtonControl(tr("Update from Remote"), tr("Update"), "git fetch origin\n git reset --hard origin/master-ci");
+  connect(gitremoteBtn, &ButtonControl::clicked, [=]() {
+    auto current = Params().get("GitBranch");
+   // QString gitCommand = QString("git reset --hard origin/%1").arg(current.c_str() );
+    QString gitCommand = "git reset --hard origin/"+QString::fromStdString( Params().get("GitBranch") );
+    
+    QProcess::execute("git fetch origin"); // 원격 저장소에서 최신 업데이트를 가져옴
+    QProcess::execute( gitCommand );  // 지정된 브랜치로 하드 리셋
+
+    QString gitVerify = QString("git rev-parse --verify %1").arg(current.c_str() );;
+
+    int exitCode = QProcess::execute( gitVerify );  // 실행 결과 확인
+    if (exitCode == 0) {
+        printf("Git command(%s) executed successfully. \n", qPrintable(gitCommand) );
+    } else {
+        printf("Git command(%s) failed with exit code: %d \n", qPrintable(gitCommand) , exitCode );
+    }
+
+  });
+  addItem(gitremoteBtn);
+
+
+
+  setStyleSheet(R"(
+    * {
+      color: white;
+      outline: none;
+      font-family: Inter;
+    }
+    Updater {
+      color: white;
+      background-color: black;
+    }
+  )");  
+}
+
+void GitTab::showEvent(QShowEvent *event) 
+{
+    QWidget::showEvent(event);
+}
+
+
+void GitTab::hideEvent(QHideEvent *event)
 {
   QWidget::hideEvent(event);
 }

@@ -44,13 +44,7 @@ private:
 };
 
 
-/*
-if( m_dlg == nullptr )
-{
-  m_dlg = new DigSetup(this);
-}
-m_dlg->show();
-*/
+
 
 class CSidebar  {
 public:
@@ -62,7 +56,7 @@ public:
 public:
   void paintEvent(QPainter &p);
   int  updateState(const UIState &s);
-
+  void mouseReleaseEvent(QMouseEvent *event, const cereal::UserFlag::Reader &userFlag );
 
 private:
   void   configFont(QPainter &p, const QString &family, int size, const QString &style);
@@ -72,6 +66,8 @@ private:
   QPixmap beterrry1_img, beterrry2_img;
   int    frame_cnt = 0;
   float  fBatteryVoltage = 0.;
+
+  int    m_idxUserFlag = 0;
   
 
   const QRect battery_rc = QRect(160, 255, 78, 38);
