@@ -24,12 +24,12 @@ void CSidebar::mouseReleaseEvent(QMouseEvent *event, const cereal::UserFlag::Rea
 {
   UIState   *s = uiState();
   UIScene   &scene = s->scene;
-
+  printf( "CSidebar::mouseReleaseEvent  m_idxUserFlag=%d  m_powerflag=%d \n", m_idxUserFlag, scene.m_powerflag );
+  
   scene.m_powerflag = 0; 
-
   m_idxUserFlag++;
   userFlag.setIdx( m_idxUserFlag );
-  printf( "CSidebar::mouseReleaseEvent  %d \n", m_idxUserFlag );
+
 }
 
 int CSidebar::updateState(const UIState &s) 
