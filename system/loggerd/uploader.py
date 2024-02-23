@@ -261,7 +261,7 @@ def main(exit_event: Optional[threading.Event] = None) -> None:
       cloudlog.info("upload backoff %r", backoff)
       backoff = min(backoff*2, 120)
     if allow_sleep:
-    time.sleep(backoff + random.uniform(0, backoff))
+       time.sleep(backoff + random.uniform(0, backoff))
 
 
 if __name__ == "__main__":
