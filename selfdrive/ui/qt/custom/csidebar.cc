@@ -20,6 +20,20 @@ CSidebar::CSidebar(QFrame *parent)
   beterrry2_img = loadPixmap("qt/custom/images/battery_charging.png", battery_rc.size());
 }
 
+void CSidebar::mouseReleaseEvent(QMouseEvent *event, MessageBuilder &msg ) 
+{
+  UIState   *s = uiState();
+  UIScene   &scene = s->scene;
+
+  scene.m_powerflag = 0; 
+
+  auto userFlag = msg.initEvent().initUserFlag();
+  m_idxUserFlag++;
+  userFlag.setIdx( m_idxUserFlag );
+
+  printf( "CSidebar::mouseReleaseEvent  %d \n", m_idxUserFlag );
+}
+
 int CSidebar::updateState(const UIState &s) 
 {
   SubMaster &sm = *(s.sm);

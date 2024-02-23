@@ -2207,6 +2207,7 @@ struct EncodeData {
 }
 
 struct UserFlag {
+  idx @0 :UInt64;
 }
 
 struct Microphone {

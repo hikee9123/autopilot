@@ -235,7 +235,6 @@ private:
   QTimer *timer = nullptr;
   Params params;
   int    m_cmdIdx = 0;
-  int    m_powerflag = 1;
   int    m_time = 0;
 
 
