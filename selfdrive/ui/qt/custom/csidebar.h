@@ -56,7 +56,7 @@ public:
 public:
   void paintEvent(QPainter &p);
   int  updateState(const UIState &s);
-  void mouseReleaseEvent(QMouseEvent *event, MessageBuilder &msg );
+  void mouseReleaseEvent(QMouseEvent *event, const cereal::UserFlag::Reader &userFlag );
 
 private:
   void   configFont(QPainter &p, const QString &family, int size, const QString &style);
