@@ -28,7 +28,7 @@ void CSidebar::mouseReleaseEvent(QMouseEvent *event, const cereal::UserFlag::Rea
   
   scene.m_powerflag = 0; 
   m_idxUserFlag++;
-  userFlag.setIdx( m_idxUserFlag );
+  // userFlag.setIdx( m_idxUserFlag );
 
 }
 
