@@ -620,7 +620,7 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   // #custom
    UIState *s = uiState(); 
   const UIScene &scene = s->scene;
-  float leadDistance = scene.custom.leadDistance
+  float leadDistance = scene.custom.leadDistance;
 
   QVector<QPointF> polygonData;
   if( leadDistance < 150 ) // real radarState.

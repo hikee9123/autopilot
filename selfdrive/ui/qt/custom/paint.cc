@@ -201,6 +201,7 @@ void OnPaint::updateState(const UIState &s)
   alert.alertTextMsg3 = carState_custom.getAlertTextMsg3();    
   m_param.electGearStep  = carState_custom.getElectGearStep();
   m_param.breakPos = carState_custom.getBreakPos();
+  scene->custom.leadDistance = carState_custom.getLeadDistance();
 
 
   // 2.
@@ -242,8 +243,6 @@ void OnPaint::updateState(const UIState &s)
 
 
   
-  auto carState_custom = sm1["carStateCustom"].getCarStateCustom();
-  scene->custom.leadDistance = carState_custom.getLeadDistance();
 }
 
 
