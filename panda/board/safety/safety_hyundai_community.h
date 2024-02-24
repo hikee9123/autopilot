@@ -45,6 +45,8 @@ const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
   {CLU11,       0, 4}, // CLU11 Bus 0
   {LFAHDA_MFC,  0, 4}, // LFAHDA_MFC Bus 0
   {MDPS12,      2, 8},   // MDPS12, Bus 2
+  //{0x575, 0, 8},         // AVM
+  {0x7B1, 0, 8},         // AVM
 };
 
 const CanMsg HYUNDAI_COMMUNITY_LONG_TX_MSGS[] = {

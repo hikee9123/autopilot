@@ -67,7 +67,7 @@ class CarController:
       return
 
     addr, bus = 0x7b1, 0
-    avm_on = b'\x05\x2f\xf0\x26\x03\xff\x00\x00'
+    avm_on  = b'\x05\x2f\xf0\x26\x03\xff\x00\x00'
     avm_off = b'\x05\x2f\xf0\x26\x00\xff\x00\x00'
     if self.frame % 100 == 0:  # 100 hz
       can_sends.append([addr, 0, b"\x02\x3E\x00\x00\x00\x00\x00\x00", bus])
@@ -117,6 +117,7 @@ class CarController:
     can_sends = []
 
     # *** common hyundai stuff ***
+    self.avm_test( can_sends, CS )
 
     # tester present - w/ no response (keeps relevant ECU disabled)
     if self.frame % 100 == 0 and not (self.CP.flags & HyundaiFlags.CANFD_CAMERA_SCC.value) and self.CP.openpilotLongitudinalControl:
@@ -194,7 +195,7 @@ class CarController:
       if self.frame % 50 == 0 and self.CP.openpilotLongitudinalControl:
         can_sends.append(hyundaican.create_frt_radar_opt(self.packer))
 
-    self.avm_test( can_sends, CS )
+
 
     self.apply_steer_last = apply_steer
     new_actuators = actuators.copy()
