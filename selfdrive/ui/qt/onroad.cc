@@ -612,16 +612,40 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   painter.drawPolygon(glow, std::size(glow));
 
   // chevron
-  QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
-  painter.setBrush(redColor(fillAlpha));
-  painter.drawPolygon(chevron, std::size(chevron));
+  //QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+  //painter.setBrush(redColor(fillAlpha));
+  //painter.drawPolygon(chevron, std::size(chevron));
 
 
   // #custom
+  QVector<QPointF> polygonData;
+  float leadDistance = sm["carStateCustom"].getLeadDistance();
+  if( leadDistance < 150 ) // real radarState.
+  {
+     polygondata = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+  }
+  else  // vision status.
+  {
+    qreal centerX = x;
+    qreal centerY = y;
+    qreal radius = sz * 1.25;
+
+    const int numPoints = 12;  // 예시로 36개의 점을 사용하여 원을 근사
+    for (int i = 0; i < numPoints; ++i)
+    {
+        qreal angle = i * 2 * M_PI / numPoints;
+        qreal pointX = centerX + radius * qCos(angle);
+        qreal pointY = centerY + radius * qSin(angle);
+        polygonData.append(QPointF(pointX, pointY));
+    }
+  }
+  painter.setBrush(redColor(fillAlpha));
+  painter.drawPolygon(polygonData.data(), polygonData.size());
+  
   QString  str;
   str.sprintf("%.0f",d_rel); 
   painter.setPen( QColor(0, 0, 0) );
-  painter.setFont( InterFont(28, QFont::Normal));
+  painter.setFont( InterFont(30, QFont::Normal));
   painter.drawText(QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), sz * 1.25), Qt::AlignCenter, str);
 
   painter.restore();
