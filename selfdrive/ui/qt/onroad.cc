@@ -622,10 +622,10 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   SubMaster &sm = *(s->sm);
   
   QVector<QPointF> polygonData;
-  float leadDistance = sm["carStateCustom"].getLeadDistance();
+  float leadDistance = 0; // sm["carStateCustom"].getLeadDistance();
   if( leadDistance < 150 ) // real radarState.
   {
-     polygondata = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+     polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
   }
   else  // vision status.
   {
