@@ -9,7 +9,9 @@ from openpilot.selfdrive.car.hyundai.radar_interface import RADAR_START_ADDR
 from openpilot.selfdrive.car.hyundai.custom import interface     #custom
 from openpilot.selfdrive.car import create_button_events, get_safety_config
 from openpilot.selfdrive.car.interfaces import CarInterfaceBase
-from openpilot.selfdrive.car.disable_ecu import disable_ecu
+from openpilot.selfdrive.car.disable_ecu import disable_ecu, enable_avm
+
+from selfdrive.car.isotp_parallel_query import IsoTpParallelQuery #ajouatom
 
 Ecu = car.CarParams.Ecu
 ButtonType = car.CarState.ButtonEvent.Type
@@ -346,6 +348,8 @@ class CarInterface(CarInterfaceBase):
     if CP.flags & HyundaiFlags.ENABLE_BLINKERS:
       disable_ecu(logcan, sendcan, bus=CanBus(CP).ECAN, addr=0x7B1, com_cont_req=b'\x28\x83\x01')
 
+    enable_avm(logcan, sendcan)
+
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam)
 
@@ -372,3 +376,5 @@ class CarInterface(CarInterfaceBase):
 
   def apply(self, c, now_nanos):
     return self.CC.update(c, self.CS, now_nanos)
+
+

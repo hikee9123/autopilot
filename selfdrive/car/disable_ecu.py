@@ -37,6 +37,17 @@ def disable_ecu(logcan, sendcan, bus=0, addr=0x7d0, sub_addr=None, com_cont_req=
   return False
 
 
+def enable_avm(logcan, sendcan):
+  bus = 0
+  query = IsoTpParallelQuery(sendcan, logcan, bus, [0x7b1], [b'\x10\x03'], [b'\x50\x03'], debug=True)
+  query.get_data(0.1) 
+  query = IsoTpParallelQuery(sendcan, logcan, bus, [0x7b1], [b'\x3E\x00'], [b'\x7E\x00'], debug=True)
+  query.get_data(0.1)
+  query = IsoTpParallelQuery(sendcan, logcan, bus, [0x7b1], [b'\x2f\xf0\x26\x03\xff'], [b'\x6f\xf0\x26\x03'], debug=True)
+  query.get_data(0.1) 
+
+
+
 if __name__ == "__main__":
   import time
   import cereal.messaging as messaging
