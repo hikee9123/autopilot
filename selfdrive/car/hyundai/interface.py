@@ -348,7 +348,7 @@ class CarInterface(CarInterfaceBase):
     if CP.flags & HyundaiFlags.ENABLE_BLINKERS:
       disable_ecu(logcan, sendcan, bus=CanBus(CP).ECAN, addr=0x7B1, com_cont_req=b'\x28\x83\x01')
 
-    enable_avm(logcan, sendcan)
+    # enable_avm(logcan, sendcan)
 
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam)
