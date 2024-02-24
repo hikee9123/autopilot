@@ -607,9 +607,9 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   float g_xo = sz / 5;
   float g_yo = sz / 10;
 
-  QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
-  painter.setBrush(QColor(218, 202, 37, 255));
-  painter.drawPolygon(glow, std::size(glow));
+  //QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
+  //painter.setBrush(QColor(218, 202, 37, 255));
+  //painter.drawPolygon(glow, std::size(glow));
 
   // chevron
   //QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
@@ -625,13 +625,17 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   QVector<QPointF> polygonData;
   if( leadDistance < 150 ) // real radarState.
   {
-     polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+    QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
+    painter.setBrush(QColor(218, 202, 37, 255));
+    painter.drawPolygon(glow, std::size(glow));
+
+    polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
   }
   else  // vision status.
   {
     qreal centerX = x;
     qreal centerY = y;
-    qreal radius = sz * 1.25;
+    qreal radius = sz * 1.1;
 
     const int numPoints = 12;  // 예시로 36개의 점을 사용하여 원을 근사
     for (int i = 0; i < numPoints; ++i)
