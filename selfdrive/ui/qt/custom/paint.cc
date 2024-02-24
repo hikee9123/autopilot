@@ -148,7 +148,7 @@ void OnPaint::updateState(const UIState &s)
   // user message
   SubMaster &sm1 = *(s.sm);  
   SubMaster &sm2 = *(m_sm);
-  const UIScene &scene = s->scene;
+
 
 
   if ( (sm1.frame % UI_FREQ) != 0 ) 
@@ -243,7 +243,7 @@ void OnPaint::updateState(const UIState &s)
 
   
   auto carState_custom = sm1["carStateCustom"].getCarStateCustom();
-  scene.custom.leadDistance = carState_custom.getLeadDistance();
+  scene->custom.leadDistance = carState_custom.getLeadDistance();
 }
 
 
