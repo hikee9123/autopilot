@@ -72,8 +72,8 @@ class CarController:
     if self.frame % 100 == 0:  # 100 hz
       can_sends.append([addr, 0, b"\x02\x3E\x00\x00\x00\x00\x00\x00", bus])
 
-    if self.activeAVM == CS.customCS.control_mode:
-      return
+    #if self.activeAVM == CS.customCS.control_mode:
+    #  return
       
     #if self.frame % 20 == 0:  # 5 Hz
     self.activeAVM = CS.customCS.control_mode
