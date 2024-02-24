@@ -240,11 +240,93 @@ void OnPaint::updateState(const UIState &s)
   if (pandaStates.size() > 0) {
     m_param.controlsAllowed = pandaStates[0].getControlsAllowed();// PandaType();
   }
-
-
-  
 }
 
+
+void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd)
+{
+    const float speedBuff = 10.;
+    const float leadBuff = 40.;
+    const float d_rel = lead_data.getDRel();
+    const float v_rel = lead_data.getVRel();
+
+    float fillAlpha = 0;
+    if (d_rel < leadBuff) {
+      fillAlpha = 255 * (1.0 - (d_rel / leadBuff));
+      if (v_rel < 0) {
+        fillAlpha += 255 * (-1 * (v_rel / speedBuff));
+      }
+      fillAlpha = (int)(fmin(fillAlpha, 255));
+    }
+
+    float sz = std::clamp((25 * 30) / (d_rel / 3 + 30), 15.0f, 30.0f) * 2.35;
+    float x = std::clamp((float)vd.x(), 0.f, width() - sz / 2);
+    float y = std::fmin(height() - sz * .6, (float)vd.y());
+
+    float g_xo = sz / 5;
+    float g_yo = sz / 10;
+
+
+
+    float leadDistance = scene->custom.leadDistance;
+    QVector<QPointF> polygonData;
+    if( leadDistance < 150 ) // real radar State.
+    {
+      QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
+      p.setBrush(QColor(218, 202, 37, 255));
+      p.drawPolygon(glow, std::size(glow));
+
+      polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+    }
+    else  // vision status.
+    {
+      qreal centerX = x;
+      qreal centerY = y;
+      qreal radius = sz * 1.1;
+
+      currentAngle += 0.01;  // 필요에 따라 회전 속도 조절
+      if (currentAngle >= 2 * M_PI)
+          currentAngle -= 2 * M_PI;
+
+      //p.setBrush(Qt::NoBrush);  // 내부 색상 없이 설정
+      //p.setPen(QPen(Qt::black, 2));  // 외곽선 색상과 두께 설정
+
+      QConicalGradient gradient;
+      gradient.setCenter( centerX, centerY);
+      gradient.setAngle(currentAngle);
+      gradient.setColorAt(0, QColor(255, 255, 0, 255));
+      gradient.setColorAt(1, QColor(60, 0, 0, 50));
+
+      QPen pen(QBrush(gradient), 5);
+      pen.setCapStyle(Qt::RoundCap);
+      p.setPen( pen );
+
+      /*
+      int nStart = currentAngle;  // 시작 각도 예시
+      int nEnd = currentAngle + 270;    // 호의 각도 예시
+      nEnd %= 360;
+      p.drawArc(centerX, centerY, radius, radius, nStart, nEnd );
+      */
+      
+      const int numPoints = 6;  // 예시로 36개의 점을 사용하여 원을 근사
+      for (int i = 0; i < numPoints; ++i)
+      {
+          qreal angle = i * 2 * M_PI / numPoints;
+          qreal pointX = centerX + radius * qCos(angle + currentAngle);
+          qreal pointY = centerY + radius * qSin(angle + currentAngle);
+          polygonData.append( QPointF(pointX, pointY) );
+      }
+      
+    }
+    p.setBrush(redColor(fillAlpha));
+    p.drawPolygon(polygonData.data(), polygonData.size());
+    
+    QString  str;
+    str.sprintf("%.0f",d_rel); 
+    p.setPen( QColor(0, 0, 0) );
+    p.setFont( InterFont(30, QFont::Normal));
+    p.drawText(QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), sz * 1.25), Qt::AlignCenter, str);
+}
 
 void OnPaint::drawHud(QPainter &p)
 {

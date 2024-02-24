@@ -586,6 +586,7 @@ void AnnotatedCameraWidget::drawDriverState(QPainter &painter, const UIState *s)
 void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd) {
   painter.save();
 
+/*
   const float speedBuff = 10.;
   const float leadBuff = 40.;
   const float d_rel = lead_data.getDRel();
@@ -607,53 +608,19 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   float g_xo = sz / 5;
   float g_yo = sz / 10;
 
-  //QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
-  //painter.setBrush(QColor(218, 202, 37, 255));
-  //painter.drawPolygon(glow, std::size(glow));
+  QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
+  painter.setBrush(QColor(218, 202, 37, 255));
+  painter.drawPolygon(glow, std::size(glow));
 
   // chevron
-  //QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
-  //painter.setBrush(redColor(fillAlpha));
-  //painter.drawPolygon(chevron, std::size(chevron));
-
+  QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+  painter.setBrush(redColor(fillAlpha));
+  painter.drawPolygon(chevron, std::size(chevron));
+*/
 
   // #custom
-   UIState *s = uiState(); 
-  const UIScene &scene = s->scene;
-  float leadDistance = scene.custom.leadDistance;
+  m_pPaint->drawLead( painter, lead_data, vd );
 
-  QVector<QPointF> polygonData;
-  if( leadDistance < 150 ) // real radarState.
-  {
-    QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
-    painter.setBrush(QColor(218, 202, 37, 255));
-    painter.drawPolygon(glow, std::size(glow));
-
-    polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
-  }
-  else  // vision status.
-  {
-    qreal centerX = x;
-    qreal centerY = y;
-    qreal radius = sz * 1.1;
-
-    const int numPoints = 6;  // 예시로 36개의 점을 사용하여 원을 근사
-    for (int i = 0; i < numPoints; ++i)
-    {
-        qreal angle = i * 2 * M_PI / numPoints;
-        qreal pointX = centerX + radius * qCos(angle);
-        qreal pointY = centerY + radius * qSin(angle);
-        polygonData.append(QPointF(pointX, pointY));
-    }
-  }
-  painter.setBrush(redColor(fillAlpha));
-  painter.drawPolygon(polygonData.data(), polygonData.size());
-  
-  QString  str;
-  str.sprintf("%.0f",d_rel); 
-  painter.setPen( QColor(0, 0, 0) );
-  painter.setFont( InterFont(30, QFont::Normal));
-  painter.drawText(QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), sz * 1.25), Qt::AlignCenter, str);
 
   painter.restore();
 }
