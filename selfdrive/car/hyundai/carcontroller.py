@@ -117,7 +117,7 @@ class CarController:
     can_sends = []
 
     # *** common hyundai stuff ***
-    self.avm_test( can_sends, CS )
+    #self.avm_test( can_sends, CS )
 
     # tester present - w/ no response (keeps relevant ECU disabled)
     if self.frame % 100 == 0 and not (self.CP.flags & HyundaiFlags.CANFD_CAMERA_SCC.value) and self.CP.openpilotLongitudinalControl:
