@@ -162,7 +162,11 @@ typedef struct UIScene {
   uint64_t started_frame;
 
   // #custom
-  int  m_powerflag = 0;
+  struct _CUSTOM
+  {
+    int  m_powerflag = 0;
+
+  } custom;
 } UIScene;
 
 class UIState : public QObject {
