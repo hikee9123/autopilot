@@ -637,7 +637,7 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
     qreal centerY = y;
     qreal radius = sz * 1.1;
 
-    const int numPoints = 12;  // 예시로 36개의 점을 사용하여 원을 근사
+    const int numPoints = 6;  // 예시로 36개의 점을 사용하여 원을 근사
     for (int i = 0; i < numPoints; ++i)
     {
         qreal angle = i * 2 * M_PI / numPoints;
