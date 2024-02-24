@@ -165,7 +165,7 @@ typedef struct UIScene {
   struct _CUSTOM
   {
     int  m_powerflag = 0;
-
+    float leadDistance;
   } custom;
 } UIScene;
 
