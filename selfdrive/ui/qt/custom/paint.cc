@@ -294,7 +294,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
       }
 
       szFont = 50;
-      rcText = QRect(x - (sz * 1.25), y - (sz*0.25), 2 * (sz * 1.25),  sz * 1.25 );
+      rcText = QRect(x - (sz * 1.25), y - (sz*0.4), 2 * (sz * 1.25),  sz * 1.25 );
       p.setBrush(QColor(218, 202, 37, 255));
       p.drawPolygon(polygonData.data(), polygonData.size());    
 
