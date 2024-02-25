@@ -43,7 +43,7 @@ public:
   void    updateState(const UIState &s);
   void    drawHud(QPainter &p);
   void    drawSpeed(QPainter &p, int x, QString speedStr, QString speedUnit );
-  void    drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd );
+  void    drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd, int w, int h );
 
 private:
   void    drawText1(QPainter &p, int x, int y, const QString &text, QColor qColor = QColor(255,255,255,255), int nAlign = Qt::AlignCenter  );
