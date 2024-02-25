@@ -270,7 +270,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
 
     float leadDistance = scene->custom.leadDistance;
     QVector<QPointF> polygonData;
-
+    int szFont = 30;
     QRect rcText;
     if( leadDistance < 150 ) // real radar State.
     {
@@ -291,6 +291,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
           polygonData.append( QPointF(pointX, pointY) );
       }
 
+      szFont = 50;
       rcText = QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), 2 * (sz * 1.25) );
       p.setBrush(QColor(218, 202, 37, 255));
       p.drawPolygon(polygonData.data(), polygonData.size());    
@@ -319,7 +320,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
     QString  str;
     str.sprintf("%.0f",d_rel); 
     p.setPen( QColor(0, 0, 0) );
-    p.setFont( InterFont(30, QFont::Normal));
+    p.setFont( InterFont(szFont, QFont::Normal));
     p.drawText(rcText, Qt::AlignCenter, str);
 }
 
