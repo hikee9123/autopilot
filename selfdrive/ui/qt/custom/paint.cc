@@ -278,7 +278,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
       qreal centerY = y;
       qreal radius = sz;// * 1.0;
 
-      currentAngle += 0.1;  // 필요에 따라 회전 속도 조절
+      currentAngle += 0.5;  // 필요에 따라 회전 속도 조절
       if (currentAngle >= 2 * M_PI)
           currentAngle -= 2 * M_PI;
       
