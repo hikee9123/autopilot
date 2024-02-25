@@ -619,7 +619,7 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
 */
 
   // #custom
-  m_pPaint->drawLead( painter, lead_data, vd );
+  m_pPaint->drawLead( painter, lead_data, vd, width(),  height() );
 
 
   painter.restore();

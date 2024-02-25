@@ -243,7 +243,7 @@ void OnPaint::updateState(const UIState &s)
 }
 
 
-void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd)
+void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd, int width, int height )
 {
     const float speedBuff = 10.;
     const float leadBuff = 40.;
@@ -260,8 +260,8 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
     }
 
     float sz = std::clamp((25 * 30) / (d_rel / 3 + 30), 15.0f, 30.0f) * 2.35;
-    float x = std::clamp((float)vd.x(), 0.f, width() - sz / 2);
-    float y = std::fmin(height() - sz * .6, (float)vd.y());
+    float x = std::clamp((float)vd.x(), 0.f, width - sz / 2);
+    float y = std::fmin(height - sz * .6, (float)vd.y());
 
     float g_xo = sz / 5;
     float g_yo = sz / 10;
@@ -277,6 +277,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
       p.drawPolygon(glow, std::size(glow));
 
       polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+  
     }
     else  // vision status.
     {
@@ -288,27 +289,15 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
       if (currentAngle >= 2 * M_PI)
           currentAngle -= 2 * M_PI;
 
-      //p.setBrush(Qt::NoBrush);  // 내부 색상 없이 설정
-      //p.setPen(QPen(Qt::black, 2));  // 외곽선 색상과 두께 설정
-
-      QConicalGradient gradient;
-      gradient.setCenter( centerX, centerY);
-      gradient.setAngle(currentAngle);
+      QLinearGradient  gradient;
       gradient.setColorAt(0, QColor(255, 255, 0, 255));
-      gradient.setColorAt(1, QColor(60, 0, 0, 50));
+      gradient.setColorAt(1, QColor(60, 0, 0, 100));
 
       QPen pen(QBrush(gradient), 5);
       pen.setCapStyle(Qt::RoundCap);
       p.setPen( pen );
-
-      /*
-      int nStart = currentAngle;  // 시작 각도 예시
-      int nEnd = currentAngle + 270;    // 호의 각도 예시
-      nEnd %= 360;
-      p.drawArc(centerX, centerY, radius, radius, nStart, nEnd );
-      */
       
-      const int numPoints = 6;  // 예시로 36개의 점을 사용하여 원을 근사
+      const int numPoints = 12;  // 예시로 36개의 점을 사용하여 원을 근사
       for (int i = 0; i < numPoints; ++i)
       {
           qreal angle = i * 2 * M_PI / numPoints;
@@ -319,7 +308,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
       
     }
     p.setBrush(redColor(fillAlpha));
-    p.drawPolygon(polygonData.data(), polygonData.size());
+    p.drawPolygon(polygonData.data(), polygonData.size());    
     
     QString  str;
     str.sprintf("%.0f",d_rel); 
