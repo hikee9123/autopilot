@@ -311,8 +311,8 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
 
     if (!polygonData.isEmpty()) {
         QPointF start = polygonData[0];
-        p.setBrush(Qt::red);    
-        p.drawEllipse(start, 5, 5);
+        p.setBrush( QColor(fillAlpha, 255-fillAlpha, 0) );    
+        p.drawEllipse(start, 8, 8);
     }
 
 
