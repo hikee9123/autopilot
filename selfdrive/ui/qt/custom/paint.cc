@@ -272,30 +272,13 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
     QVector<QPointF> polygonData;
     if( leadDistance < 150 ) // real radar State.
     {
-      QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
-      p.setBrush(QColor(218, 202, 37, 255));
-      p.drawPolygon(glow, std::size(glow));
-
-      polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
-  
-    }
-    else  // vision status.
-    {
       qreal centerX = x;
       qreal centerY = y;
-      qreal radius = sz * 1.1;
+      qreal radius = sz * 1.0;
 
       currentAngle += 0.01;  // 필요에 따라 회전 속도 조절
       if (currentAngle >= 2 * M_PI)
           currentAngle -= 2 * M_PI;
-
-      QLinearGradient  gradient;
-      gradient.setColorAt(0, QColor(255, 0, 0));
-      gradient.setColorAt(1, QColor(0, 0, 255));
-
-      QPen pen(QBrush(gradient), 5);
-      pen.setCapStyle(Qt::RoundCap);
-      p.setPen( pen );
       
       const int numPoints = 12;  // 예시로 36개의 점을 사용하여 원을 근사
       for (int i = 0; i < numPoints; ++i)
@@ -305,11 +288,26 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
           qreal pointY = centerY + radius * qSin(angle + currentAngle);
           polygonData.append( QPointF(pointX, pointY) );
       }
-      
+    }
+    else  // vision status.
+    {
+      QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
+      p.setBrush(QColor(218, 202, 37, 255));
+      p.drawPolygon(glow, std::size(glow));
+
+      polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
     }
     p.setBrush(redColor(fillAlpha));
     p.drawPolygon(polygonData.data(), polygonData.size());    
     
+
+    if (!polygonData.isEmpty()) {
+        QPointF start = polygonData[0];
+        p.setBrush(Qt::red);    
+        p.drawEllipse(start, 5, 5);
+    }
+
+
     QString  str;
     str.sprintf("%.0f",d_rel); 
     p.setPen( QColor(0, 0, 0) );
