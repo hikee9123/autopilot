@@ -270,6 +270,8 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
 
     float leadDistance = scene->custom.leadDistance;
     QVector<QPointF> polygonData;
+
+    QRect rcText;
     if( leadDistance < 150 ) // real radar State.
     {
       qreal centerX = x;
@@ -288,6 +290,11 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
           qreal pointY = centerY + radius * qSin(angle + currentAngle);
           polygonData.append( QPointF(pointX, pointY) );
       }
+
+      rcText = QRect(x - radius, y - radius, x + radius, y + radius );
+      p.setBrush(QColor(218, 202, 37, 255));
+      p.drawPolygon(polygonData.data(), polygonData.size());    
+
     }
     else  // vision status.
     {
@@ -295,6 +302,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
       p.setBrush(QColor(218, 202, 37, 255));
       p.drawPolygon(glow, std::size(glow));
 
+      rcText = QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), sz * 1.25);
       polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
     }
     p.setBrush(redColor(fillAlpha));
