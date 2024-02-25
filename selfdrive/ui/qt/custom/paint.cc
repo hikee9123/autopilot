@@ -271,12 +271,14 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
     float leadDistance = scene->custom.leadDistance;
     QVector<QPointF> polygonData;
     int szFont = 30;
+    int szPoint = 0;
     QRect rcText;
     if( leadDistance < 150 ) // real radar State.
     {
       qreal centerX = x;
       qreal centerY = y;
       qreal radius = sz;// * 1.0;
+      szPoint = 8;
 
       currentAngle += 0.1;  // 필요에 따라 회전 속도 조절
       if (currentAngle >= 2 * M_PI)
@@ -292,7 +294,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
       }
 
       szFont = 50;
-      rcText = QRect(x - (sz * 1.25), y, 2 * (sz * 1.25),  sz *0.5 );
+      rcText = QRect(x - (sz * 1.25), y - (sz * 1.25), 2 * (sz * 1.25),  sz );
       p.setBrush(QColor(218, 202, 37, 255));
       p.drawPolygon(polygonData.data(), polygonData.size());    
 
@@ -310,10 +312,10 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
     p.drawPolygon(polygonData.data(), polygonData.size());    
     
 
-    if (!polygonData.isEmpty()) {
+    if ( szPoint && !polygonData.isEmpty()) {
         QPointF start = polygonData[0];
         p.setBrush( QColor( 255 - fillAlpha,  fillAlpha, 0) );    
-        p.drawEllipse(start, 8, 8);
+        p.drawEllipse(start, szPoint, szPoint);
     }
 
 
