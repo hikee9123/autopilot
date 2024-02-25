@@ -276,7 +276,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
     {
       qreal centerX = x;
       qreal centerY = y;
-      qreal radius = sz * 1.0;
+      qreal radius = sz;// * 1.0;
 
       currentAngle += 0.1;  // 필요에 따라 회전 속도 조절
       if (currentAngle >= 2 * M_PI)
@@ -291,7 +291,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
           polygonData.append( QPointF(pointX, pointY) );
       }
 
-      rcText = QRect(x - radius, y - radius, x + radius, y + radius );
+      rcText = QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), 2 * (sz * 1.25) );
       p.setBrush(QColor(218, 202, 37, 255));
       p.drawPolygon(polygonData.data(), polygonData.size());    
 
@@ -320,7 +320,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
     str.sprintf("%.0f",d_rel); 
     p.setPen( QColor(0, 0, 0) );
     p.setFont( InterFont(30, QFont::Normal));
-    p.drawText(QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), sz * 1.25), Qt::AlignCenter, str);
+    p.drawText(rcText, Qt::AlignCenter, str);
 }
 
 void OnPaint::drawHud(QPainter &p)
