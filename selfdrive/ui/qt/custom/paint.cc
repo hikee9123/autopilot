@@ -292,7 +292,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
       }
 
       szFont = 50;
-      rcText = QRect(x - (sz * 1.25), y, 2 * (sz * 1.25),  sz );
+      rcText = QRect(x - (sz * 1.25), y, 2 * (sz * 1.25),  sz *0.5 );
       p.setBrush(QColor(218, 202, 37, 255));
       p.drawPolygon(polygonData.data(), polygonData.size());    
 
@@ -312,7 +312,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
 
     if (!polygonData.isEmpty()) {
         QPointF start = polygonData[0];
-        p.setBrush( QColor(fillAlpha, 255-fillAlpha, 0) );    
+        p.setBrush( QColor( 255 - fillAlpha,  fillAlpha, 0) );    
         p.drawEllipse(start, 8, 8);
     }
 
