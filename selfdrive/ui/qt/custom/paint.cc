@@ -290,8 +290,8 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
           currentAngle -= 2 * M_PI;
 
       QLinearGradient  gradient;
-      gradient.setColorAt(0, QColor(255, 255, 0, 255));
-      gradient.setColorAt(1, QColor(60, 0, 0, 100));
+      gradient.setColorAt(0, QColor(255, 0, 0));
+      gradient.setColorAt(1, QColor(0, 0, 255));
 
       QPen pen(QBrush(gradient), 5);
       pen.setCapStyle(Qt::RoundCap);
