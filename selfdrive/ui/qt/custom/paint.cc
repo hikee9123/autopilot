@@ -149,6 +149,8 @@ void OnPaint::updateState(const UIState &s)
   SubMaster &sm1 = *(s.sm);  
   SubMaster &sm2 = *(m_sm);
 
+
+
   if ( (sm1.frame % UI_FREQ) != 0 ) 
       sm2.update(0);
 
@@ -199,6 +201,7 @@ void OnPaint::updateState(const UIState &s)
   alert.alertTextMsg3 = carState_custom.getAlertTextMsg3();    
   m_param.electGearStep  = carState_custom.getElectGearStep();
   m_param.breakPos = carState_custom.getBreakPos();
+  scene->custom.leadDistance = carState_custom.getLeadDistance();
 
 
   // 2.
@@ -239,6 +242,89 @@ void OnPaint::updateState(const UIState &s)
   }
 }
 
+
+void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd, int width, int height )
+{
+    const float speedBuff = 10.;
+    const float leadBuff = 40.;
+    const float d_rel = lead_data.getDRel();
+    const float v_rel = lead_data.getVRel();
+
+    float fillAlpha = 0;
+    if (d_rel < leadBuff) {
+      fillAlpha = 255 * (1.0 - (d_rel / leadBuff));
+      if (v_rel < 0) {
+        fillAlpha += 255 * (-1 * (v_rel / speedBuff));
+      }
+      fillAlpha = (int)(fmin(fillAlpha, 255));
+    }
+
+    float sz = std::clamp((25 * 30) / (d_rel / 3 + 30), 15.0f, 30.0f) * 2.35;
+    float x = std::clamp((float)vd.x(), 0.f, width - sz / 2);
+    float y = std::fmin(height - sz * .6, (float)vd.y());
+
+    float g_xo = sz / 5;
+    float g_yo = sz / 10;
+
+
+
+    float leadDistance = scene->custom.leadDistance;
+    QVector<QPointF> polygonData;
+    int szFont = 30;
+    int szPoint = 0;
+    QRect rcText;
+    if( leadDistance < 150  ) // real radar State.
+    {
+      qreal centerX = x;
+      qreal centerY = y;
+      qreal radius = sz;// * 1.0;
+      szPoint = 8;
+
+      currentAngle += 0.1;  // 필요에 따라 회전 속도 조절
+      if (currentAngle >= 2 * M_PI)
+          currentAngle -= 2 * M_PI;
+      
+      const int numPoints = 12;  // 예시로 36개의 점을 사용하여 원을 근사
+      for (int i = 0; i < numPoints; ++i)
+      {
+          qreal angle = i * 2 * M_PI / numPoints;
+          qreal pointX = centerX + radius * qCos(angle + currentAngle);
+          qreal pointY = centerY + radius * qSin(angle + currentAngle);
+          polygonData.append( QPointF(pointX, pointY) );
+      }
+
+      szFont = 50;
+      rcText = QRect(x - (sz * 1.25), y - (sz*0.45), 2 * (sz * 1.25),  sz );
+      p.setBrush(QColor(218, 202, 37, 255));
+      p.drawPolygon(polygonData.data(), polygonData.size());    
+
+    }
+    else  // vision status.
+    {
+      QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
+      p.setBrush(QColor(218, 202, 37, 255));
+      p.drawPolygon(glow, std::size(glow));
+
+      rcText = QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), sz * 1.25);
+      polygonData = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+    }
+    p.setBrush(redColor(fillAlpha));
+    p.drawPolygon(polygonData.data(), polygonData.size());    
+    
+
+    if ( szPoint && !polygonData.isEmpty()) {
+        QPointF start = polygonData[0];
+        p.setBrush( QColor( 255 - fillAlpha,  fillAlpha, 0) );    
+        p.drawEllipse(start, szPoint, szPoint);
+    }
+
+
+    QString  str;
+    str.sprintf("%.0f",d_rel); 
+    p.setPen( QColor(0, 0, 0) );
+    p.setFont( InterFont(szFont, QFont::Normal));
+    p.drawText(rcText, Qt::AlignCenter, str);
+}
 
 void OnPaint::drawHud(QPainter &p)
 {
@@ -450,7 +536,7 @@ void OnPaint::ui_main_debug(QPainter &p)
 
     p.setFont(InterFont(38));
     p.setPen( QColor(255, 255, 255, 255) );
-    text.sprintf("PS=%d  lag=%3.0f ", m_param.controlsAllowed, m_param.cumLagMs  );    
+    text.sprintf("PS=%d,%d  lag=%3.0f ", m_param.controlsAllowed, scene->custom.m_powerflag, m_param.cumLagMs  );    
     p.drawText( bb_x, bb_y+nGap, text );
   }
 }

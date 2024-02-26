@@ -21,6 +21,7 @@ struct CarStateCustom @0x81c2f05a394cf4af {
   supportedCars @5 :List(Text);
 
   breakPos @6 :Float32;
+  leadDistance @7 :Float32;
 
   struct Tpms {
     unit @0 :Int16;

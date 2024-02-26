@@ -208,6 +208,7 @@ class CarStateCustom():
         cp.vl["TPMS11"]["PRESSURE_RR"],
       )
 
+      carStatus.leadDistance = self.lead_distance
       carStatus.breakPos = self.brakePos
       carStatus.supportedCars = self.cars
       carStatus.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr

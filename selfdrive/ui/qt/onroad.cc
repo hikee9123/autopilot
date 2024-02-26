@@ -586,6 +586,7 @@ void AnnotatedCameraWidget::drawDriverState(QPainter &painter, const UIState *s)
 void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd) {
   painter.save();
 
+/*
   const float speedBuff = 10.;
   const float leadBuff = 40.;
   const float d_rel = lead_data.getDRel();
@@ -615,14 +616,11 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
   painter.setBrush(redColor(fillAlpha));
   painter.drawPolygon(chevron, std::size(chevron));
-
+*/
 
   // #custom
-  QString  str;
-  str.sprintf("%.0f",d_rel); 
-  painter.setPen( QColor(0, 0, 0) );
-  painter.setFont( InterFont(28, QFont::Normal));
-  painter.drawText(QRect(x - (sz * 1.25), y, 2 * (sz * 1.25), sz * 1.25), Qt::AlignCenter, str);
+  m_pPaint->drawLead( painter, lead_data, vd, width(),  height() );
+
 
   painter.restore();
 }

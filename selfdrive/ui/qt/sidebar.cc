@@ -63,7 +63,6 @@ void Sidebar::mouseReleaseEvent(QMouseEvent *event) {
     auto userFlag = msg.initEvent().initUserFlag();
     m_pSideBar->mouseReleaseEvent( event, userFlag );    
     pm->send("userFlag", msg);
-
   } else if (settings_btn.contains(event->pos())) {
     emit openSettings();
   }

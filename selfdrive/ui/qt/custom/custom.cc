@@ -297,7 +297,7 @@ void CustomPanel::OnTimer()
     const auto car_state = sm2["carState"].getCarState();
     float vEgo = car_state.getVEgo();
     if( vEgo > 10 )
-       scene.m_powerflag = 1; 
+       scene.custom.m_powerflag = 1; 
   }
   else
   {
@@ -307,9 +307,9 @@ void CustomPanel::OnTimer()
     }
 
     int PowerOff = m_jsonobj["PowerOff"].toInt();
-    if( PowerOff && (m_time > (PowerOff*10)) && (scene.m_powerflag==1) )
+    if( PowerOff && (m_time > (PowerOff*10)) && (scene.custom.m_powerflag) )
     {
-         scene.m_powerflag = 0;
+         scene.custom.m_powerflag = 0;
          params.putBool("DoShutdown", true);
     }
   }
