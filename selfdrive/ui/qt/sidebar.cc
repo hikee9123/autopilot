@@ -61,6 +61,8 @@ void Sidebar::mouseReleaseEvent(QMouseEvent *event) {
   if (home_btn.contains(event->pos())) {
     MessageBuilder msg;
     auto userFlag = msg.initEvent().initUserFlag();
+
+    // #custom
     m_pSideBar->mouseReleaseEvent( event, userFlag );    
     pm->send("userFlag", msg);
   } else if (settings_btn.contains(event->pos())) {
