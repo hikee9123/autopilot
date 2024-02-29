@@ -166,7 +166,7 @@ void OnPaint::updateState(const UIState &s)
 
   // 1.
   auto gps_ext = sm2["gpsLocationExternal"].getGpsLocationExternal();
-  m_param.gpsAccuracyUblox = 0;// gps_ext.getAccuracy();
+  m_param.gpsAccuracyUblox = gps_ext.getHorizontalAccuracy();
   m_param.altitudeUblox = gps_ext.getAltitude(); 
 
   // 1.
