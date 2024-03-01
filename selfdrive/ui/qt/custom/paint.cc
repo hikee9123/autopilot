@@ -811,7 +811,10 @@ void OnPaint::bb_ui_draw_measures_right( QPainter &p, int bb_x, int bb_y, int bb
     nCnt++;
     if( nCnt > 4 ) return;    
     QColor val_color = QColor(255, 255, 255, 200);
-
+    if( m_param.cumLagMs  < 10 )
+      val_color = QColor(0, 255, 0, 200);
+    else if( m_param.cumLagMs  > 100 )
+      val_color = QColor(255, 0, 0, 200);
 
     val_str.sprintf("%3.0f", m_param.cumLagMs );
     uom_str = "ms";
