@@ -806,6 +806,23 @@ void OnPaint::bb_ui_draw_measures_right( QPainter &p, int bb_x, int bb_y, int bb
 
         
 
+  if( m_param.ui.getKegmanLag() )
+  {
+    nCnt++;
+    if( nCnt > 4 ) return;    
+    QColor val_color = QColor(255, 255, 255, 200);
+
+
+    val_str.sprintf("%3.0f", m_param.cumLagMs );
+    uom_str = "ms";
+    bb_h +=bb_ui_draw_measure(p,  val_str, uom_str, "Lag",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+
+
    //add battery voltage
    lab_color = QColor(255, 255, 255, 200);
   if( m_param.ui.getKegmanBattery() )

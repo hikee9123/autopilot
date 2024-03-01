@@ -88,7 +88,8 @@ struct UICustom @0xda96579883444c35 {
        kegmanAngle @9 :Int16;
        kegmanEngine @10 :Int16;
        kegmanDistance @11 :Int16;
-       kegmanSpeed @12 :Int16;    
+       kegmanSpeed @12 :Int16;   
+       kegmanLag @13 :Int16; 
     }
 
     struct Debug
