@@ -769,8 +769,6 @@ UITab::UITab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent), m_
       "",
       //"../assets/offroad/icon_shell.png",
     },
-
-    
     {
       "kegmanBattery",
       " - battery voltage",
