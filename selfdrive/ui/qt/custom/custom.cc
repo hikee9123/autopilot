@@ -361,7 +361,7 @@ void CustomPanel::updateToggles( int bSave )
   int kegmanEngine = m_jsonobj["kegmanEngine"].toBool();
   int kegmanDistance = m_jsonobj["kegmanDistance"].toBool();
   int kegmanSpeed = m_jsonobj["kegmanSpeed"].toBool();
-  int kegmanLag = m_Jsonobj["kegmanLag"].toBool();
+  int kegmanLag = m_jsonobj["kegmanLag"].toBool();
 
 
   ui.setCmdIdx( m_cmdIdx );  
