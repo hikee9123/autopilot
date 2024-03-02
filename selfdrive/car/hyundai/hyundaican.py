@@ -154,7 +154,7 @@ def create_acc_commands(packer, enabled, accel, upper_jerk, idx, lead_visible, s
   # these signals also prevent a TCS fault on non-FCA cars with alpha longitudinal
   if not use_fca:
     scc12_values["CF_VSM_ConfMode"] = 1
-    scc12_values["AEB_Status"] = 0  # 1  # AEB disabled
+    scc12_values["AEB_Status"] = 1  # 1  # AEB disabled
 
   scc12_dat = packer.make_can_msg("SCC12", 0, scc12_values)[2]
   scc12_values["CR_VSM_ChkSum"] = 0x10 - sum(sum(divmod(i, 16)) for i in scc12_dat) % 0x10
