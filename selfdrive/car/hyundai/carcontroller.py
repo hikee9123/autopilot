@@ -11,7 +11,7 @@ from openpilot.selfdrive.car.interfaces import CarControllerBase
 
 
 from openpilot.selfdrive.car.hyundai.custom.carcontroller import CarControllerCustom   #custom
-
+import openpilot.selfdrive.custom.loger as  trace1
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 LongCtrlState = car.CarControl.Actuators.LongControlState
@@ -173,6 +173,9 @@ class CarController(CarControllerBase):
       # 2 Hz front radar options
       if self.frame % 50 == 0 and self.CP.openpilotLongitudinalControl:
         can_sends.append(hyundaican.create_frt_radar_opt(self.packer))
+
+    trace1.printf2( 'L={:.3f},{:.3f}'.format( accel, jerk ) )
+
 
     new_actuators = actuators.copy()
     new_actuators.steer = apply_steer / self.params.STEER_MAX
