@@ -62,6 +62,12 @@ class CarStateCustom():
       ("LFAHDA_MFC", 20),          
     ]
 
+    if CP.openpilotLongitudinalControl:
+      messages += [
+      ("SCC11", 50),
+      ("SCC12", 50),
+      ]   
+
   def cruise_control_mode( self ):
     cruise_buttons = self.CS.prev_cruise_buttons
     if cruise_buttons == self.cruise_buttons_old:
@@ -136,13 +142,13 @@ class CarStateCustom():
       mainMode_ACC = cp.vl["TCS13"]["ACCEnable"] == 0
       ACC_Mode = cp.vl["TCS13"]["ACC_REQ"] == 1
       self.lead_distance = 0
+      self.VSetDis = 0      
       self.gapSet = 4
-      self.VSetDis = 0
     else:
       mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
       ACC_Mode = cp_cruise.vl["SCC12"]["ACCMode"] != 0
-      self.lead_distance = cp.vl["SCC11"]["ACC_ObjDist"]
-      self.gapSet = cp.vl["SCC11"]['TauGapSet']
+      self.lead_distance = cp_cruise.vl["SCC11"]["ACC_ObjDist"]
+      self.gapSet = cp_cruise.vl["SCC11"]['TauGapSet']
       self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.        
   
     if not mainMode_ACC:
@@ -229,5 +235,9 @@ class CarStateCustom():
 
       #log
       trace1.printf1( 'MD={:.0f}'.format( self.control_mode ) )
-      trace1.printf2( 'LS={:.0f}'.format( CS.lkas11["CF_Lkas_LdwsSysState"] ) )   
+      trace1.printf2( 'LS={:.0f}'.format( CS.lkas11["CF_Lkas_LdwsSysState"] ) )
 
+      if self.CP.openpilotLongitudinalControl:
+        self.scc11 = copy.copy(cp_cam.vl["SCC11"])
+        trace1.printf3( 'S1={:.0f},{:.0f},{:.0f} / T1={:.0f},{:.0f}'.format( self.scc11["MainMode_ACC"], self.scc11["SCCInfoDisplay"], self.scc11["VSetDis"], 
+                                                                          cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"] ) )
