@@ -62,12 +62,13 @@ class CarStateCustom():
       ("LFAHDA_MFC", 20),          
     ]
 
+    """
     if CP.openpilotLongitudinalControl:
       messages += [
       ("SCC11", 50),
       ("SCC12", 50),
       ]   
-
+    """
 
   def cruise_control_mode( self ):
     cruise_buttons = self.CS.prev_cruise_buttons
@@ -237,11 +238,7 @@ class CarStateCustom():
       #log
       trace1.printf1( 'MD={:.0f},{:.0f}'.format( self.control_mode,CS.lkas11["CF_Lkas_LdwsSysState"] ) )
       if self.CP.openpilotLongitudinalControl:
-        self.scc11 = copy.copy(cp_cam.vl["SCC11"])
-        trace1.printf2( 'RV={:.3f}'.format( cp_cam.vl["SCC12"]["aReqValue"] ) ) 
-        trace1.printf3( 'S={:.0f},{:.0f} T={:.0f},{:.0f} V={:.0f},{:.0f},{:.0f}'.format(
-           self.scc11["MainMode_ACC"], cp_cam.vl["SCC12"]["ACCMode"], 
-           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"],
-           self.scc11["SCCInfoDisplay"], self.scc11["VSetDis"], self.scc11["ACC_ObjDist"], 
+        trace1.printf3( 'T={:.0f},{:.0f}'.format(
+           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
         ))
 
