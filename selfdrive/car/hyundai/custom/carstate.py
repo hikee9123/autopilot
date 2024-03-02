@@ -132,8 +132,13 @@ class CarStateCustom():
 
 
   def update(self, ret, CS,  cp, cp_cruise, cp_cam ):
-    mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
-    ACC_Mode = cp_cruise.vl["SCC12"]["ACCMode"] != 0
+    if self.CP.openpilotLongitudinalControl:
+      mainMode_ACC = cp.vl["TCS13"]["ACCEnable"] == 0
+      ACC_Mode = cp.vl["TCS13"]["ACC_REQ"] == 1
+    else:
+      mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
+      ACC_Mode = cp_cruise.vl["SCC12"]["ACCMode"] != 0
+  
     if not mainMode_ACC:
       self.cruise_control_mode()
 
