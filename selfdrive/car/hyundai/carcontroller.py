@@ -159,6 +159,7 @@ class CarController(CarControllerBase):
         can_sends.extend(hyundaican.create_acc_commands(self.packer, CC.enabled, accel, jerk, int(self.frame / 2),
                                                         hud_control.leadVisible, set_speed_in_units, stopping,
                                                         CC.cruiseControl.override, use_fca))
+        trace1.printf2( 'L={:.3f},{:.3f}'.format( accel, jerk ) )
 
       #custom
       # 20 Hz LFA MFA message
@@ -174,7 +175,6 @@ class CarController(CarControllerBase):
       if self.frame % 50 == 0 and self.CP.openpilotLongitudinalControl:
         can_sends.append(hyundaican.create_frt_radar_opt(self.packer))
 
-    trace1.printf2( 'L={:.3f},{:.3f}'.format( accel, jerk ) )
 
 
     new_actuators = actuators.copy()
