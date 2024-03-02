@@ -240,4 +240,4 @@ class CarStateCustom():
       if self.CP.openpilotLongitudinalControl:
         self.scc11 = copy.copy(cp_cam.vl["SCC11"])
         trace1.printf3( 'S1={:.0f},{:.0f},{:.0f} / T1={:.0f},{:.0f}'.format( self.scc11["MainMode_ACC"], self.scc11["SCCInfoDisplay"], self.scc11["VSetDis"], 
-                                                                          cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"] ) )
+                                                                               cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"] ) )
