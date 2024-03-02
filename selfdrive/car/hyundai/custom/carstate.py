@@ -135,13 +135,18 @@ class CarStateCustom():
     if self.CP.openpilotLongitudinalControl:
       mainMode_ACC = cp.vl["TCS13"]["ACCEnable"] == 0
       ACC_Mode = cp.vl["TCS13"]["ACC_REQ"] == 1
+      self.lead_distance = 0
+      self.gapSet = 4
+      self.VSetDis = 0
     else:
       mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
       ACC_Mode = cp_cruise.vl["SCC12"]["ACCMode"] != 0
+      self.lead_distance = cp.vl["SCC11"]["ACC_ObjDist"]
+      self.gapSet = cp.vl["SCC11"]['TauGapSet']
+      self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.        
   
     if not mainMode_ACC:
       self.cruise_control_mode()
-
 
     # save the entire LFAHDA_MFC
     self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
@@ -155,12 +160,8 @@ class CarStateCustom():
 
     ret.engineRpm = cp.vl["E_EMS11"]["N"] # opkr
     ret.brakeLightsDEPRECATED = bool( cp.vl["TCS13"]['BrakeLight'] )
-
     self.brakePos = cp.vl["E_EMS11"]["Brake_Pedal_Pos"] 
     self.is_highway = self.lfahda["HDA_Icon_State"] != 0.
-    self.lead_distance = cp.vl["SCC11"]["ACC_ObjDist"]
-    self.gapSet = cp.vl["SCC11"]['TauGapSet']
-    self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.    
     self.clu_Vanz = cp.vl["CLU11"]["CF_Clu_Vanz"]     # kph  현재 차량의 속도.
     
     if not self.CP.openpilotLongitudinalControl:

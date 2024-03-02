@@ -273,7 +273,7 @@ void OnPaint::drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &
     int szFont = 30;
     int szPoint = 0;
     QRect rcText;
-    if( leadDistance < 150  ) // real radar State.
+    if( leadDistance && leadDistance < 150  ) // real radar State.
     {
       qreal centerX = x;
       qreal centerY = y;
