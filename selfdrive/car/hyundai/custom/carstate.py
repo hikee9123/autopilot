@@ -55,11 +55,6 @@ class CarStateCustom():
       ("TPMS11", 5),
     ]
 
-    if CP.openpilotLongitudinalControl:
-      messages += [
-      ("SCC11", 50),
-      ("SCC12", 50),
-      ]   
 
   @staticmethod
   def get_cam_can_parser( messages, CP ):
@@ -67,6 +62,11 @@ class CarStateCustom():
       ("LFAHDA_MFC", 20),          
     ]
 
+    if CP.openpilotLongitudinalControl:
+      messages += [
+      ("SCC11", 50),
+      ("SCC12", 50),
+      ]   
 
 
   def cruise_control_mode( self ):
@@ -236,12 +236,11 @@ class CarStateCustom():
 
       #log
       trace1.printf1( 'MD={:.0f},{:.0f}'.format( self.control_mode,CS.lkas11["CF_Lkas_LdwsSysState"] ) )
-      trace1.printf2( 'RV={:.3f}'.format( cp_cruise.vl["SCC12"]["aReqValue"] ) ) 
       if self.CP.openpilotLongitudinalControl:
-        self.scc11 = copy.copy(cp_cruise.vl["SCC11"])
-      
+        self.scc11 = copy.copy(cp_cam.vl["SCC11"])
+        trace1.printf2( 'RV={:.3f}'.format( cp_cam.vl["SCC12"]["aReqValue"] ) ) 
         trace1.printf3( 'S={:.0f},{:.0f} T={:.0f},{:.0f} V={:.0f},{:.0f},{:.0f}'.format(
-           self.scc11["MainMode_ACC"], cp_cruise.vl["SCC12"]["ACCMode"], 
+           self.scc11["MainMode_ACC"], cp_cam.vl["SCC12"]["ACCMode"], 
            cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"],
            self.scc11["SCCInfoDisplay"], self.scc11["VSetDis"], self.scc11["ACC_ObjDist"], 
         ))
