@@ -536,7 +536,7 @@ void OnPaint::ui_main_debug(QPainter &p)
 
     p.setFont(InterFont(38));
     p.setPen( QColor(255, 255, 255, 255) );
-    text.sprintf("PS=%d,%d  lag=%3.0f ", m_param.controlsAllowed, scene->custom.m_powerflag, m_param.cumLagMs  );    
+    text.sprintf("PS=%d", m_param.controlsAllowed  );    
     p.drawText( bb_x, bb_y+nGap, text );
   }
 }
