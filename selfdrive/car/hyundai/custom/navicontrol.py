@@ -247,9 +247,7 @@ class NaviControl():
       if self.cruise_set_mode:
         self.ctrl_speed = self.auto_speed_control( c, CS, self.ctrl_speed )
  
-      btn_signal = self.ascc_button_control( CS, self.ctrl_speed )
+      if not self.CP.openpilotLongitudinalControl:
+        btn_signal = self.ascc_button_control( CS, self.ctrl_speed )
 
-
-   
-    
     return btn_signal

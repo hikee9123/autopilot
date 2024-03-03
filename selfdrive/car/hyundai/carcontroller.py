@@ -154,21 +154,15 @@ class CarController(CarControllerBase):
 
       if self.frame % 2 == 0 and self.CP.openpilotLongitudinalControl:
         # TODO: unclear if this is needed
-        jerk = 2.0 if actuators.longControlState == LongCtrlState.pid else 1.0
+        jerk = 3.0 if actuators.longControlState == LongCtrlState.pid else 1.0
 
-        delta_speed = set_speed_in_units - CS.cluster_speed
-        if abs(delta_speed) < 10:
-          jerk = 1
-
-        if delta_speed < 0 and accel > 0:
-          accel = 0
-
+        _a, _j, speed = self.customCC.acc_command( accel, jerk, set_speed_in_units, CC, CS, self.frame )
 
         use_fca = self.CP.flags & HyundaiFlags.USE_FCA.value
         can_sends.extend(hyundaican.create_acc_commands(self.packer, CC.enabled, accel, jerk, int(self.frame / 2),
                                                         hud_control.leadVisible, set_speed_in_units, stopping,
                                                         CC.cruiseControl.override, use_fca))
-        trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, set_speed_in_units,  CS.cluster_speed ) )
+        trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, speed,  CS.cluster_speed ) )
 
       #custom
       # 20 Hz LFA MFA message

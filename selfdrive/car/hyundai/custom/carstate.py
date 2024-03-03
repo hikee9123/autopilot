@@ -142,29 +142,28 @@ class CarStateCustom():
   def update(self, ret, CS,  cp, cp_cruise, cp_cam ):
     if self.CP.openpilotLongitudinalControl:
       mainMode_ACC = cp.vl["TCS13"]["ACCEnable"] == 0
-      ACC_Mode = cp.vl["TCS13"]["ACC_REQ"] == 1
+      self.acc_active = cp.vl["TCS13"]["ACC_REQ"] == 1
       self.lead_distance = 0
       self.VSetDis = 0      
       self.gapSet = 4
     else:
       mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
-      ACC_Mode = cp_cruise.vl["SCC12"]["ACCMode"] != 0
-      self.lead_distance = cp_cruise.vl["SCC11"]["ACC_ObjDist"]
-      self.gapSet = cp_cruise.vl["SCC11"]['TauGapSet']
-      self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.        
-  
-    if not mainMode_ACC:
-      self.cruise_control_mode()
-
-    # save the entire LFAHDA_MFC
-    self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
-    self.mdps12 = copy.copy(cp.vl["MDPS12"])
-    if not self.CP.openpilotLongitudinalControl:
       self.acc_active = (cp_cruise.vl["SCC12"]['ACCMode'] != 0)
       if self.acc_active:
         ret.cruiseState.speed = self.cruise_speed_button() * CV.KPH_TO_MS
       else:
         ret.cruiseState.speed = 0
+
+      self.lead_distance = cp_cruise.vl["SCC11"]["ACC_ObjDist"]
+      self.gapSet = cp_cruise.vl["SCC11"]['TauGapSet']
+      self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.        
+  
+    if not (mainMode_ACC or self.acc_active):
+      self.cruise_control_mode()
+
+    # save the entire LFAHDA_MFC
+    self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
+    self.mdps12 = copy.copy(cp.vl["MDPS12"])
 
     ret.engineRpm = cp.vl["E_EMS11"]["N"] # opkr
     ret.brakeLightsDEPRECATED = bool( cp.vl["TCS13"]['BrakeLight'] )
@@ -175,7 +174,7 @@ class CarStateCustom():
     if not self.CP.openpilotLongitudinalControl:
       if not (CS.CP.alternativeExperience & ALTERNATIVE_EXPERIENCE.DISABLE_DISENGAGE_ON_GAS):
         pass
-      elif ACC_Mode:
+      elif self.acc_active:
         pass
       elif ret.parkingBrake:
         self.timer_engaged = 100
