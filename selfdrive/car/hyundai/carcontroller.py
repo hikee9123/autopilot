@@ -156,7 +156,7 @@ class CarController(CarControllerBase):
         # TODO: unclear if this is needed
         jerk = 2.0 if actuators.longControlState == LongCtrlState.pid else 1.0
 
-        delta_speed = set_speed_in_units - CS.vEgoCluster
+        delta_speed = set_speed_in_units - CS.cluster_speed
         if abs(delta_speed) < 10:
           jerk = 1
 
@@ -168,7 +168,7 @@ class CarController(CarControllerBase):
         can_sends.extend(hyundaican.create_acc_commands(self.packer, CC.enabled, accel, jerk, int(self.frame / 2),
                                                         hud_control.leadVisible, set_speed_in_units, stopping,
                                                         CC.cruiseControl.override, use_fca))
-        trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, set_speed_in_units,  CS.vEgoCluster ) )
+        trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, set_speed_in_units,  CS.cluster_speed ) )
 
       #custom
       # 20 Hz LFA MFA message
