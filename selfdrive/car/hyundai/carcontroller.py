@@ -168,7 +168,7 @@ class CarController(CarControllerBase):
         can_sends.extend(hyundaican.create_acc_commands(self.packer, CC.enabled, accel, jerk, int(self.frame / 2),
                                                         hud_control.leadVisible, set_speed_in_units, stopping,
                                                         CC.cruiseControl.override, use_fca))
-        trace1.printf2( 'L={:.3f},{:.3f}'.format( accel, jerk ) )
+        trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, set_speed_in_units,  CS.vEgoCluster ) )
 
       #custom
       # 20 Hz LFA MFA message
