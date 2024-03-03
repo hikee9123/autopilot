@@ -92,9 +92,7 @@ class CarControllerCustom:
     if not self.CP.openpilotLongitudinalControl:
       can_sends.append( create_mdps12( packer, frame, CS.customCS.mdps12 ) )  # 100 Hz send mdps12 to LKAS to prevent LKAS error
       self.create_button_messages( packer, can_sends, CC, CS, frame )  #custom
-    else:
-      if CC.cruiseControl.cancel:
-        can_sends.append( create_clu11( packer, frame, CS.clu11, Buttons.CANCEL, self.CP.carFingerprint) )
+
 
   
 
