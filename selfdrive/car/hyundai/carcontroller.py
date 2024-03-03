@@ -156,7 +156,7 @@ class CarController(CarControllerBase):
         # TODO: unclear if this is needed
         jerk = 3.0 if actuators.longControlState == LongCtrlState.pid else 1.0
 
-        _a, _j, speed = self.customCC.acc_command( accel, jerk, set_speed_in_units, CC, CS, self.frame )
+        _a, speed = self.customCC.acc_command( accel, set_speed_in_units, CC, CS, self.frame )
 
         use_fca = self.CP.flags & HyundaiFlags.USE_FCA.value
         can_sends.extend(hyundaican.create_acc_commands(self.packer, CC.enabled, accel, jerk, int(self.frame / 2),

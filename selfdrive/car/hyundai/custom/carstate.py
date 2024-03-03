@@ -143,9 +143,12 @@ class CarStateCustom():
     if self.CP.openpilotLongitudinalControl:
       mainMode_ACC = cp.vl["TCS13"]["ACCEnable"] == 0
       self.acc_active = cp.vl["TCS13"]["ACC_REQ"] == 1
+      #ret.cruiseState.available = (ret.gearShifter == car.CarState.GearShifter.drive)
+
       self.lead_distance = 0
       self.VSetDis = 0      
       self.gapSet = 4
+
     else:
       mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
       self.acc_active = (cp_cruise.vl["SCC12"]['ACCMode'] != 0)
@@ -158,8 +161,8 @@ class CarStateCustom():
       self.gapSet = cp_cruise.vl["SCC11"]['TauGapSet']
       self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.        
   
-    if not (mainMode_ACC or self.acc_active):
-      self.cruise_control_mode()
+      if not mainMode_ACC:
+        self.cruise_control_mode()
 
     # save the entire LFAHDA_MFC
     self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])

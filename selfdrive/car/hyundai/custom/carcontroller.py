@@ -113,17 +113,15 @@ class CarControllerCustom:
         self.resume_cnt = 0
 
 
-  def acc_command( self, accel, jerk, set_speeds, CC, CS, frame ):
+  def acc_command( self, accel, set_speeds, CC, CS, frame ):
     speed = set_speeds
     if CS.customCS.acc_active:
       self.NC.update( CC, CS, frame )
       speed = min( set_speeds, self.NC.ctrl_speed )
       v_ego_kph = CS.customCS.clu_Vanz   # CS.cluster_speed
       delta_speed = speed - v_ego_kph
-      if abs(delta_speed) < 10:
-        jerk = 1
 
-      if delta_speed < 0 and accel > 0:
+      if delta_speed < 1 and accel > 0:
         accel = 0
 
-    return accel, jerk, speed
+    return accel, speed
