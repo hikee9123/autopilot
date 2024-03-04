@@ -113,8 +113,9 @@ class CarControllerCustom:
         self.resume_cnt = 0
 
 
-  def acc_command( self, accel, set_speeds, CC, CS, frame ):
+  def acc_command( self, accel, set_speeds, CC, CS, frame ):    
     speed = set_speeds
+    CS.customCS.VSetDis = speed
     if CS.customCS.acc_active:
       self.NC.update( CC, CS, frame )
       speed = min( set_speeds, self.NC.ctrl_speed )

@@ -146,7 +146,7 @@ class CarStateCustom():
       #ret.cruiseState.available = (ret.gearShifter == car.CarState.GearShifter.drive)
 
       self.lead_distance = 0
-      self.VSetDis = 0      
+      # self.VSetDis = 0      
       self.gapSet = 4
 
     else:
@@ -240,7 +240,8 @@ class CarStateCustom():
       #log
       trace1.printf1( 'MD={:.0f},{:.0f}'.format( self.control_mode,CS.lkas11["CF_Lkas_LdwsSysState"] ) )
       if self.CP.openpilotLongitudinalControl:
-        trace1.printf3( 'T={:.0f},{:.0f}'.format(
+        trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
+           cp.vl["CLU11"]["CF_Clu_CruiseSwState"], cp.vl["CLU11"]["CF_Clu_CruiseSwMain"], cp.vl["CLU11"]["CF_Clu_SldMainSW"],
            cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
         ))
 
