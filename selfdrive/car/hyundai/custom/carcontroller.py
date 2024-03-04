@@ -1,7 +1,7 @@
 from cereal import car
 
 from openpilot.selfdrive.car.hyundai.values import HyundaiFlags, Buttons, CAR
-from openpilot.selfdrive.car.hyundai. import hyundaican
+from openpilot.selfdrive.car.hyundai    import hyundaican
 from openpilot.selfdrive.car.hyundai.custom.hyundaican import  create_clu11, create_hda_mfc, create_mdps12, create_acc_commands
 from openpilot.selfdrive.car.hyundai.custom.navicontrol  import NaviControl
 
