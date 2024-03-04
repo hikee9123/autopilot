@@ -34,7 +34,7 @@ class CarStateCustom():
     self.prev_cruise_btn = 0
     self.lead_distance = 0
 
-    self.gapSet = 0
+    self.gapSet = 4
     self.timer_engaged = 0
     self.slow_engage = 1
 
@@ -62,13 +62,7 @@ class CarStateCustom():
       ("LFAHDA_MFC", 20),          
     ]
 
-    """
-    if CP.openpilotLongitudinalControl:
-      messages += [
-      ("SCC11", 50),
-      ("SCC12", 50),
-      ]   
-    """
+
 
   def cruise_control_mode( self ):
     cruise_buttons = self.CS.prev_cruise_buttons

@@ -11,7 +11,7 @@ from openpilot.selfdrive.car.interfaces import CarControllerBase
 
 
 from openpilot.selfdrive.car.hyundai.custom.carcontroller import CarControllerCustom   #custom
-import openpilot.selfdrive.custom.loger as  trace1
+
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 LongCtrlState = car.CarControl.Actuators.LongControlState
@@ -156,13 +156,13 @@ class CarController(CarControllerBase):
         # TODO: unclear if this is needed
         jerk = 3.0 if actuators.longControlState == LongCtrlState.pid else 1.0
 
-        _a, speed = self.customCC.acc_command( accel, set_speed_in_units, CC, CS, self.frame )
+        self.customCC.custom_acc_commands( can_sends, self.packer, accel, jerk, self.frame, 
+                                          set_speed_in_units, stopping, CC, CS )
 
-        use_fca = self.CP.flags & HyundaiFlags.USE_FCA.value
-        can_sends.extend(hyundaican.create_acc_commands(self.packer, CC.enabled, accel, jerk, int(self.frame / 2),
-                                                        hud_control.leadVisible, set_speed_in_units, stopping,
-                                                        CC.cruiseControl.override, use_fca))
-        trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, speed,  CS.cluster_speed ) )
+        #use_fca = self.CP.flags & HyundaiFlags.USE_FCA.value
+        #can_sends.extend(hyundaican.create_acc_commands(self.packer, CC.enabled, accel, jerk, int(self.frame / 2),
+        #                                                hud_control.leadVisible, set_speed_in_units, stopping,
+        #                                                CC.cruiseControl.override, use_fca))
 
       #custom
       # 20 Hz LFA MFA message
