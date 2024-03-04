@@ -117,6 +117,7 @@ class CarControllerCustom:
 
   def custom_acc_commands( self, can_sends, packer, accel, jerk, frame, set_speed_in_units, stopping, CC, CS ):
     speed = set_speed_in_units
+    CS.customCS.VSetDis = speed
     if CS.customCS.acc_active:
       #self.NC.update( CC, CS, frame )
       #speed = min( set_speed_in_units, self.NC.ctrl_speed )
