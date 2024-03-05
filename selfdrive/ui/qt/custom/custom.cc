@@ -361,6 +361,7 @@ void CustomPanel::updateToggles( int bSave )
   int kegmanEngine = m_jsonobj["kegmanEngine"].toBool();
   int kegmanDistance = m_jsonobj["kegmanDistance"].toBool();
   int kegmanSpeed = m_jsonobj["kegmanSpeed"].toBool();
+  int kegmanLag = m_jsonobj["kegmanLag"].toBool();
 
 
   ui.setCmdIdx( m_cmdIdx );  
@@ -377,6 +378,8 @@ void CustomPanel::updateToggles( int bSave )
   ui.setKegmanEngine( kegmanEngine );
   ui.setKegmanDistance( kegmanDistance );
   ui.setKegmanSpeed( kegmanSpeed );
+  ui.setKegmanLag( kegmanLag );
+
 
   send("uICustom", msg);
 }
@@ -760,44 +763,51 @@ UITab::UITab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent), m_
       //"../assets/offroad/icon_shell.png",
     },
     {
+      "kegmanLag",
+      " - Lag(ms) CPU status",
+      "2. Up to 4 menus can be displayed.",
+      "",
+      //"../assets/offroad/icon_shell.png",
+    },
+    {
       "kegmanBattery",
       " - battery voltage",
-      "2. Up to 4 menus can be displayed.",
+      "3. Up to 4 menus can be displayed.",
       "",
       //"../assets/offroad/icon_shell.png",
     },
     {
       "kegmanGPU",
       " - GPS accuracy",
-      "3. Up to 4 menus can be displayed.",
+      "4. Up to 4 menus can be displayed.",
       "",
       //"../assets/offroad/icon_shell.png",
     },
     {
       "kegmanAngle",
       " - steering angle",
-      "4. Up to 4 menus can be displayed.",
+      "5. Up to 4 menus can be displayed.",
       "",
      // "../assets/offroad/icon_shell.png",
     },
     {
       "kegmanEngine",
       " - engine status",
-      "5. Up to 4 menus can be displayed.",
+      "6. Up to 4 menus can be displayed.",
       "",
       //"../assets/offroad/icon_shell.png",
     },
     {
       "kegmanDistance",
       " - radar relative distance",
-      "6. Up to 4 menus can be displayed.",
+      "7. Up to 4 menus can be displayed.",
       "",
      // "../assets/offroad/icon_shell.png",
     },
     {
       "kegmanSpeed",
       " - radar relative speed",
-      "7. Up to 4 menus can be displayed.",
+      "8. Up to 4 menus can be displayed.",
       "",
       //"../assets/offroad/icon_shell.png",
     },

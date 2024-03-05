@@ -1,9 +1,11 @@
 from cereal import car
 
 from openpilot.selfdrive.car.hyundai.values import HyundaiFlags, Buttons, CAR
-from openpilot.selfdrive.car.hyundai.hyundaican import create_lkas11
-from openpilot.selfdrive.car.hyundai.custom.hyundaican import hyundai_lkas11, create_clu11, create_hda_mfc, create_mdps12
+from openpilot.selfdrive.car.hyundai    import hyundaican
+from openpilot.selfdrive.car.hyundai.custom.hyundaican import  create_clu11, create_hda_mfc, create_mdps12, create_acc_commands
 from openpilot.selfdrive.car.hyundai.custom.navicontrol  import NaviControl
+
+import openpilot.selfdrive.custom.loger as  trace1
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -83,7 +85,7 @@ class CarControllerCustom:
 
 
       
-    can_sends.append( create_lkas11(packer, frame, self.car_fingerprint, apply_steer, steer_req,
+    can_sends.append( hyundaican.create_lkas11(packer, frame, self.CP, apply_steer, steer_req,
                                     torque_fault, CS.lkas11, sys_warning, sys_state, enable,
                                     left_lane, right_lane,
                                     left_lane_depart, right_lane_depart) )
@@ -92,10 +94,6 @@ class CarControllerCustom:
     if not self.CP.openpilotLongitudinalControl:
       can_sends.append( create_mdps12( packer, frame, CS.customCS.mdps12 ) )  # 100 Hz send mdps12 to LKAS to prevent LKAS error
       self.create_button_messages( packer, can_sends, CC, CS, frame )  #custom
-
-  
-
-
 
 
   # 20 Hz LFA MFA message
@@ -115,3 +113,24 @@ class CarControllerCustom:
         self.resume_cnt += 1
       else:
         self.resume_cnt = 0
+
+
+  def custom_acc_commands( self, can_sends, packer, accel, jerk, frame, set_speed_in_units, stopping, CC, CS ):
+    speed = set_speed_in_units
+    CS.customCS.VSetDis = speed
+    if CS.customCS.acc_active:
+      #self.NC.update( CC, CS, frame )
+      #speed = min( set_speed_in_units, self.NC.ctrl_speed )
+      v_ego_kph = CS.customCS.clu_Vanz   # CS.cluster_speed
+      delta_speed = set_speed_in_units - v_ego_kph
+
+      if delta_speed < 1 and accel > 0:
+        jerk = 1
+        accel = 0
+
+    use_fca = self.CP.flags & HyundaiFlags.USE_FCA.value
+    can_sends.extend(create_acc_commands(packer, CC, CS, accel, jerk, int(frame / 2),
+                                         set_speed_in_units, stopping, use_fca))
+    
+    trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, speed,  CS.cluster_speed ) )
+

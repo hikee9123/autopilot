@@ -34,7 +34,7 @@ class CarStateCustom():
     self.prev_cruise_btn = 0
     self.lead_distance = 0
 
-    self.gapSet = 0
+    self.gapSet = 4
     self.timer_engaged = 0
     self.slow_engage = 1
 
@@ -61,6 +61,8 @@ class CarStateCustom():
     messages += [
       ("LFAHDA_MFC", 20),          
     ]
+
+
 
   def cruise_control_mode( self ):
     cruise_buttons = self.CS.prev_cruise_buttons
@@ -132,36 +134,44 @@ class CarStateCustom():
 
 
   def update(self, ret, CS,  cp, cp_cruise, cp_cam ):
-    mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
-    ACC_Mode = cp_cruise.vl["SCC12"]["ACCMode"] != 0
-    if not mainMode_ACC:
-      self.cruise_control_mode()
+    if self.CP.openpilotLongitudinalControl:
+      mainMode_ACC = cp.vl["TCS13"]["ACCEnable"] == 0
+      self.acc_active = cp.vl["TCS13"]["ACC_REQ"] == 1
+      #ret.cruiseState.available = (ret.gearShifter == car.CarState.GearShifter.drive)
 
+      self.lead_distance = 0
+      # self.VSetDis = 0      
+      self.gapSet = 4
 
-    # save the entire LFAHDA_MFC
-    self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
-    self.mdps12 = copy.copy(cp.vl["MDPS12"])
-    if not self.CP.openpilotLongitudinalControl:
+    else:
+      mainMode_ACC = cp_cruise.vl["SCC11"]["MainMode_ACC"] == 1
       self.acc_active = (cp_cruise.vl["SCC12"]['ACCMode'] != 0)
       if self.acc_active:
         ret.cruiseState.speed = self.cruise_speed_button() * CV.KPH_TO_MS
       else:
         ret.cruiseState.speed = 0
 
+      self.lead_distance = cp_cruise.vl["SCC11"]["ACC_ObjDist"]
+      self.gapSet = cp_cruise.vl["SCC11"]['TauGapSet']
+      self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.        
+  
+      if not mainMode_ACC:
+        self.cruise_control_mode()
+
+    # save the entire LFAHDA_MFC
+    self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
+    self.mdps12 = copy.copy(cp.vl["MDPS12"])
+
     ret.engineRpm = cp.vl["E_EMS11"]["N"] # opkr
     ret.brakeLightsDEPRECATED = bool( cp.vl["TCS13"]['BrakeLight'] )
-
     self.brakePos = cp.vl["E_EMS11"]["Brake_Pedal_Pos"] 
     self.is_highway = self.lfahda["HDA_Icon_State"] != 0.
-    self.lead_distance = cp.vl["SCC11"]["ACC_ObjDist"]
-    self.gapSet = cp.vl["SCC11"]['TauGapSet']
-    self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.    
     self.clu_Vanz = cp.vl["CLU11"]["CF_Clu_Vanz"]     # kph  현재 차량의 속도.
     
     if not self.CP.openpilotLongitudinalControl:
       if not (CS.CP.alternativeExperience & ALTERNATIVE_EXPERIENCE.DISABLE_DISENGAGE_ON_GAS):
         pass
-      elif ACC_Mode:
+      elif self.acc_active:
         pass
       elif ret.parkingBrake:
         self.timer_engaged = 100
@@ -222,6 +232,10 @@ class CarStateCustom():
 
 
       #log
-      trace1.printf1( 'MD={:.0f}'.format( self.control_mode ) )
-      trace1.printf2( 'LS={:.0f}'.format( CS.lkas11["CF_Lkas_LdwsSysState"] ) )   
+      trace1.printf1( 'MD={:.0f},{:.0f}'.format( self.control_mode,CS.lkas11["CF_Lkas_LdwsSysState"] ) )
+      if self.CP.openpilotLongitudinalControl:
+        trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
+           cp.vl["CLU11"]["CF_Clu_CruiseSwState"], cp.vl["CLU11"]["CF_Clu_CruiseSwMain"], cp.vl["CLU11"]["CF_Clu_SldMainSW"],
+           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
+        ))
 
