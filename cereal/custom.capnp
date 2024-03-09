@@ -22,6 +22,7 @@ struct CarStateCustom @0x81c2f05a394cf4af {
 
   breakPos @6 :Float32;
   leadDistance @7 :Float32;
+  gapSet @8 :Int16;
 
   struct Tpms {
     unit @0 :Int16;
