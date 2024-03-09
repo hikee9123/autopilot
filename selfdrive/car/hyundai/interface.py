@@ -5,10 +5,11 @@ from openpilot.selfdrive.car.hyundai.values import HyundaiFlags, CAR, DBC, CANFD
                                          CANFD_UNSUPPORTED_LONGITUDINAL_CAR, EV_CAR, HYBRID_CAR, LEGACY_SAFETY_MODE_CAR, \
                                          UNSUPPORTED_LONGITUDINAL_CAR, Buttons
 from openpilot.selfdrive.car.hyundai.radar_interface import RADAR_START_ADDR
-from openpilot.selfdrive.car.hyundai.custom import interface     #custom
 from openpilot.selfdrive.car import create_button_events, get_safety_config
 from openpilot.selfdrive.car.interfaces import CarInterfaceBase
 from openpilot.selfdrive.car.disable_ecu import disable_ecu
+
+from openpilot.selfdrive.car.hyundai.custom import interface     #custom
 
 Ecu = car.CarParams.Ecu
 ButtonType = car.CarState.ButtonEvent.Type
