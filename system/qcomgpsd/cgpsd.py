@@ -57,6 +57,10 @@ def main():
       # TODO: read from streaming AT port instead of polling
       out = at_cmd("AT+CGPS?")
 
+      if '+CGPS: 1' not in out:
+        for c in cmds:
+          at_cmd(c)
+
       sentences = out.split("'")[1].splitlines()
       new = {l.split(',')[0]: l.split(',') for l in sentences if l.startswith('$G')}
       nmea.update(new)
@@ -83,10 +87,9 @@ def main():
       dt = datetime.datetime.strptime(f"{date} {gnrmc[1]}", '%d%m%y %H%M%S.%f')
       gps.unixTimestampMillis = dt.timestamp()*1e3
 
-      gps.flags = 1 if gnrmc[1] == 'A' else 0
+      gps.hasFix = gnrmc[1] == 'A'
 
-      # TODO: make our own source
-      gps.source = log.GpsLocationData.SensorSource.qcomdiag
+      gps.source = log.GpsLocationData.SensorSource.unicore
 
       gps.speed = sfloat(gnrmc[7])
       gps.bearingDeg = sfloat(gnrmc[8])
