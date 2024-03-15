@@ -222,7 +222,7 @@ class CarStateCustom():
       carStatus.breakPos = self.brakePos
       carStatus.supportedCars = self.cars
       carStatus.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr
-
+      carStatus.gapSet  = self.gapSet
     
       global trace1
       carStatus.alertTextMsg1 = str(trace1.global_alertTextMsg1)

@@ -59,13 +59,13 @@ def create_acc_commands(packer, CC, CS, accel, upper_jerk, idx, set_speed, stopp
   long_override = CC.cruiseControl.override
 
   lead_visible = hud_control.leadVisible
-  gapSet = CS.customCS.gapSet
+
 
   commands = []
 
   scc11_values = {
     "MainMode_ACC": 1,
-    "TauGapSet": gapSet,
+    "TauGapSet": hud_control.leadDistanceBars + 1,
     "VSetDis": set_speed if enabled else 0,
     "AliveCounterACC": idx % 0x10,
     "ObjValid": 1, # close lead makes controls tighter
