@@ -211,6 +211,7 @@ CustomPanel::CustomPanel(SettingsWindow *parent) : QWidget(parent)
         {tr("UI"), new UITab(this, m_jsonobj)},      
         {tr("Community"), new CommunityTab(this, m_jsonobj)},
         {tr("Git"), new GitTab(this, m_jsonobj)},
+        {tr("Model"), new ModelTab(this, m_jsonobj)},
         {tr("Navigation"), new NavigationTab(this, m_jsonobj)},
         {tr("Debug"), new Debug(this,m_jsonobj)},
     };
@@ -659,6 +660,68 @@ void GitTab::hideEvent(QHideEvent *event)
   QWidget::hideEvent(event);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+
+ModelTab::ModelTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) , m_jsonobj(jsonobj)
+{
+  m_pCustom = parent;
+
+
+
+  QString selected_model = QString::fromStdString(Params().get("SelectedModel"));
+  auto changeModel = new ButtonControl(selected_model.length() ? selected_model : tr("Select your model"),
+                    selected_model.length() ? tr("CHANGE") : tr("SELECT"), "");
+
+  QObject::connect( changeModel, &ButtonControl::clicked, [=]() {
+    QStringList items = {
+      "1.Certified_Herbalist1", 
+      "2.Certified_Herbalist2", 
+      "3.Los_Angeles", 
+      "4.Recertified_Herbalist", 
+      "5.duck amigo"};
+
+    QString selection = MultiOptionDialog::getSelection(tr("Select a model"), items, selected_model, this);
+    if ( !selection.isEmpty() ) 
+    {
+      int selectedIndex = items.indexOf(selection);
+      Params().put("SelectedModel", selection.toStdString());
+
+      printf("sected model  %d  %s", selectedIndex, selection.toStdString());
+    }
+  });
+  addItem(changeModel);
+
+
+
+
+
+
+  setStyleSheet(R"(
+    * {
+      color: white;
+      outline: none;
+      font-family: Inter;
+    }
+    Updater {
+      color: white;
+      background-color: black;
+    }
+  )");  
+}
+
+void ModelTab::showEvent(QShowEvent *event) 
+{
+    QWidget::showEvent(event);
+}
+
+
+void ModelTab::hideEvent(QHideEvent *event)
+{
+  QWidget::hideEvent(event);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
