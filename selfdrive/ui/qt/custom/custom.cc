@@ -686,10 +686,10 @@ ModelTab::ModelTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(paren
     QString selection = MultiOptionDialog::getSelection(tr("Select a model"), items, selected_model, this);
     if ( !selection.isEmpty() ) 
     {
-      int selectedIndex = items.indexOf(selection);
+    //  int selectedIndex = items.indexOf(selection);
       Params().put("SelectedModel", selection.toStdString());
 
-      printf("sected model  %d  %s", selectedIndex, selection.toStdString());
+  //    printf("sected model  %d  %s", selectedIndex, selection.toStdString());
     }
   });
   addItem(changeModel);
