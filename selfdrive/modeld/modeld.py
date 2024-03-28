@@ -58,8 +58,8 @@ class ModelState:
   model: ModelRunner
 
   def __init__(self, context: CLContext):
-    m_jsonobj = read_json_file("CustomParam")
-    model_name = m_jsonobj["SelectedModel"]
+    #m_jsonobj = read_json_file("CustomParam")
+    # model_name = m_jsonobj["SelectedModel"]
 
     #MODEL_PATHS = {
     #  ModelRunner.THNEED: Path(__file__).parent / 'models/supercombo.thneed',
