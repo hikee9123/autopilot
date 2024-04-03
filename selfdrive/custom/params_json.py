@@ -5,11 +5,7 @@ def read_json_file(file_path: str):
     json_object = {}
 
     params = Params()
-
     json_str = params.get(file_path)
-
-    #with open(file_path, 'r') as file:
-    #    json_str = file.read()
 
     if not json_str:
         return json_object
