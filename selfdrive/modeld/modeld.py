@@ -58,8 +58,8 @@ class ModelState:
   def __init__(self, context: CLContext):
 
     m_jsonobj = read_json_file("CustomParam")
-    model_name = m_jsonobj["SelectedModel"]
-    print(f"Custom Param  JSON document = {m_jsonobj} value: {model_name}")
+    # model_name = m_jsonobj["SelectedModel"]
+    print(f"Custom Param  JSON document = {m_jsonobj}  ")
 
     """
     MODEL_PATHS = {
