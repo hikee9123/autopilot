@@ -56,10 +56,12 @@ class ModelState:
   model: ModelRunner
 
   def __init__(self, context: CLContext):
-    """
+
     m_jsonobj = read_json_file("CustomParam")
     model_name = m_jsonobj["SelectedModel"]
+    print(f"Failed to set gpio {m_jsonobj} value: {model_name}")
 
+    """
     MODEL_PATHS = {
       ModelRunner.THNEED: Path(__file__).parent / 'models/supercombo.thneed',
       ModelRunner.ONNX: Path(__file__).parent / 'models/supercombo.onnx'} 
