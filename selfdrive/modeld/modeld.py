@@ -32,11 +32,9 @@ from openpilot.selfdrive.custom.params_json import read_json_file  #custom
 PROCESS_NAME = "selfdrive.modeld.modeld"
 SEND_RAW_PRED = os.getenv('SEND_RAW_PRED')
 
-
 MODEL_PATHS = {
   ModelRunner.THNEED: Path(__file__).parent / 'models/supercombo.thneed',
   ModelRunner.ONNX: Path(__file__).parent / 'models/supercombo.onnx'}
-
 
 METADATA_PATH = Path(__file__).parent / 'models/supercombo_metadata.pkl'
 
