@@ -59,7 +59,7 @@ class ModelState:
 
     m_jsonobj = read_json_file("CustomParam")
     model_name = m_jsonobj["SelectedModel"]
-    print(f"Custom Param = {m_jsonobj} value: {model_name}")
+    print(f"Custom Param  JSON document = {m_jsonobj} value: {model_name}")
 
     """
     MODEL_PATHS = {
