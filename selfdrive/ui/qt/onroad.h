@@ -38,7 +38,6 @@ protected:
     }
   };
 
-
   const QMap<cereal::ControlsState::AlertStatus, QColor> alert_colors = {
     {cereal::ControlsState::AlertStatus::NORMAL, QColor(0x15, 0x15, 0x15, 0x71)},
     {cereal::ControlsState::AlertStatus::USER_PROMPT, QColor(0xDA, 0x6F, 0x25, 0x71)},
