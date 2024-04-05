@@ -24,8 +24,6 @@ from openpilot.selfdrive.modeld.fill_model_msg import fill_model_msg, fill_pose_
 from openpilot.selfdrive.modeld.constants import ModelConstants
 from openpilot.selfdrive.modeld.models.commonmodel_pyx import ModelFrame, CLContext
 
-from openpilot.selfdrive.custom.params_json import read_json_file  #custom
-
 
 
 
@@ -56,8 +54,6 @@ class ModelState:
   model: ModelRunner
 
   def __init__(self, context: CLContext):
-
-    #m_jsonobj = read_json_file("CustomParam")
     model_name = Params().get("SelectedModel", encoding='utf-8')
 
     print(f"Custom Param  JSON document  model name{model_name}")
