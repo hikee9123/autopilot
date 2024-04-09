@@ -12,6 +12,7 @@
 #include <QJsonArray>
 #include <QProcess>
 
+#include "common/watchdog.h"
 #include "common/params.h"
 #include "common/watchdog.h"
 #include "common/util.h"
@@ -689,6 +690,8 @@ ModelTab::ModelTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(paren
       //  int selectedIndex = items.indexOf(selection);
       Params().put("SelectedModel", selection.toStdString());
       //  printf("sected model  %d  %s", selectedIndex, selection.toStdString());
+      qApp->exit(18);
+      watchdog_kick(0);
     }
   });
   addItem(changeModel);
