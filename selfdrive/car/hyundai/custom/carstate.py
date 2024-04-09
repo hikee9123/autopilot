@@ -6,6 +6,7 @@ from panda import ALTERNATIVE_EXPERIENCE
 from openpilot.common.params import Params
 from openpilot.common.conversions import Conversions as CV
 from openpilot.selfdrive.car.hyundai.values import CAR, Buttons
+from openpilot.selfdrive.custom.params_json import read_json_file
 
 import openpilot.selfdrive.custom.loger as  trace1
 
@@ -37,6 +38,10 @@ class CarStateCustom():
     self.gapSet = 4
     self.timer_engaged = 0
     self.slow_engage = 1
+
+    m_jsonobj = read_json_file("CustomParam")
+    self.autoLaneChange = m_jsonobj["AutoLaneChange"]
+    self.lanechange_cnt = 0
 
     self.cars = []
     self.get_type_of_car( CP )
@@ -132,6 +137,60 @@ class CarStateCustom():
     ret.rl = rl * factor
     ret.rr = rr * factor
 
+  def send_carstatus( self, cp, CS ):
+    if self.frame % 20 == 0:
+      dat = messaging.new_message('carStateCustom')
+      carStatus = dat.carStateCustom
+      self.get_tpms( carStatus.tpms,
+        cp.vl["TPMS11"]["UNIT"],
+        cp.vl["TPMS11"]["PRESSURE_FL"],
+        cp.vl["TPMS11"]["PRESSURE_FR"],
+        cp.vl["TPMS11"]["PRESSURE_RL"],
+        cp.vl["TPMS11"]["PRESSURE_RR"],
+      )
+
+      carStatus.leadDistance = self.lead_distance
+      carStatus.breakPos = self.brakePos
+      carStatus.supportedCars = self.cars
+      carStatus.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr
+      carStatus.gapSet  = self.gapSet
+    
+      global trace1
+      carStatus.alertTextMsg1 = str(trace1.global_alertTextMsg1)
+      carStatus.alertTextMsg2 = str(trace1.global_alertTextMsg2)
+      carStatus.alertTextMsg3 = str(trace1.global_alertTextMsg3)
+      self.pm.send('carStateCustom', dat )
+
+      #log
+      trace1.printf1( 'MD={:.0f},{:.0f}'.format( self.control_mode, CS.lkas11["CF_Lkas_LdwsSysState"] ) )
+      if self.CP.openpilotLongitudinalControl:
+        trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
+           cp.vl["CLU11"]["CF_Clu_CruiseSwState"], cp.vl["CLU11"]["CF_Clu_CruiseSwMain"], cp.vl["CLU11"]["CF_Clu_SldMainSW"],
+           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
+        ))
+
+
+  def auto_lene_change( self, ret ):
+    if not self.autoLaneChange:
+      return
+
+    if ret.leftBlindspot or ret.rightBlindspot:
+      self.lanechange_cnt = 200
+    elif ret.leftBlinker:
+      if self.lanechange_cnt > 0:
+        self.lanechange_cnt -= 1
+      else:
+        ret.steeringTorque = 150
+        ret.steeringPressed = True
+    elif ret.rightBlinker:
+      if self.lanechange_cnt > 0:
+        self.lanechange_cnt -= 1
+      else:
+        ret.steeringTorque = -150
+        ret.steeringPressed = True
+    else:
+      self.lanechange_cnt = 100
+
 
   def update(self, ret, CS,  cp, cp_cruise, cp_cam ):
     if self.CP.openpilotLongitudinalControl:
@@ -203,39 +262,12 @@ class CarStateCustom():
 
     self.frame += 1
 
+    self.auto_lene_change( ret )
+
+
+    self.send_carstatus( cp, CS )
 
 
 
 
-    if self.frame % 20 == 0:
-      dat = messaging.new_message('carStateCustom')
-      carStatus = dat.carStateCustom
-      self.get_tpms( carStatus.tpms,
-        cp.vl["TPMS11"]["UNIT"],
-        cp.vl["TPMS11"]["PRESSURE_FL"],
-        cp.vl["TPMS11"]["PRESSURE_FR"],
-        cp.vl["TPMS11"]["PRESSURE_RL"],
-        cp.vl["TPMS11"]["PRESSURE_RR"],
-      )
-
-      carStatus.leadDistance = self.lead_distance
-      carStatus.breakPos = self.brakePos
-      carStatus.supportedCars = self.cars
-      carStatus.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr
-      carStatus.gapSet  = self.gapSet
-    
-      global trace1
-      carStatus.alertTextMsg1 = str(trace1.global_alertTextMsg1)
-      carStatus.alertTextMsg2 = str(trace1.global_alertTextMsg2)
-      carStatus.alertTextMsg3 = str(trace1.global_alertTextMsg3)
-      self.pm.send('carStateCustom', dat )
-
-
-      #log
-      trace1.printf1( 'MD={:.0f},{:.0f}'.format( self.control_mode,CS.lkas11["CF_Lkas_LdwsSysState"] ) )
-      if self.CP.openpilotLongitudinalControl:
-        trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
-           cp.vl["CLU11"]["CF_Clu_CruiseSwState"], cp.vl["CLU11"]["CF_Clu_CruiseSwMain"], cp.vl["CLU11"]["CF_Clu_SldMainSW"],
-           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
-        ))
 

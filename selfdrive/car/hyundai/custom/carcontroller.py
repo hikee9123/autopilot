@@ -4,8 +4,6 @@ from openpilot.selfdrive.car.hyundai.values import HyundaiFlags, Buttons, CAR
 from openpilot.selfdrive.car.hyundai    import hyundaican
 from openpilot.selfdrive.car.hyundai.custom.hyundaican import  create_clu11, create_hda_mfc, create_mdps12, create_acc_commands
 from openpilot.selfdrive.car.hyundai.custom.navicontrol  import NaviControl
-from openpilot.selfdrive.custom.params_json import read_json_file
-
 
 import openpilot.selfdrive.custom.loger as  trace1
 
@@ -20,9 +18,7 @@ class CarControllerCustom:
     self.time_left = 0
     self.time_right = 0
 
-    m_jsonobj = read_json_file("CustomParam")
 
-    self.autoLaneChange = m_jsonobj["AutoLaneChange"]
 
 
   def process_hud_alert(self, enabled, hud_control):
