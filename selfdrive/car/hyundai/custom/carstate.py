@@ -175,7 +175,8 @@ class CarStateCustom():
       return
 
     if ret.leftBlindspot or ret.rightBlindspot:
-      self.lanechange_wait = 200
+      if self.lanechange_wait < 200:
+        self.lanechange_wait = 200
     elif ret.steeringPressed:
       pass
     elif ret.leftBlinker:
@@ -184,12 +185,14 @@ class CarStateCustom():
       else:
         ret.steeringTorque = self.CS.params.STEER_THRESHOLD  #150
         ret.steeringPressed = True
+        self.lanechange_wait = 500
     elif ret.rightBlinker:
       if self.lanechange_wait > 0:
         self.lanechange_wait -= 1
       else:
         ret.steeringTorque = -self.CS.params.STEER_THRESHOLD
         ret.steeringPressed = True
+        self.lanechange_wait = 500
     else:
       self.lanechange_wait = 100
 
