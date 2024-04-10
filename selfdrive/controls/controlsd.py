@@ -264,18 +264,21 @@ class Controls:
         self.events.add(EventName.calibrationInvalid)
 
     # Handle lane change
-    if self.sm['modelV2'].meta.laneChangeState == LaneChangeState.preLaneChange:
-      direction = self.sm['modelV2'].meta.laneChangeDirection
+    model_v2 = self.sm['modelV2']
+    if model_v2.meta.laneChangeState == LaneChangeState.preLaneChange:
+      direction = model_v2.meta.laneChangeDirection
       if (CS.leftBlindspot and direction == LaneChangeDirection.left) or \
          (CS.rightBlindspot and direction == LaneChangeDirection.right):
         self.events.add(EventName.laneChangeBlocked)
       else:
-        if direction == LaneChangeDirection.left:
+        rightLaneVisible = model_v2.laneLineProbs[3] > 0.5
+        leftLaneVisible = model_v2.laneLineProbs[0] > 0.5        
+        if direction == LaneChangeDirection.left and leftLaneVisible:
           self.events.add(EventName.preLaneChangeLeft)
-        else:
+        elif rightLaneVisible:
           self.events.add(EventName.preLaneChangeRight)
-    elif self.sm['modelV2'].meta.laneChangeState in (LaneChangeState.laneChangeStarting,
-                                                    LaneChangeState.laneChangeFinishing):
+    elif model_v2.meta.laneChangeState in (LaneChangeState.laneChangeStarting,
+                                           LaneChangeState.laneChangeFinishing):
       self.events.add(EventName.laneChange)
 
     for i, pandaState in enumerate(self.sm['pandaStates']):
@@ -698,6 +701,8 @@ class Controls:
                   and not CC.latActive and self.sm['liveCalibration'].calStatus == log.LiveCalibrationData.Status.calibrated
 
     model_v2 = self.sm['modelV2']
+    hudControl.rightLaneVisible = model_v2.laneLineProbs[2] > 0.5
+    hudControl.leftLaneVisible = model_v2.laneLineProbs[1] > 0.5    
     desire_prediction = model_v2.meta.desirePrediction
     if len(desire_prediction) and ldw_allowed:
       right_lane_visible = model_v2.laneLineProbs[2] > 0.5
