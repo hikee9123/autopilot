@@ -41,7 +41,7 @@ class CarStateCustom():
 
     m_jsonobj = read_json_file("CustomParam")
     self.autoLaneChange = m_jsonobj["AutoLaneChange"]
-    self.lanechange_cnt = 0
+    self.lanechange_wait = 0
 
     self.cars = []
     self.get_type_of_car( CP )
@@ -175,21 +175,23 @@ class CarStateCustom():
       return
 
     if ret.leftBlindspot or ret.rightBlindspot:
-      self.lanechange_cnt = 200
+      self.lanechange_wait = 200
+    elif ret.steeringPressed:
+      pass
     elif ret.leftBlinker:
-      if self.lanechange_cnt > 0:
-        self.lanechange_cnt -= 1
+      if self.lanechange_wait > 0:
+        self.lanechange_wait -= 1
       else:
-        ret.steeringTorque = 150
+        ret.steeringTorque = self.CS.params.STEER_THRESHOLD  #150
         ret.steeringPressed = True
     elif ret.rightBlinker:
-      if self.lanechange_cnt > 0:
-        self.lanechange_cnt -= 1
+      if self.lanechange_wait > 0:
+        self.lanechange_wait -= 1
       else:
-        ret.steeringTorque = -150
+        ret.steeringTorque = -self.CS.params.STEER_THRESHOLD
         ret.steeringPressed = True
     else:
-      self.lanechange_cnt = 100
+      self.lanechange_wait = 100
 
 
   def update(self, ret, CS,  cp, cp_cruise, cp_cam ):

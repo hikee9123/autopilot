@@ -682,7 +682,9 @@ ModelTab::ModelTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(paren
       "2.Certified_Herbalist2,supercombo_CH2", 
       "3.Los_Angeles model,supercombo_LA", 
       "4.Recertified_Herbalist,supercombo_RH", 
-      "5.Duck_Amigo model,supercombo_DA"};
+      "5.Duck_Amigo model,supercombo_DA",
+      "6.WD40 model,supercombo_WD40",
+      };
 
     QString selection = MultiOptionDialog::getSelection(tr("Select a model"), items, selected_model, this);
     if ( !selection.isEmpty() ) 
