@@ -236,21 +236,21 @@ class NaviControl():
     # send scc to car if longcontrol enabled and SCC not on bus 0 or ont live
     btn_signal = None
     if not self.button_status( CS  ):
-      wait_accsafety = 50
+      self.wait_accsafety = 50
       pass
     elif CS.customCS.acc_active:
       cruiseState_speed = CS.out.cruiseState.speed * CV.MS_TO_KPH      
       kph_set_vEgo = self.get_navi_speed(  self.sm , CS, cruiseState_speed, frame )
       self.ctrl_speed = min( cruiseState_speed, kph_set_vEgo)
 
-      if wait_accsafety > 0:
-        wait_accsafety -= 1
+      if self.wait_accsafety > 0:
+        self.wait_accsafety -= 1
       elif self.cruise_set_mode:
         self.ctrl_speed = self.auto_speed_control( c, CS, self.ctrl_speed )
  
       if not self.CP.openpilotLongitudinalControl:
         btn_signal = self.ascc_button_control( CS, self.ctrl_speed )
     else:
-      wait_accsafety = 100
+      self.wait_accsafety = 100
 
     return btn_signal
