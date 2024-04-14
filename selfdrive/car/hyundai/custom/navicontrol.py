@@ -251,6 +251,6 @@ class NaviControl():
       if not self.CP.openpilotLongitudinalControl:
         btn_signal = self.ascc_button_control( CS, self.ctrl_speed )
     else:
-      self.wait_accsafety = 100
+      self.wait_accsafety = 200
 
     return btn_signal
