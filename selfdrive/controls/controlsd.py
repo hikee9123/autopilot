@@ -264,21 +264,18 @@ class Controls:
         self.events.add(EventName.calibrationInvalid)
 
     # Handle lane change
-    model_v2 = self.sm['modelV2']
-    if model_v2.meta.laneChangeState == LaneChangeState.preLaneChange:
-      direction = model_v2.meta.laneChangeDirection
+    if self.sm['modelV2'].meta.laneChangeState == LaneChangeState.preLaneChange:
+      direction = self.sm['modelV2'].meta.laneChangeDirection
       if (CS.leftBlindspot and direction == LaneChangeDirection.left) or \
          (CS.rightBlindspot and direction == LaneChangeDirection.right):
         self.events.add(EventName.laneChangeBlocked)
       else:
-        rightLaneVisible = model_v2.laneLineProbs[3] > 0.5
-        leftLaneVisible = model_v2.laneLineProbs[0] > 0.5        
-        if direction == LaneChangeDirection.left and leftLaneVisible:
+        if direction == LaneChangeDirection.left:
           self.events.add(EventName.preLaneChangeLeft)
-        elif rightLaneVisible:
+        else:
           self.events.add(EventName.preLaneChangeRight)
-    elif model_v2.meta.laneChangeState in (LaneChangeState.laneChangeStarting,
-                                           LaneChangeState.laneChangeFinishing):
+    elif self.sm['modelV2'].meta.laneChangeState in (LaneChangeState.laneChangeStarting,
+                                                    LaneChangeState.laneChangeFinishing):
       self.events.add(EventName.laneChange)
 
     for i, pandaState in enumerate(self.sm['pandaStates']):
