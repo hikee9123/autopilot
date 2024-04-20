@@ -177,8 +177,6 @@ class CarStateCustom():
     if ret.leftBlindspot or ret.rightBlindspot:
       if self.lanechange_wait < 200:
         self.lanechange_wait = 200
-    elif ret.steeringPressed:
-      pass
     elif ret.leftBlinker:
       if self.lanechange_wait > 0:
         self.lanechange_wait -= 1
