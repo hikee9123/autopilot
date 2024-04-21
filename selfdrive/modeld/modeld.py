@@ -77,34 +77,29 @@ class ModelState:
     for k,v in self.inputs.items():
       self.model.addInput(k, v)
 
+  #custom
   def select_supercombo(self):
     model_name = Params().get("SelectedModel", encoding='utf-8')
 
-    print(f"Custom Param  JSON document  model name{model_name}")
+    print(f"model Custom Param  JSON document name{model_name}")
     print(f"model name1 = {MODEL_PATHS}")
     if model_name ==  "1.Certified_Herbalist1,supercombo_CH1":
       self.supercombo_name = 'models/supercombos/supercombo_CH1.onnx'
-      print("model name = CH1 model")
     elif model_name ==   "2.Certified_Herbalist2,supercombo_CH2": 
       self.supercombo_name = 'models/supercombos/supercombo_CH2.onnx'
-      print("model name = CH2 model")
     elif model_name ==   "3.Los_Angeles model,supercombo_LA":
       self.supercombo_name = 'models/supercombos/supercombo_LA.onnx'
-      print("model name = LA model")
     elif model_name ==   "4.Recertified_Herbalist,supercombo_RH":
       self.supercombo_name = 'models/supercombos/supercombo_RH.onnx'
-      print("model name = RH model")
     elif model_name == "5.Duck_Amigo model,supercombo_DA":
       self.supercombo_name = 'models/supercombos/supercombo_DA.onnx'
-      print("model name = DA model")
     elif model_name == "6.WD40 model,supercombo_WD40":
       self.supercombo_name = 'models/supercombos/supercombo_WD40.onnx'
-      print("model name = WD40 model")
     else:
       self.supercombo_name = 'models/supercombo.onnx'
 
     MODEL_PATHS[ModelRunner.ONNX] = Path(__file__).parent / self.supercombo_name
-    print(f"supercombo name = {self.supercombo_name}")
+    print(f"model supercombo name = {self.supercombo_name}")
     print(f"model name2 = {MODEL_PATHS}")
 
     return  self.supercombo_name

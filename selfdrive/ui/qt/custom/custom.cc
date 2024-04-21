@@ -519,6 +519,20 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
       "../assets/offroad/icon_shell.png",
       0,60,1
     },
+    {
+      "MAP_RENDER_VIEW",
+      tr("map render view"),
+      "0:Not used:1",
+      "../assets/offroad/icon_shell.png",
+      0,1,1
+    },
+    {
+      "DUAL_CAMERA_VIEW",
+      tr("dual camera view"),
+      "0:Not used:1",
+      "../assets/offroad/icon_shell.png",
+      0,1,1
+    },          
   };
 
   for (auto &[param, title, desc, icon, min,max,unit] : value_defs) {
