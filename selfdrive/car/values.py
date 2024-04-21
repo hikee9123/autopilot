@@ -1,4 +1,4 @@
-from typing import cast
+from typing import get_args
 from openpilot.selfdrive.car.body.values import CAR as BODY
 from openpilot.selfdrive.car.chrysler.values import CAR as CHRYSLER
 from openpilot.selfdrive.car.ford.values import CAR as FORD
