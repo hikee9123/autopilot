@@ -51,6 +51,33 @@ class ModelState:
   model: ModelRunner
 
   def __init__(self, context: CLContext):
+    self.frame = ModelFrame(context)
+    self.wide_frame = ModelFrame(context)
+    self.prev_desire = np.zeros(ModelConstants.DESIRE_LEN, dtype=np.float32)
+    self.inputs = {
+      'desire': np.zeros(ModelConstants.DESIRE_LEN * (ModelConstants.HISTORY_BUFFER_LEN+1), dtype=np.float32),
+      'traffic_convention': np.zeros(ModelConstants.TRAFFIC_CONVENTION_LEN, dtype=np.float32),
+      'lateral_control_params': np.zeros(ModelConstants.LATERAL_CONTROL_PARAMS_LEN, dtype=np.float32),
+      'prev_desired_curv': np.zeros(ModelConstants.PREV_DESIRED_CURV_LEN * (ModelConstants.HISTORY_BUFFER_LEN+1), dtype=np.float32),
+      'features_buffer': np.zeros(ModelConstants.HISTORY_BUFFER_LEN * ModelConstants.FEATURE_LEN, dtype=np.float32),
+    }
+
+    with open(METADATA_PATH, 'rb') as f:
+      model_metadata = pickle.load(f)
+
+    self.output_slices = model_metadata['output_slices']
+    net_output_size = model_metadata['output_shapes']['outputs'][1]
+    self.output = np.zeros(net_output_size, dtype=np.float32)
+    self.parser = Parser()
+
+    self.select_supercombo()
+    self.model = ModelRunner(MODEL_PATHS, self.output, Runtime.GPU, False, context)
+    self.model.addInput("input_imgs", None)
+    self.model.addInput("big_input_imgs", None)
+    for k,v in self.inputs.items():
+      self.model.addInput(k, v)
+
+  def select_supercombo(self):
     model_name = Params().get("SelectedModel", encoding='utf-8')
 
     print(f"Custom Param  JSON document  model name{model_name}")
@@ -75,35 +102,14 @@ class ModelState:
       print("model name = WD40 model")
     else:
       self.supercombo_name = 'models/supercombo.onnx'
+
     MODEL_PATHS[ModelRunner.ONNX] = Path(__file__).parent / self.supercombo_name
-    print(f"supercombo name = {self.supercombo_name =}")
+    print(f"supercombo name = {self.supercombo_name}")
     print(f"model name2 = {MODEL_PATHS}")
 
+    return  self.supercombo_name
 
-    self.frame = ModelFrame(context)
-    self.wide_frame = ModelFrame(context)
-    self.prev_desire = np.zeros(ModelConstants.DESIRE_LEN, dtype=np.float32)
-    self.inputs = {
-      'desire': np.zeros(ModelConstants.DESIRE_LEN * (ModelConstants.HISTORY_BUFFER_LEN+1), dtype=np.float32),
-      'traffic_convention': np.zeros(ModelConstants.TRAFFIC_CONVENTION_LEN, dtype=np.float32),
-      'lateral_control_params': np.zeros(ModelConstants.LATERAL_CONTROL_PARAMS_LEN, dtype=np.float32),
-      'prev_desired_curv': np.zeros(ModelConstants.PREV_DESIRED_CURV_LEN * (ModelConstants.HISTORY_BUFFER_LEN+1), dtype=np.float32),
-      'features_buffer': np.zeros(ModelConstants.HISTORY_BUFFER_LEN * ModelConstants.FEATURE_LEN, dtype=np.float32),
-    }
 
-    with open(METADATA_PATH, 'rb') as f:
-      model_metadata = pickle.load(f)
-
-    self.output_slices = model_metadata['output_slices']
-    net_output_size = model_metadata['output_shapes']['outputs'][1]
-    self.output = np.zeros(net_output_size, dtype=np.float32)
-    self.parser = Parser()
-
-    self.model = ModelRunner(MODEL_PATHS, self.output, Runtime.GPU, False, context)
-    self.model.addInput("input_imgs", None)
-    self.model.addInput("big_input_imgs", None)
-    for k,v in self.inputs.items():
-      self.model.addInput(k, v)
 
   def slice_outputs(self, model_outputs: np.ndarray) -> dict[str, np.ndarray]:
     parsed_model_outputs = {k: model_outputs[np.newaxis, v] for k,v in self.output_slices.items()}
