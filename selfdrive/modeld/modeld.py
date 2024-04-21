@@ -55,11 +55,13 @@ class ModelState:
 
     print(f"Custom Param  JSON document  model name{model_name}")
 
-    """
-    MODEL_PATHS = {
-      ModelRunner.THNEED: Path(__file__).parent / 'models/supercombo.thneed',
-      ModelRunner.ONNX: Path(__file__).parent / 'models/supercombo.onnx'} 
-    """
+    if model_name == "5.Duck_Amigo model,supercombo_DA":
+      MODEL_PATHS[ModelRunner.ONNX] = Path(__file__).parent / 'models/supercombos/supercombo_DA.onnx'
+      print("model name = DA model")
+    elif model_name == "6.WD40 model,supercombo_WD40":
+      MODEL_PATHS[ModelRunner.ONNX] = Path(__file__).parent / 'models/supercombos/supercombo_WD40.onnx'
+      print("model name = WD40 model")
+    print(f"model name = {MODEL_PATHS}")
 
 
     self.frame = ModelFrame(context)
