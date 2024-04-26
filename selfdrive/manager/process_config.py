@@ -62,6 +62,7 @@ def ExternalNaviType()  -> int:
 
 #custom
 def set_mapbox()  -> bool:
+  """
   m_jsonobj = read_json_file("CustomParam")
   dual_camera_view = m_jsonobj["DUAL_CAMERA_VIEW"]
   map_render_view = m_jsonobj["MAP_RENDER_VIEW"]
@@ -69,7 +70,7 @@ def set_mapbox()  -> bool:
     os.environ['DUAL_CAMERA_VIEW'] = dual_camera_view
   if map_render_view:
     os.environ['MAP_RENDER_VIEW'] = map_render_view
-
+  """
   if UseExternalNaviRoutes():
     mapbox_token = Params().get("MapboxToken", encoding='utf8')
     if mapbox_token is not None:
