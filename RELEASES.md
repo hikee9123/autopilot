@@ -3,6 +3,8 @@ Version 0.9.7 (2024-XX-XX)
 * New driving model
 * Adjust driving personality with the follow distance button
 * Support for hybrid variants of supported Ford models
+* Added toggle to enable driver monitoring even when openpilot is not engaged
+* Fingerprinting without the OBD-II port on all cars
 
 Version 0.9.6 (2024-02-27)
 ========================
@@ -386,7 +388,7 @@ Version 0.8.3 (2021-04-01)
  * New model
    * Trained on new diverse dataset from 2000+ users from 30+ countries
    * Trained with improved segnet from the comma-pencil community project
-   * 🥬 Dramatically improved end-to-end lateral performance 🥬
+   * �� Dramatically improved end-to-end lateral performance ��
  * Toggle added to disable the use of lanelines
  * NEOS update: update packages and support for new UI
  * New offroad UI based on Qt
