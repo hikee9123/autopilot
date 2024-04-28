@@ -6,6 +6,7 @@ from openpilot.common.params import Params
 from openpilot.system.hardware import PC, TICI
 from openpilot.selfdrive.manager.process import PythonProcess, NativeProcess, DaemonProcess
 from openpilot.selfdrive.athena.athenad import setNavDestination
+from openpilot.selfdrive.custom.params_json import read_json_file
 
 WEBCAM = os.getenv("USE_WEBCAM") is not None
 
@@ -59,7 +60,17 @@ def ExternalNaviType()  -> int:
 
   return externalNaviType
 
+#custom
 def set_mapbox()  -> bool:
+  """
+  m_jsonobj = read_json_file("CustomParam")
+  dual_camera_view = m_jsonobj["DUAL_CAMERA_VIEW"]
+  map_render_view = m_jsonobj["MAP_RENDER_VIEW"]
+  if dual_camera_view:
+    os.environ['DUAL_CAMERA_VIEW'] = dual_camera_view
+  if map_render_view:
+    os.environ['MAP_RENDER_VIEW'] = map_render_view
+  """
   if UseExternalNaviRoutes():
     mapbox_token = Params().get("MapboxToken", encoding='utf8')
     if mapbox_token is not None:
@@ -126,8 +137,6 @@ procs = [
   NativeProcess("stream_encoderd", "system/loggerd", ["./encoderd", "--stream"], notcar),
   NativeProcess("loggerd", "system/loggerd", ["./loggerd"], logging),
   NativeProcess("modeld", "selfdrive/modeld", ["./modeld"], only_onroad),
-  NativeProcess("mapsd", "selfdrive/navd", ["./mapsd"], only_onroad),
-  PythonProcess("navmodeld", "selfdrive.modeld.navmodeld", only_onroad),
   NativeProcess("sensord", "system/sensord", ["./sensord"], only_onroad, enabled=not PC),
   NativeProcess("ui", "selfdrive/ui", ["./ui"], always_run, watchdog_max_dt=(5 if not PC else None)),
   PythonProcess("soundd", "selfdrive.ui.soundd", only_onroad),
@@ -139,16 +148,17 @@ procs = [
   PythonProcess("deleter", "system.loggerd.deleter", always_run),
   PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", driverview, enabled=(not PC or WEBCAM)),
   PythonProcess("qcomgpsd", "system.qcomgpsd.qcomgpsd", qcomgps, enabled=TICI),
+  #PythonProcess("ugpsd", "system.ugpsd", only_onroad, enabled=TICI),
   PythonProcess("navd", "selfdrive.navd.navd", only_onroad, enabled=not UseExternalNaviRoutes() ),
   PythonProcess("pandad", "selfdrive.boardd.pandad", always_run),
   PythonProcess("paramsd", "selfdrive.locationd.paramsd", only_onroad),
   NativeProcess("ubloxd", "system/ubloxd", ["./ubloxd"], ublox, enabled=TICI),
-  PythonProcess("pigeond", "system.sensord.pigeond", ublox, enabled=TICI),
+  PythonProcess("pigeond", "system.ubloxd.pigeond", ublox, enabled=TICI),
   PythonProcess("plannerd", "selfdrive.controls.plannerd", only_onroad),
   PythonProcess("radard", "selfdrive.controls.radard", only_onroad),
   PythonProcess("thermald", "selfdrive.thermald.thermald", always_run),
   PythonProcess("tombstoned", "selfdrive.tombstoned", always_run, enabled=not PC),
-  PythonProcess("updated", "selfdrive.updated", only_offroad, enabled=not PC),
+  PythonProcess("updated", "selfdrive.updated.updated", only_offroad, enabled=not PC),
   #PythonProcess("uploader", "system.loggerd.uploader", always_run),
   PythonProcess("statsd", "selfdrive.statsd", always_run),
 

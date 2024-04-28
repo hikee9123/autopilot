@@ -81,8 +81,6 @@ void CSidebar::paintEvent(QPainter &p)
     color = interp_color( QColor( 229, 0, 0 ), QColor( 229, 229, 0 ), QColor(0, 229, 0),  QColor( 0, 229, 229 ));
   }
 
-
-
   const QRect  rect = battery_rc;
   if( fBatteryVoltage > 5 )
   {
@@ -96,4 +94,14 @@ void CSidebar::paintEvent(QPainter &p)
   p.setPen(Qt::black);
   configFont(p, "Open Sans", 25, "Regular");  
   p.drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, beterryValtage);    
+
+
+  if( scene.custom.m_powerflag )
+  {
+    const QRect home_btn1 = QRect(60,860,180,180);
+
+    p.setBrush(  QColor( 255,255, 0, 150 ) );
+    p.drawEllipse( home_btn1.x(), home_btn1.y(), 180, 180);
+  }
+
 }

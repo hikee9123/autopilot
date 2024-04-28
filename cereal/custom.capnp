@@ -22,6 +22,7 @@ struct CarStateCustom @0x81c2f05a394cf4af {
 
   breakPos @6 :Float32;
   leadDistance @7 :Float32;
+  gapSet @8 :Int16;
 
   struct Tpms {
     unit @0 :Int16;
@@ -88,7 +89,8 @@ struct UICustom @0xda96579883444c35 {
        kegmanAngle @9 :Int16;
        kegmanEngine @10 :Int16;
        kegmanDistance @11 :Int16;
-       kegmanSpeed @12 :Int16;    
+       kegmanSpeed @12 :Int16;   
+       kegmanLag @13 :Int16; 
     }
 
     struct Debug

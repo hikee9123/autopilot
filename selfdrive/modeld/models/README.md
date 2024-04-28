@@ -1,3 +1,10 @@
+## Model name
+ RH: Recertified_Herbalist
+ CH: Certified_Herbalist
+ LA: Los_Angeles
+
+
+
 ## Neural networks in openpilot
 To view the architecture of the ONNX networks, you can use [netron](https://netron.app/)
 

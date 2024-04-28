@@ -48,21 +48,15 @@ class RouteEngine:
 
     self.reroute_counter = 0
 
-    self.distance_old = 0
 
-  
-
+    self.api = None
+    self.mapbox_token = None
     if "MAPBOX_TOKEN" in os.environ:
       self.mapbox_token = os.environ["MAPBOX_TOKEN"]
       self.mapbox_host = "https://api.mapbox.com"
     else:
-      try:
-        self.mapbox_token = Api(self.params.get("DongleId", encoding='utf8')).get_token(expiry_hours=4 * 7 * 24)
-      except FileNotFoundError:
-        cloudlog.exception("Failed to generate mapbox token due to missing private key. Ensure device is registered.")
-        self.mapbox_token = ""
+      self.api = Api(self.params.get("DongleId", encoding='utf8'))
       self.mapbox_host = "https://maps.comma.ai"
-
 
     print('mapbox_token=', self.mapbox_token)
     print('mapbox_host=', self.mapbox_host)          
@@ -79,8 +73,11 @@ class RouteEngine:
         self.ui_pid = ui_pid[0]
 
     self.update_location()
-    self.recompute_route()
-    self.send_instruction()
+    try:
+      self.recompute_route()
+      self.send_instruction()
+    except Exception:
+      cloudlog.exception("navd.failed_to_compute")
 
   def update_location(self):
     location = self.sm['liveLocationKalman']
@@ -127,8 +124,12 @@ class RouteEngine:
     if lang is not None:
       lang = lang.replace('main_', '')
 
+    token = self.mapbox_token
+    if token is None:
+      token = self.api.get_token()
+
     params = {
-      'access_token': self.mapbox_token,
+      'access_token': token,
       'annotations': 'maxspeed',
       'geometries': 'geojson',
       'overview': 'full',
@@ -152,7 +153,6 @@ class RouteEngine:
     params['waypoints'] = f'0;{len(coords)-1}'
     if self.last_bearing is not None:
       params['bearings'] = f"{(self.last_bearing + 360) % 360:.0f},90" + (';'*(len(coords)-1))
-
 
     coords_str = ';'.join([f'{lon},{lat}' for lon, lat in coords])
     url = self.mapbox_host + '/directions/v5/mapbox/driving-traffic/' + coords_str
@@ -228,9 +228,6 @@ class RouteEngine:
       return
 
     step = self.route[self.step_idx]
-
-
-
     geometry = self.route_geometry[self.step_idx]
     along_geometry = distance_along_geometry(geometry, self.last_position)
     distance_to_maneuver_along_geometry = step['distance'] - along_geometry
@@ -283,7 +280,10 @@ class RouteEngine:
     for i in range(self.step_idx + 1, len(self.route)):
       total_distance += self.route[i]['distance']
       total_time += self.route[i]['duration']
-      total_time_typical += self.route[i]['duration_typical']
+      if self.route[i]['duration_typical'] is None:
+        total_time_typical += self.route[i]['duration']
+      else:
+        total_time_typical += self.route[i]['duration_typical']
 
     msg.navInstruction.distanceRemaining = total_distance
     msg.navInstruction.timeRemaining = total_time

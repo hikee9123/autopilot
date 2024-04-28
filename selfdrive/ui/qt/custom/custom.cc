@@ -12,6 +12,7 @@
 #include <QJsonArray>
 #include <QProcess>
 
+#include "common/watchdog.h"
 #include "common/params.h"
 #include "common/watchdog.h"
 #include "common/util.h"
@@ -211,6 +212,7 @@ CustomPanel::CustomPanel(SettingsWindow *parent) : QWidget(parent)
         {tr("UI"), new UITab(this, m_jsonobj)},      
         {tr("Community"), new CommunityTab(this, m_jsonobj)},
         {tr("Git"), new GitTab(this, m_jsonobj)},
+        {tr("Model"), new ModelTab(this, m_jsonobj)},
         {tr("Navigation"), new NavigationTab(this, m_jsonobj)},
         {tr("Debug"), new Debug(this,m_jsonobj)},
     };
@@ -361,6 +363,7 @@ void CustomPanel::updateToggles( int bSave )
   int kegmanEngine = m_jsonobj["kegmanEngine"].toBool();
   int kegmanDistance = m_jsonobj["kegmanDistance"].toBool();
   int kegmanSpeed = m_jsonobj["kegmanSpeed"].toBool();
+  int kegmanLag = m_jsonobj["kegmanLag"].toBool();
 
 
   ui.setCmdIdx( m_cmdIdx );  
@@ -377,6 +380,8 @@ void CustomPanel::updateToggles( int bSave )
   ui.setKegmanEngine( kegmanEngine );
   ui.setKegmanDistance( kegmanDistance );
   ui.setKegmanSpeed( kegmanSpeed );
+  ui.setKegmanLag( kegmanLag );
+
 
   send("uICustom", msg);
 }
@@ -514,6 +519,20 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
       "../assets/offroad/icon_shell.png",
       0,60,1
     },
+    {
+      "MAP_RENDER_VIEW",
+      tr("map render view"),
+      "0:Not used:1",
+      "../assets/offroad/icon_shell.png",
+      0,1,1
+    },
+    {
+      "DUAL_CAMERA_VIEW",
+      tr("dual camera view"),
+      "0:Not used:1",
+      "../assets/offroad/icon_shell.png",
+      0,1,1
+    },          
   };
 
   for (auto &[param, title, desc, icon, min,max,unit] : value_defs) {
@@ -657,6 +676,71 @@ void GitTab::hideEvent(QHideEvent *event)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+
+ModelTab::ModelTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent) , m_jsonobj(jsonobj)
+{
+  m_pCustom = parent;
+
+
+
+  QString selected_model = QString::fromStdString(Params().get("SelectedModel"));
+  auto changeModel = new ButtonControl(selected_model.length() ? selected_model : tr("Select your model"),
+                    selected_model.length() ? tr("CHANGE") : tr("SELECT"), "");
+
+  QObject::connect( changeModel, &ButtonControl::clicked, [=]() {
+    QStringList items = {
+      "1.Certified_Herbalist1,supercombo_CH1", 
+      "2.Certified_Herbalist2,supercombo_CH2", 
+      "3.Los_Angeles model,supercombo_LA", 
+      "4.Recertified_Herbalist,supercombo_RH", 
+      "5.Duck_Amigo model,supercombo_DA",
+      "6.WD40 model,supercombo_WD40",
+      };
+
+    QString selection = MultiOptionDialog::getSelection(tr("Select a model"), items, selected_model, this);
+    if ( !selection.isEmpty() ) 
+    {
+      //  int selectedIndex = items.indexOf(selection);
+      Params().put("SelectedModel", selection.toStdString());
+      //  printf("sected model  %d  %s", selectedIndex, selection.toStdString());
+     // qApp->exit(18);
+    //  watchdog_kick(0);
+    }
+  });
+  addItem(changeModel);
+
+
+
+
+
+
+  setStyleSheet(R"(
+    * {
+      color: white;
+      outline: none;
+      font-family: Inter;
+    }
+    Updater {
+      color: white;
+      background-color: black;
+    }
+  )");  
+}
+
+void ModelTab::showEvent(QShowEvent *event) 
+{
+    QWidget::showEvent(event);
+}
+
+
+void ModelTab::hideEvent(QHideEvent *event)
+{
+  QWidget::hideEvent(event);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -760,44 +844,51 @@ UITab::UITab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(parent), m_
       //"../assets/offroad/icon_shell.png",
     },
     {
+      "kegmanLag",
+      " - Lag(ms) CPU status",
+      "2. Up to 4 menus can be displayed.",
+      "",
+      //"../assets/offroad/icon_shell.png",
+    },
+    {
       "kegmanBattery",
       " - battery voltage",
-      "2. Up to 4 menus can be displayed.",
+      "3. Up to 4 menus can be displayed.",
       "",
       //"../assets/offroad/icon_shell.png",
     },
     {
       "kegmanGPU",
       " - GPS accuracy",
-      "3. Up to 4 menus can be displayed.",
+      "4. Up to 4 menus can be displayed.",
       "",
       //"../assets/offroad/icon_shell.png",
     },
     {
       "kegmanAngle",
       " - steering angle",
-      "4. Up to 4 menus can be displayed.",
+      "5. Up to 4 menus can be displayed.",
       "",
      // "../assets/offroad/icon_shell.png",
     },
     {
       "kegmanEngine",
       " - engine status",
-      "5. Up to 4 menus can be displayed.",
+      "6. Up to 4 menus can be displayed.",
       "",
       //"../assets/offroad/icon_shell.png",
     },
     {
       "kegmanDistance",
       " - radar relative distance",
-      "6. Up to 4 menus can be displayed.",
+      "7. Up to 4 menus can be displayed.",
       "",
      // "../assets/offroad/icon_shell.png",
     },
     {
       "kegmanSpeed",
       " - radar relative speed",
-      "7. Up to 4 menus can be displayed.",
+      "8. Up to 4 menus can be displayed.",
       "",
       //"../assets/offroad/icon_shell.png",
     },

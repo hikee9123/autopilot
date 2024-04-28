@@ -19,32 +19,9 @@ class NaviControl():
     self.seq_command = 0
     self.target_speed = 0
     self.set_point = 0
-    self.wait_timer2 = 0
-
-
-    self.gasPressed_time = 0
-
 
     self.VSetDis = 30
-    self.frame_VSetDis = 30
-
-
     self.last_lead_distance = 0
-
-
-    self.turnSpeedLimitsAhead = 0
-    self.turnSpeedLimitsAheadDistances = 0
-    self.turnSpeedLimitsAheadDistancesOld = 0
-
-    self.event_navi_alert = None
-
-    self._frame_inc = 0
-    self._frame_dec = 0
-    self._visionTurnSpeed = 0
-    self._current_lat_acc = 0
-    self._max_pred_lat_acc = 0
-
-    self.auto_resume_time = 0
 
     self.speedLimit = 0
     self.speedLimitDistance = 0
@@ -52,13 +29,34 @@ class NaviControl():
     self.trafficType = 0
     self.ctrl_speed = 0
 
-    self.waittime_press = 5
-    self.waittime_none = 6
-
-    self.speed_kps = 0
+    self.speed_kps = 0      # comma speed control
 
     self.cruiseGap = 0
     self.cruise_set_mode = 0
+
+
+    # wait time
+    self.waittime_press = 5
+    self.waittime_none = 6
+
+    self.wait_timer2 = 0
+    self.wait_accsafety = 0 
+
+    # 미사용.
+    self.gasPressed_time = 0 
+    self.frame_VSetDis = 30
+
+    self.turnSpeedLimitsAhead = 0
+    self.turnSpeedLimitsAheadDistances = 0
+    self.turnSpeedLimitsAheadDistancesOld = 0
+
+    self.event_navi_alert = None 
+
+    self._frame_inc = 0
+    self._frame_dec = 0
+    self._visionTurnSpeed = 0
+    self._current_lat_acc = 0
+    self._max_pred_lat_acc = 0 
 
 
   def button_status(self, CS ):
@@ -189,7 +187,7 @@ class NaviControl():
       return  cruise_set_speed_kph
     elif v_ego_kph < 80:
       if speedLimit <= 60:
-        spdTarget = interp( speedLimitDistance, [150, 600], [ speedLimit, speedLimit + 30 ] )
+        spdTarget = interp( speedLimitDistance, [100, 600], [ speedLimit, speedLimit + 30 ] )
       else:
         spdTarget = interp( speedLimitDistance, [200, 800], [ speedLimit, speedLimit + 40 ] )
     elif speedLimitDistance >= 50:
@@ -238,18 +236,21 @@ class NaviControl():
     # send scc to car if longcontrol enabled and SCC not on bus 0 or ont live
     btn_signal = None
     if not self.button_status( CS  ):
+      self.wait_accsafety = 50
       pass
     elif CS.customCS.acc_active:
       cruiseState_speed = CS.out.cruiseState.speed * CV.MS_TO_KPH      
       kph_set_vEgo = self.get_navi_speed(  self.sm , CS, cruiseState_speed, frame )
       self.ctrl_speed = min( cruiseState_speed, kph_set_vEgo)
 
-      if self.cruise_set_mode:
+      if self.wait_accsafety > 0:
+        self.wait_accsafety -= 1
+      elif self.cruise_set_mode:
         self.ctrl_speed = self.auto_speed_control( c, CS, self.ctrl_speed )
  
-      btn_signal = self.ascc_button_control( CS, self.ctrl_speed )
+      if not self.CP.openpilotLongitudinalControl:
+        btn_signal = self.ascc_button_control( CS, self.ctrl_speed )
+    else:
+      self.wait_accsafety = 300
 
-
-   
-    
     return btn_signal
