@@ -541,7 +541,7 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
     m_valueCtrl[ param.toStdString() ] = value;
   }
 
-
+  addItem(  new ParamControl("EnableLogging", "Enable Logging", "Recording logs", "../assets/offroad/icon_shell.png", this) );
 
   QObject::connect( m_valueCtrl["CruiseMode"], &CValueControl::clicked, [=]() {
     int cruiseMode = m_jsonobj["CruiseMode"].toInt();
@@ -553,10 +553,6 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
     {
        m_valueCtrl[ "CruiseGap" ]->setEnabled(true);
     }
-
-    addItem(  new ParamControl("EnableLogging", "Enable Logging", "Recording logs", "../assets/offroad/icon_shell.png", this) );
-
-
     update();
   });
 
