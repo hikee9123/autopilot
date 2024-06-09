@@ -48,9 +48,14 @@ class CarStateCustom():
     self.leftLaneTime = 50
     self.rightLaneTime = 50
 
-    m_jsonobj = read_json_file("CustomParam")
-    self.autoLaneChange = m_jsonobj["AutoLaneChange"]
-    self.menu_debug = m_jsonobj["debug"]
+
+    try:
+      m_jsonobj = read_json_file("CustomParam")
+      self.autoLaneChange = m_jsonobj["AutoLaneChange"]
+      self.menu_debug = m_jsonobj["debug"]
+    except Exception as e:
+      self.autoLaneChange = 0
+      self.menu_debug = 0
     
     self.lanechange_wait = 0
     self.controlsAllowed = 0
