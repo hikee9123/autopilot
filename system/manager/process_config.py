@@ -82,14 +82,14 @@ def set_mapbox()  -> bool:
 
 
     #custom
-    #setNavDestination( 36.85520956438799,  127.10113048553467, "KNJ", "À½ºÀ¸é »êµ¿¸® 123-1" )
+    #setNavDestination( 36.85520956438799,  127.10113048553467, "KNJ", "ìŒë´‰ë©´ ì‚°ë™ë¦¬ 123-1" )
     destinations = [
       {
           "label": "home",
           "place_name": "Y-CITY",
           "latitude": 36.7973763270954,
           "longitude": 127.10827665676986,
-          "place_details": "¹è¹æÀ¾ ±¤Àå·Î 210",
+          "place_details": "ë°°ë°©ì ê´‘ì¥ë¡œ 210",
           "save_type": "favorite",
       },
       {
@@ -97,23 +97,23 @@ def set_mapbox()  -> bool:
           "place_name": "KNJ",
           "latitude": 36.85520956438799,
           "longitude": 127.10113048553467,
-          "place_details": "À½ºÀ¸é »êµ¿¸® 123-1",
+          "place_details": "ìŒë´‰ë©´ ì‚°ë™ë¦¬ 123-1",
           "save_type": "favorite",
       },
       {
           "label": "recent",
-          "place_name": "°íÇâ",
+          "place_name": "ê³ í–¥",
           "latitude": 37.064122032373774,
           "longitude": 127.80750423325486,
-          "place_details": "ÃæÁÖ½Ã µ¿¸·°í°³±æ",
+          "place_details": "ì¶©ì£¼ì‹œ ë™ë§‰ê³ ê°œê¸¸",
           "save_type": "favorite",
       },
       {
           "label": "recent",
-          "place_name": "¼­¿ï¾Æ»êº´¿ø",
+          "place_name": "ì„œìš¸ì•„ì‚°ë³‘ì›",
           "latitude": 37.5265455,
           "longitude": 127.1081223,
-          "place_details": "¼ÛÆÄ±¸ ¿Ã¸²ÇÈ·Î43±æ 88",
+          "place_details": "ì†¡íŒŒêµ¬ ì˜¬ë¦¼í”½ë¡œ43ê¸¸ 88",
           "save_type": "favorite",
       },
     ]
