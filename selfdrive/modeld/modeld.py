@@ -70,11 +70,44 @@ class ModelState:
     self.output = np.zeros(net_output_size, dtype=np.float32)
     self.parser = Parser()
 
+    #custom
+    self.select_supercombo()
     self.model = ModelRunner(MODEL_PATHS, self.output, Runtime.GPU, False, context)
     self.model.addInput("input_imgs", None)
     self.model.addInput("big_input_imgs", None)
     for k,v in self.inputs.items():
       self.model.addInput(k, v)
+
+  #custom
+  def select_supercombo(self):
+    model_name = Params().get("SelectedModel", encoding='utf-8')
+
+    print(f"model Custom Param  JSON document name{model_name}")
+    print(f"model name1 = {MODEL_PATHS}")
+    if model_name ==  "1.Certified_Herbalist1,supercombo_CH1":
+      self.supercombo_name = 'models/supercombos/supercombo_CH1.onnx'
+    elif model_name ==   "2.Certified_Herbalist2,supercombo_CH2": 
+      self.supercombo_name = 'models/supercombos/supercombo_CH2.onnx'
+    elif model_name ==   "3.Los_Angeles model,supercombo_LA":
+      self.supercombo_name = 'models/supercombos/supercombo_LA.onnx'
+    elif model_name ==   "4.Recertified_Herbalist,supercombo_RH":
+      self.supercombo_name = 'models/supercombos/supercombo_RH.onnx'
+    elif model_name == "5.Duck_Amigo model,supercombo_DA":
+      self.supercombo_name = 'models/supercombos/supercombo_DA.onnx'
+    elif model_name == "6.WD40 model,supercombo_WD40":
+      self.supercombo_name = 'models/supercombos/supercombo_WD40.onnx'
+    elif model_name == "7.North Dakota Model,supercombo_DM":
+      self.supercombo_name = 'models/supercombos/supercombo_DM.onnx'
+    else:
+      self.supercombo_name = 'models/supercombo.onnx'
+
+    MODEL_PATHS[ModelRunner.ONNX] = Path(__file__).parent / self.supercombo_name
+    print(f"model supercombo name = {self.supercombo_name}")
+    print(f"model name2 = {MODEL_PATHS}")
+
+    return  self.supercombo_name
+
+
 
   def slice_outputs(self, model_outputs: np.ndarray) -> dict[str, np.ndarray]:
     parsed_model_outputs = {k: model_outputs[np.newaxis, v] for k,v in self.output_slices.items()}

@@ -269,6 +269,16 @@ void SetupWidget::replyFinished(const QString &response, bool success) {
   }
 
   QJsonObject json = doc.object();
+
+
+  // #custom  PrimeType::LITE;//
+  QString mapbox_token = QString::fromStdString(Params().get("MapboxToken"));
+  if( !mapbox_token.isEmpty() )
+  {
+    json["prime"] = true;
+    json["prime_type"] = 2;  // PrimeType::LITE;
+  }
+
   bool is_paired = json["is_paired"].toBool();
   PrimeType prime_type = static_cast<PrimeType>(json["prime_type"].toInt());
   uiState()->setPrimeType(is_paired ? prime_type : PrimeType::UNPAIRED);

@@ -21,7 +21,8 @@ EventName = car.CarEvent.EventName
 
 def get_startup_event(car_recognized, controller_available, fw_seen):
   build_metadata = get_build_metadata()
-  if build_metadata.openpilot.comma_remote and build_metadata.tested_channel:
+  #if build_metadata.openpilot.comma_remote and build_metadata.tested_channel:
+  if build_metadata.tested_channel:  #custom
     event = EventName.startup
   else:
     event = EventName.startupMaster
@@ -196,6 +197,11 @@ def get_car(logcan, sendcan, experimental_long_allowed, num_pandas=1):
   if candidate is None:
     cloudlog.event("car doesn't match any fingerprints", fingerprints=repr(fingerprints), error=True)
     candidate = "MOCK"
+
+    #custom
+    selected_car = Params().get("SelectedCar")
+    if selected_car:
+      candidate = selected_car.decode("utf-8")
 
   CarInterface, _, _ = interfaces[candidate]
   CP = CarInterface.get_params(candidate, fingerprints, car_fw, experimental_long_allowed, docs=False)
