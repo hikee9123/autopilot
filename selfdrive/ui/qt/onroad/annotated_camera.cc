@@ -21,6 +21,9 @@ AnnotatedCameraWidget::AnnotatedCameraWidget(VisionStreamType type, QWidget* par
   main_layout->addWidget(experimental_btn, 0, Qt::AlignTop | Qt::AlignRight);
 
   dm_img = loadPixmap("../assets/img_driver_face.png", {img_size + 5, img_size + 5});
+
+  // #custom
+  m_pPaint = new OnPaint(this, width(), height());  
 }
 
 void AnnotatedCameraWidget::updateState(const UIState &s) {
@@ -67,6 +70,11 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
   rightHandDM = dm_state.getIsRHD();
   // DM icon transition
   dm_fade_state = std::clamp(dm_fade_state+0.2*(0.5-dmActive), 0.0, 1.0);
+
+
+  // #custom
+  if( m_pPaint )
+     m_pPaint->updateState(s);    
 }
 
 void AnnotatedCameraWidget::drawHud(QPainter &p) {
@@ -159,10 +167,17 @@ void AnnotatedCameraWidget::drawHud(QPainter &p) {
   }
 
   // current speed
-  p.setFont(InterFont(176, QFont::Bold));
-  drawText(p, rect().center().x(), 210, speedStr);
-  p.setFont(InterFont(66));
-  drawText(p, rect().center().x(), 290, speedUnit, 200);
+  //p.setFont(InterFont(176, QFont::Bold));
+  //drawText(p, rect().center().x(), 210, speedStr);
+  //p.setFont(InterFont(66));
+  //drawText(p, rect().center().x(), 290, speedUnit, 200);
+
+  // #custom
+  if( m_pPaint )
+  {
+    m_pPaint->drawHud(p);
+    m_pPaint->drawSpeed(p, rect().center().x(), speedStr, speedUnit );
+  }
 
   p.restore();
 }
@@ -306,6 +321,7 @@ void AnnotatedCameraWidget::drawDriverState(QPainter &painter, const UIState *s)
 void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd) {
   painter.save();
 
+/*
   const float speedBuff = 10.;
   const float leadBuff = 40.;
   const float d_rel = lead_data.getDRel();
@@ -335,6 +351,11 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
   painter.setBrush(redColor(fillAlpha));
   painter.drawPolygon(chevron, std::size(chevron));
+*/
+
+  // #custom
+  m_pPaint->drawLead( painter, lead_data, vd, width(),  height() );
+
 
   painter.restore();
 }
@@ -396,7 +417,14 @@ void AnnotatedCameraWidget::paintGL() {
     update_model(s, model);
     drawLaneLines(painter, s);
 
-    if (s->scene.longitudinal_control && sm.rcv_frame("radarState") > s->scene.started_frame) {
+    // #custom
+    int  longitudinal_control = s->scene.longitudinal_control;
+    if( m_pPaint && m_pPaint->showCarTracking() )
+    { 
+        longitudinal_control |= 1;
+    }
+
+    if (longitudinal_control && sm.rcv_frame("radarState") > s->scene.started_frame) {
       auto radar_state = sm["radarState"].getRadarState();
       update_leads(s, radar_state, model.getPosition());
       auto lead_one = radar_state.getLeadOne();

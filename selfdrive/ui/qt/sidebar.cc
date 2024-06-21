@@ -38,6 +38,9 @@ Sidebar::Sidebar(QWidget *parent) : QFrame(parent), onroad(false), flag_pressed(
   QObject::connect(uiState(), &UIState::uiUpdate, this, &Sidebar::updateState);
 
   pm = std::make_unique<PubMaster, const std::initializer_list<const char *>>({"userFlag"});
+  
+  // #custom
+  m_pSideBar = new CSidebar( nullptr );
 }
 
 void Sidebar::mousePressEvent(QMouseEvent *event) {
@@ -57,7 +60,12 @@ void Sidebar::mouseReleaseEvent(QMouseEvent *event) {
   }
   if (onroad && home_btn.contains(event->pos())) {
     MessageBuilder msg;
-    msg.initEvent().initUserFlag();
+    //msg.initEvent().initUserFlag();
+
+    // #custom
+    auto userFlag = msg.initEvent().initUserFlag();
+    m_pSideBar->mouseReleaseEvent( event, userFlag );    
+
     pm->send("userFlag", msg);
   } else if (settings_btn.contains(event->pos())) {
     emit openSettings();
@@ -106,6 +114,14 @@ void Sidebar::updateState(const UIState &s) {
     pandaStatus = {{tr("GPS"), tr("SEARCH")}, warning_color};
   }
   setProperty("pandaStatus", QVariant::fromValue(pandaStatus));
+
+  // #custom
+  if( m_pSideBar )
+  {
+      if( m_pSideBar->updateState(s) )
+        update();
+  }
+       
 }
 
 void Sidebar::paintEvent(QPaintEvent *event) {
@@ -140,4 +156,8 @@ void Sidebar::paintEvent(QPaintEvent *event) {
   drawMetric(p, temp_status.first, temp_status.second, 338);
   drawMetric(p, panda_status.first, panda_status.second, 496);
   drawMetric(p, connect_status.first, connect_status.second, 654);
+
+  // #custom
+  if( m_pSideBar )
+    m_pSideBar->paintEvent( p );
 }
