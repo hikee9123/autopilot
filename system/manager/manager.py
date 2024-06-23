@@ -90,8 +90,8 @@ def manager_init() -> None:
     os.environ['CLEAN'] = '1'
 
   #custom
-  print('#register= reg_res {}'.format( reg_res) )
-  set_mapbox()
+  #print('#register= reg_res {}'.format( reg_res) )
+  #set_mapbox()
 
 
   # init logging
