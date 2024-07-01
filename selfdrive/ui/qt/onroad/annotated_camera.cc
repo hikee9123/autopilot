@@ -31,9 +31,9 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
   const SubMaster &sm = *(s.sm);
 
   const bool cs_alive = sm.alive("controlsState");
-  const bool nav_alive = sm.alive("navInstruction") && sm["navInstruction"].getValid();
   const auto cs = sm["controlsState"].getControlsState();
   const auto car_state = sm["carState"].getCarState();
+  const bool nav_alive = sm.alive("navInstruction") && sm["navInstruction"].getValid();
   const auto nav_instruction = sm["navInstruction"].getNavInstruction();
 
   // Handle older routes where vCruiseCluster is not set
@@ -86,10 +86,10 @@ void AnnotatedCameraWidget::drawHud(QPainter &p) {
   bg.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0));
   p.fillRect(0, 0, width(), UI_HEADER_HEIGHT, bg);
 
-  QString speedLimitStr = (speedLimit > 1) ? QString::number(std::nearbyint(speedLimit)) : "–";
   QString speedStr = QString::number(std::nearbyint(speed));
   QString setSpeedStr = is_cruise_set ? QString::number(std::nearbyint(setSpeed)) : "–";
 
+  QString speedLimitStr = (speedLimit > 1) ? QString::number(std::nearbyint(speedLimit)) : "–";
   // Draw outer box + border to contain set speed and speed limit
   const int sign_margin = 12;
   const int us_sign_height = 186;

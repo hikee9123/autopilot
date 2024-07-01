@@ -84,20 +84,20 @@ class ModelState:
 
     print(f"model Custom Param  JSON document name{model_name}")
     print(f"model name1 = {MODEL_PATHS}")
-    if model_name ==  "1.Certified_Herbalist1,supercombo_CH1":
-      self.supercombo_name = 'models/supercombos/supercombo_CH1.onnx'
-    elif model_name ==   "2.Certified_Herbalist2,supercombo_CH2": 
-      self.supercombo_name = 'models/supercombos/supercombo_CH2.onnx'
-    elif model_name ==   "3.Los_Angeles model,supercombo_LA":
-      self.supercombo_name = 'models/supercombos/supercombo_LA.onnx'
-    elif model_name ==   "4.Recertified_Herbalist,supercombo_RH":
-      self.supercombo_name = 'models/supercombos/supercombo_RH.onnx'
-    elif model_name == "5.Duck_Amigo model,supercombo_DA":
-      self.supercombo_name = 'models/supercombos/supercombo_DA.onnx'
+    if model_name == "7.North Dakota Model,supercombo_DM":
+      self.supercombo_name = 'models/supercombos/supercombo_DM.onnx'
     elif model_name == "6.WD40 model,supercombo_WD40":
       self.supercombo_name = 'models/supercombos/supercombo_WD40.onnx'
-    elif model_name == "7.North Dakota Model,supercombo_DM":
-      self.supercombo_name = 'models/supercombos/supercombo_DM.onnx'
+    elif model_name == "5.Duck_Amigo model,supercombo_DA":
+      self.supercombo_name = 'models/supercombos/supercombo_DA.onnx'
+    elif model_name ==   "4.Recertified_Herbalist,supercombo_RH":
+      self.supercombo_name = 'models/supercombos/supercombo_RH.onnx'
+    elif model_name ==   "3.Los_Angeles model,supercombo_LA":
+      self.supercombo_name = 'models/supercombos/supercombo_LA.onnx'
+    elif model_name ==   "2.Certified_Herbalist2,supercombo_CH2": 
+      self.supercombo_name = 'models/supercombos/supercombo_CH2.onnx'
+    if model_name ==  "1.Certified_Herbalist1,supercombo_CH1":
+      self.supercombo_name = 'models/supercombos/supercombo_CH1.onnx'
     else:
       self.supercombo_name = 'models/supercombo.onnx'
 
@@ -182,7 +182,7 @@ def main(demo=False):
     cloudlog.warning(f"connected extra cam with buffer size: {vipc_client_extra.buffer_len} ({vipc_client_extra.width} x {vipc_client_extra.height})")
 
   # messaging
-  pm = PubMaster(["modelV2", "cameraOdometry"])
+  pm = PubMaster(["modelV2", "drivingModelData", "cameraOdometry"])
   sm = SubMaster(["deviceState", "carState", "roadCameraState", "liveCalibration", "driverMonitoringState", "carControl"])
 
   publish_state = PublishState()
@@ -292,9 +292,10 @@ def main(demo=False):
 
     if model_output is not None:
       modelv2_send = messaging.new_message('modelV2')
+      drivingdata_send = messaging.new_message('drivingModelData')
       posenet_send = messaging.new_message('cameraOdometry')
-      fill_model_msg(modelv2_send, model_output, publish_state, meta_main.frame_id, meta_extra.frame_id, frame_id, frame_drop_ratio,
-                      meta_main.timestamp_eof, model_execution_time, live_calib_seen)
+      fill_model_msg(drivingdata_send, modelv2_send, model_output, publish_state, meta_main.frame_id, meta_extra.frame_id, frame_id,
+                     frame_drop_ratio, meta_main.timestamp_eof, model_execution_time, live_calib_seen)
 
       desire_state = modelv2_send.modelV2.meta.desireState
       l_lane_change_prob = desire_state[log.Desire.laneChangeLeft]
@@ -303,9 +304,12 @@ def main(demo=False):
       DH.update(sm['carState'], sm['carControl'].latActive, lane_change_prob)
       modelv2_send.modelV2.meta.laneChangeState = DH.lane_change_state
       modelv2_send.modelV2.meta.laneChangeDirection = DH.lane_change_direction
+      drivingdata_send.drivingModelData.meta.laneChangeState = DH.lane_change_state
+      drivingdata_send.drivingModelData.meta.laneChangeDirection = DH.lane_change_direction
 
       fill_pose_msg(posenet_send, model_output, meta_main.frame_id, vipc_dropped_frames, meta_main.timestamp_eof, live_calib_seen)
       pm.send('modelV2', modelv2_send)
+      pm.send('drivingModelData', drivingdata_send)
       pm.send('cameraOdometry', posenet_send)
 
     last_vipc_frame_id = meta_main.frame_id
