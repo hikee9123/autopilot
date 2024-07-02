@@ -84,7 +84,9 @@ class ModelState:
 
     print(f"model Custom Param  JSON document name{model_name}")
     print(f"model name1 = {MODEL_PATHS}")
-    if model_name == "7.North Dakota Model,supercombo_DM":
+    if model_name == "8.Notre Dame Model,supercombo_ND":
+      self.supercombo_name = 'models/supercombos/supercombo_ND.onnx'
+    elif model_name == "7.North Dakota Model,supercombo_DM":
       self.supercombo_name = 'models/supercombos/supercombo_DM.onnx'
     elif model_name == "6.WD40 model,supercombo_WD40":
       self.supercombo_name = 'models/supercombos/supercombo_WD40.onnx'
