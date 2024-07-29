@@ -20,7 +20,6 @@ class CarStateCustom():
     self.CP = CP
     self.params = Params()
     self.oldCruiseStateEnabled = False
-    self.pm = messaging.PubMaster(['carStateCustom'])
     self.frame = 0
     self.acc_active = 0
 
@@ -158,50 +157,41 @@ class CarStateCustom():
     ret.rl = rl * factor
     ret.rr = rr * factor
 
-  def send_carstatus( self, cp, CS ):
+  def send_carstatus( self, ret, cp, CS ):
     if self.menu_debug == 0:
       return
-    
 
-    if self.frame % 20 == 0:
-      dat = messaging.new_message('carStateCustom')
-      carStatus = dat.carStateCustom
-      self.get_tpms( carStatus.tpms,
-        cp.vl["TPMS11"]["UNIT"],
-        cp.vl["TPMS11"]["PRESSURE_FL"],
-        cp.vl["TPMS11"]["PRESSURE_FR"],
-        cp.vl["TPMS11"]["PRESSURE_RL"],
-        cp.vl["TPMS11"]["PRESSURE_RR"],
-      )
+    global trace1
+    carSCustom = car.CarState.CarSCustom.new_message()
+    carSCustom.supportedCars = self.cars
+    carSCustom.breakPos = self.brakePos
+    carSCustom.leadDistance = self.lead_distance
+    carSCustom.gapSet = self.gapSet
 
-      carStatus.leadDistance = self.lead_distance
-      carStatus.breakPos = self.brakePos
-      carStatus.supportedCars = self.cars
-      carStatus.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr
-      carStatus.gapSet  = self.gapSet
-    
-      global trace1
-      carStatus.alertTextMsg1 = str(trace1.global_alertTextMsg1)
-      carStatus.alertTextMsg2 = str(trace1.global_alertTextMsg2)
-      carStatus.alertTextMsg3 = str(trace1.global_alertTextMsg3)
+    carSCustom.alertTextMsg1 = str(trace1.global_alertTextMsg1)
+    carSCustom.alertTextMsg2 = str(trace1.global_alertTextMsg2)
+    carSCustom.alertTextMsg3 = str(trace1.global_alertTextMsg3)
 
-      try:
-        self.pm.send('carStateCustom', dat )
-      except Exception as e:
-        self.menu_debug = 0
-        print( 'error carStateCustom ==============================================================' )
-        print( 'error carStateCustom => [{}] <='.format(e) )
-        print( 'error carStateCustom ==============================================================' )
+    carSCustom.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr
+    self.get_tpms( carSCustom.tpms,
+      cp.vl["TPMS11"]["UNIT"],
+      cp.vl["TPMS11"]["PRESSURE_FL"],
+      cp.vl["TPMS11"]["PRESSURE_FR"],
+      cp.vl["TPMS11"]["PRESSURE_RL"],
+      cp.vl["TPMS11"]["PRESSURE_RR"],
+    )
 
-      #log
-      trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-      trace1.printf2( 'LC={:.0f},{},{:.0f},{:.0f},{:.0f}'.format(  self.autoLaneChange, self.laneChangeState, self.lanechange_wait, self.leftLaneTime, self.rightLaneTime ) )
+    ret.carSCustom = carSCustom
 
-      if self.CP.openpilotLongitudinalControl:
-        trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
-           cp.vl["CLU11"]["CF_Clu_CruiseSwState"], cp.vl["CLU11"]["CF_Clu_CruiseSwMain"], cp.vl["CLU11"]["CF_Clu_SldMainSW"],
-           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
-        ))
+    #log
+    trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
+    trace1.printf2( 'LC={:.0f},{},{:.0f},{:.0f},{:.0f}'.format(  self.autoLaneChange, self.laneChangeState, self.lanechange_wait, self.leftLaneTime, self.rightLaneTime ) )
+
+    if self.CP.openpilotLongitudinalControl:
+      trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
+          cp.vl["CLU11"]["CF_Clu_CruiseSwState"], cp.vl["CLU11"]["CF_Clu_CruiseSwMain"], cp.vl["CLU11"]["CF_Clu_SldMainSW"],
+          cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
+      ))
 
 
   def auto_lene_change( self, ret ):
@@ -352,7 +342,7 @@ class CarStateCustom():
       return
     
     self.auto_lene_change( ret )
-    self.send_carstatus( cp, CS )
+    self.send_carstatus( ret, cp, CS )
 
 
 

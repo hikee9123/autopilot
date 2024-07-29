@@ -278,12 +278,35 @@ struct CarState {
     }
   }
 
+  struct CarSCustom {
+    tpms @0 :Tpms;
+    alertTextMsg1  @1 :Text;
+    alertTextMsg2  @2 :Text;
+    alertTextMsg3  @3 :Text;
+
+    electGearStep @4 :Int16;
+    supportedCars @5 :List(Text);
+
+    breakPos @6 :Float32;
+    leadDistance @7 :Float32;
+    gapSet @8 :Int16;
+
+    struct Tpms {
+      unit @0 :Int16;
+      fl @1 :Float32;
+      fr @2 :Float32;
+      rl @3 :Float32;
+      rr @4 :Float32;
+    }
+  }
+
   # deprecated
   errorsDEPRECATED @0 :List(CarEvent.EventName);
   brakeLightsDEPRECATED @19 :Bool;
   steeringRateLimitedDEPRECATED @29 :Bool;
   canMonoTimesDEPRECATED @12: List(UInt64);
-  canRcvTimeoutDEPRECATED @49 :Bool;
+  #canRcvTimeoutDEPRECATED @49 :Bool;
+  carSCustom @49 :CarSCustom;
 }
 
 # ******* radar state @ 20hz *******

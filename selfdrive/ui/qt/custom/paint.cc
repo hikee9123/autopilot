@@ -191,18 +191,6 @@ void OnPaint::updateState(const UIState &s)
   m_nda.camLimitSpeedLeftDist = camLimitSpeedLeftDist;    
   m_nda.cntIdx = cntIdx;
 
-  // 1.
-  auto carState_custom = sm2["carStateCustom"].getCarStateCustom();
-  m_param.tpmsData  = carState_custom.getTpms();
-
-  // debug Message
-  alert.alertTextMsg1 = carState_custom.getAlertTextMsg1();
-  alert.alertTextMsg2 = carState_custom.getAlertTextMsg2();
-  alert.alertTextMsg3 = carState_custom.getAlertTextMsg3();    
-  m_param.electGearStep  = carState_custom.getElectGearStep();
-  m_param.breakPos = carState_custom.getBreakPos();
-  scene->custom.leadDistance = carState_custom.getLeadDistance();
-
 
   // 2.
   auto deviceState = sm1["deviceState"].getDeviceState();
@@ -224,6 +212,20 @@ void OnPaint::updateState(const UIState &s)
   bool  brakeLights = car_state.getBrakeLightsDEPRECATED();  
   if( brakePress ) m_nBrakeStatus = 1; else m_nBrakeStatus = 0;
   if( brakeLights ) m_nBrakeStatus |= 2;
+
+
+  // 1.
+  auto carState_custom = car_state.getCarSCustom();
+  m_param.tpmsData  = carState_custom.getTpms();
+
+  // debug Message
+  alert.alertTextMsg1 = carState_custom.getAlertTextMsg1();
+  alert.alertTextMsg2 = carState_custom.getAlertTextMsg2();
+  alert.alertTextMsg3 = carState_custom.getAlertTextMsg3();    
+  m_param.electGearStep  = carState_custom.getElectGearStep();
+  m_param.breakPos = carState_custom.getBreakPos();
+  scene->custom.leadDistance = carState_custom.getLeadDistance();
+
 
   // 2.
   if (sm1.frame % (UI_FREQ) != 0)   

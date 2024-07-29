@@ -73,7 +73,7 @@ private:
   struct _PARAM_
   {
     cereal::RadarState::LeadData::Reader lead_radar;
-    cereal::CarStateCustom::Tpms::Reader tpmsData;
+    cereal::CarState::carSCustom::Tpms::Reader tpmsData;
 
     cereal::UICustom::Community::Reader community;
     cereal::UICustom::UserInterface::Reader ui;
