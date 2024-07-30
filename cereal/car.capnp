@@ -1,6 +1,8 @@
 using Cxx = import "./include/c++.capnp";
 $Cxx.namespace("cereal");
 
+using Custom = import "custom.capnp";
+
 @0x8e2af1e708af8b8d;
 
 # ******* events causing controls state machine transition *******
@@ -307,6 +309,7 @@ struct CarState {
   canMonoTimesDEPRECATED @12: List(UInt64);
   #canRcvTimeoutDEPRECATED @49 :Bool;
   carSCustom @49 :CarSCustom;
+  #carSCustom @49 :Custom.CarStateCustom;
 }
 
 # ******* radar state @ 20hz *******

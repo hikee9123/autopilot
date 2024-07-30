@@ -204,7 +204,7 @@ void CValueControl2::refresh()
 CustomPanel::CustomPanel(SettingsWindow *parent) : QWidget(parent) 
 {
   pm.reset( new PubMaster({"uICustom"}) );
-  sm.reset( new SubMaster({"carStateCustom"}) );
+  sm.reset( new SubMaster({"carState"}) );
 
   m_jsonobj = readJsonFile( "CustomParam" );
 
@@ -406,7 +406,15 @@ void CustomPanel::showEvent(QShowEvent *event)
   if( nCarCnt > 0 ) return;
 
   sm->update(0);
-  auto carState_custom = (*sm)["carStateCustom"].getCarStateCustom();
+
+
+  UIState   *s = uiState();
+  UIScene   &scene = s->scene;
+  SubMaster &sm2 = *(s->sm);  
+
+  const auto car_state = sm2["carState"].getCarState();
+
+  auto carState_custom = car_state.getCarSCustom();   // CarSCustom
   auto carSupport = carState_custom.getSupportedCars();
   int  nCnt = carSupport.size();
 

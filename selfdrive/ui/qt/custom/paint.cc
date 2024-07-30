@@ -19,7 +19,7 @@ OnPaint::OnPaint(QWidget *parent, int width, int height ) : QWidget(parent)
 {
   m_sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
     "peripheralState", "gpsLocationExternal",
-    "naviCustom", "carStateCustom", "uICustom",  //"carControlCustom",
+    "naviCustom",  "uICustom",  //"carControlCustom",
   });
 
 

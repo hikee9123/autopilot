@@ -73,7 +73,6 @@ _services: dict[str, tuple] = {
   "microphone": (True, 10., 10),
 
   # #custom
-  "carStateCustom": (True, 0.),
   "naviCustom": (True, 20., 5),
   "uICustom": (True, 0.),
 
