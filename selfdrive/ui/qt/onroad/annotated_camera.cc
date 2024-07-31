@@ -225,17 +225,26 @@ void AnnotatedCameraWidget::drawLaneLines(QPainter &painter, const UIState *s) {
   const UIScene &scene = s->scene;
   SubMaster &sm = *(s->sm);
 
-  // lanelines
-  QColor color;
-  for (int i = 0; i < std::size(scene.lane_line_vertices); ++i) {
-    color = QColor::fromRgbF(1.0, 1.0, 1.0, std::clamp<float>(scene.lane_line_probs[i], 0.0, 0.7)
-    if( i == 0  || i == 3 )
-    {
-      if( scene.lane_line_probs[i] > 0.5 ) 
-        color = QColor::fromRgbF(0.0, 0.0, 1.0, std::clamp<float>(scene.lane_line_probs[i], 0.0, 0.7);
-    }
+  
+  // lanelines   #custom
+  int lane_max = std::size(scene.lane_line_vertices);
+  QColor color[lane_max];
+  // 기본 색상 설정
+  for (int i = 0; i < lane_max; ++i) {
+      color[i] = QColor::fromRgbF(1.0, 1.0, 1.0, std::clamp<float>(scene.lane_line_probs[i], 0.0, 0.7));
+  }
+  if( scene.lane_line_probs[0] > 0.5 )
+  {
+     color[1] = QColor::fromRgbF(0.0, 0.0, 1.0, std::clamp<float>(scene.lane_line_probs[1], 0.0, 0.7));
+  } 
+  if( scene.lane_line_probs[3] > 0.5 )  
+  {
+      color[2] = QColor::fromRgbF(0.0, 0.0, 1.0, std::clamp<float>(scene.lane_line_probs[2], 0.0, 0.7));
+  }
 
-    painter.setBrush(color);
+
+  for (int i = 0; i < lane_max; ++i) {
+    painter.setBrush(color[i]);
     painter.drawPolygon(scene.lane_line_vertices[i]);
   }
 
