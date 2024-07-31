@@ -388,12 +388,11 @@ void OnPaint::drawSpeed(QPainter &p, int x, QString speedStr, QString speedUnit 
 {
   // x = rect().center().x();
    QColor  val_color = QColor(255, 255, 255, 255); // QColor(0x80, 0xd8, 0xa6, 0xff); // QColor(255, 255, 255, 255);
-   //int  brakePress = m_nBrakeStatus & 0x01;
+   int  brakePress = m_nBrakeStatus & 0x01;
    int  brakeLights = m_nBrakeStatus & 0x02;
    float  gasVal = m_gasVal * 100;
 
 
-  //if( brakePress  ) val_color = QColor(255, 0, 0, 255);
   if( m_param.breakPos > 0) 
   {
     auto interp_color = [=](QColor c1, QColor c2, QColor c3) {
@@ -409,6 +408,7 @@ void OnPaint::drawSpeed(QPainter &p, int x, QString speedStr, QString speedUnit 
     }
   }
   else if( brakeLights ) val_color = QColor(201, 34, 49, 100);
+  else if( brakePress  ) val_color = QColor(255, 0, 0, 255);
   else if (gasVal > 0) {
     auto interp_color = [=](QColor c1, QColor c2) {
       return gasVal > 0 ? interpColor( gasVal, { 5,  60}, {c1, c2}) : c1;
@@ -425,10 +425,11 @@ void OnPaint::drawSpeed(QPainter &p, int x, QString speedStr, QString speedUnit 
   p.setFont(InterFont(66));
   drawText3(p, x, 290, speedUnit, QColor(255,255,255,200) );
 
- // QString  str;
- // str.sprintf("%.0f", gasVal );
- // p.setFont(InterFont(30));
- // drawText3(p, x, 335, str, QColor(255,255,255,200) );
+
+  QString  str;
+  str.sprintf("%.0f", m_param.breakPos );
+  p.setFont(InterFont(30));
+  drawText3(p, x, 335, str, QColor(255,255,255,200) );
 }
 
 
