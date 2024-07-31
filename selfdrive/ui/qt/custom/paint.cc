@@ -427,7 +427,7 @@ void OnPaint::drawSpeed(QPainter &p, int x, QString speedStr, QString speedUnit 
 
 
   QString  str;
-  str.sprintf("%.0f", m_param.breakPos );
+  str.sprintf("%.1f", m_param.breakPos );
   p.setFont(InterFont(30));
   drawText3(p, x, 335, str, QColor(255,255,255,200) );
 }
