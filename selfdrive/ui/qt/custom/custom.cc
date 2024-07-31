@@ -409,7 +409,7 @@ void CustomPanel::showEvent(QShowEvent *event)
 
 
   UIState   *s = uiState();
-  UIScene   &scene = s->scene;
+ // UIScene   &scene = s->scene;
   SubMaster &sm2 = *(s->sm);  
 
   const auto car_state = sm2["carState"].getCarState();
