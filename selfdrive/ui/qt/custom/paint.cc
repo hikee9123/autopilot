@@ -18,7 +18,7 @@
 OnPaint::OnPaint(QWidget *parent, int width, int height ) : QWidget(parent) 
 {
   m_sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
-    "peripheralState", "gpsLocationExternal",
+    "peripheralState", "gpsLocation", "gpsLocationExternal", 
     "naviCustom",  "uICustom",  //"carControlCustom",
   });
 
@@ -150,7 +150,6 @@ void OnPaint::updateState(const UIState &s)
   SubMaster &sm2 = *(m_sm);
 
 
-
   if ( (sm1.frame % UI_FREQ) != 0 ) 
       sm2.update(0);
 
@@ -165,9 +164,18 @@ void OnPaint::updateState(const UIState &s)
   if( !is_debug ) return;
 
   // 1.
-  auto gps_ext = sm2["gpsLocationExternal"].getGpsLocationExternal();
-  m_param.gpsAccuracyUblox = gps_ext.getHorizontalAccuracy();
-  m_param.altitudeUblox = gps_ext.getAltitude(); 
+  if (s.scene.pandaType == cereal::PandaState::PandaType::TRES) 
+  {
+      auto ge_data = sm["gpsLocation"].getGpsLocation();
+      m_param.gpsAccuracyUblox = ge_data.getVerticalAccuracy();
+      m_param.altitudeUblox = ge_data.getAltitude();
+  }
+  else
+  {
+    auto gps_ext = sm2["gpsLocationExternal"].getGpsLocationExternal();
+    m_param.gpsAccuracyUblox = gps_ext.getHorizontalAccuracy();
+    m_param.altitudeUblox = gps_ext.getAltitude(); 
+  }
 
   // 1.
   auto peripheralState = sm2["peripheralState"].getPeripheralState();
@@ -396,7 +404,7 @@ void OnPaint::drawSpeed(QPainter &p, int x, QString speedStr, QString speedUnit 
   if( m_param.breakPos > 0) 
   {
     auto interp_color = [=](QColor c1, QColor c2, QColor c3) {
-      return m_param.breakPos > 0 ? interpColor( m_param.breakPos, {0, 50, 100}, {c1, c2, c3}) : c1;
+      return m_param.breakPos > 0 ? interpColor( m_param.breakPos, {0, 60, 130}, {c1, c2, c3}) : c1;
     };
     if( brakeLights )
     {
