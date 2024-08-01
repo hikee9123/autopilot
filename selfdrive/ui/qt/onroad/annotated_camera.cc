@@ -235,11 +235,11 @@ void AnnotatedCameraWidget::drawLaneLines(QPainter &painter, const UIState *s) {
   }
   if( scene.lane_line_probs[0] > 0.5 )
   {
-     color[1] = QColor::fromRgbF(0.0, 0.0, 1.0, std::clamp<float>(scene.lane_line_probs[1], 0.0, 0.7));
+     color[1] = QColor::fromRgbF(0.0, 1.0, 0.2, std::clamp<float>(scene.lane_line_probs[1], 0.0, 0.7));
   } 
   if( scene.lane_line_probs[3] > 0.5 )  
   {
-      color[2] = QColor::fromRgbF(0.0, 0.0, 1.0, std::clamp<float>(scene.lane_line_probs[2], 0.0, 0.7));
+      color[2] = QColor::fromRgbF(0.0, 1.0, 0.2, std::clamp<float>(scene.lane_line_probs[2], 0.0, 0.7));
   }
 
 
