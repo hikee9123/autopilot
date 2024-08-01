@@ -241,8 +241,6 @@ void AnnotatedCameraWidget::drawLaneLines(QPainter &painter, const UIState *s) {
   {
       color[2] = QColor::fromRgbF(0.0, 1.0, 0.2, std::clamp<float>(scene.lane_line_probs[2], 0.0, 0.7));
   }
-
-
   for (int i = 0; i < lane_max; ++i) {
     painter.setBrush(color[i]);
     painter.drawPolygon(scene.lane_line_vertices[i]);
