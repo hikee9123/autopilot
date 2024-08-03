@@ -166,7 +166,7 @@ void OnPaint::updateState(const UIState &s)
   // 1.
   if (s.scene.pandaType == cereal::PandaState::PandaType::TRES) 
   {
-      auto ge_data = sm["gpsLocation"].getGpsLocation();
+      auto ge_data = sm2["gpsLocation"].getGpsLocation();
       m_param.gpsAccuracyUblox = ge_data.getVerticalAccuracy();
       m_param.altitudeUblox = ge_data.getAltitude();
   }
