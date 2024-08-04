@@ -2,6 +2,7 @@ import copy
 
 from cereal import car, log
 from panda import ALTERNATIVE_EXPERIENCE
+import numpy as np
 from openpilot.common.params import Params
 from openpilot.common.conversions import Conversions as CV
 from openpilot.selfdrive.car.hyundai.values import CAR, Buttons
@@ -48,7 +49,8 @@ class CarStateCustom():
     self.rightLaneTime = 50
 
     self.desiredCurvature = 0
-
+    self.modelxDistance = 0
+    self.modelyDistance = 0
 
     try:
       m_jsonobj = read_json_file("CustomParam")
@@ -187,7 +189,7 @@ class CarStateCustom():
 
     #log
     trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-    trace1.printf2( 'CV={:.5f}'.format( self.desiredCurvature ) )
+    trace1.printf2( 'CV={:7.5f},X:{:5.1f},Y:{:5.1f}'.format( self.desiredCurvature, self.modelxDistance, self.modelyDistance ) )
 
     if self.CP.openpilotLongitudinalControl:
       trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
@@ -195,6 +197,29 @@ class CarStateCustom():
           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
       ))
 
+
+  def max_distance( self, model_v2 ):
+      model_position = model_v2.position
+      x_positions = model_position.x  # X 좌표 배열을 가져옵니다.
+      y_positions = model_position.y  # Y 좌표 배열을 가져옵니다.
+
+      # 배열의 마지막 요소를 가져옵니다.
+      last_x_value = x_positions[-1] if x_positions else None
+      last_y_value = y_positions[-1] if y_positions else None
+
+      # last_x_value가 None이 아니면 clamp 적용
+      if last_x_value is not None:
+          x_distance = np.clip(last_x_value, 10, 100)
+      else:
+          x_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
+
+      if last_y_value is not None:
+          y_distance = np.clip(last_y_value, -100, 100)
+      else:
+          y_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
+
+
+      return x_distance, y_distance
 
   def auto_lene_change( self, ret ):
     if not self.autoLaneChange:
@@ -207,8 +232,12 @@ class CarStateCustom():
     leftLaneVisible = 0
     rightLaneVisible = 0
     model_v2 = self.NC.sm['modelV2']
+
+
     self.desiredCurvature = model_v2.action.desiredCurvature 
     self.laneChangeState = model_v2.meta.laneChangeState
+
+    self.modelxDistance, self.modelyDistance =  self.max_distance( model_v2 )
     if len(model_v2.laneLineProbs):
       if bool(model_v2.laneLineProbs[3] > 0.5):
         rightLaneVisible |= 2   
