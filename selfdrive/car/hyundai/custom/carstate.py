@@ -47,6 +47,8 @@ class CarStateCustom():
     self.leftLaneTime = 50
     self.rightLaneTime = 50
 
+    self.desiredCurvature = 0
+
 
     try:
       m_jsonobj = read_json_file("CustomParam")
@@ -185,7 +187,7 @@ class CarStateCustom():
 
     #log
     trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-    trace1.printf2( 'LC={:.0f},{},{:.0f},{:.0f},{:.0f}'.format(  self.autoLaneChange, self.laneChangeState, self.lanechange_wait, self.leftLaneTime, self.rightLaneTime ) )
+    trace1.printf2( 'CV={:.5f}'.format( self.desiredCurvature ) )
 
     if self.CP.openpilotLongitudinalControl:
       trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
@@ -205,6 +207,7 @@ class CarStateCustom():
     leftLaneVisible = 0
     rightLaneVisible = 0
     model_v2 = self.NC.sm['modelV2']
+    self.desiredCurvature = model_v2.action.desiredCurvature 
     self.laneChangeState = model_v2.meta.laneChangeState
     if len(model_v2.laneLineProbs):
       if bool(model_v2.laneLineProbs[3] > 0.5):

@@ -56,7 +56,9 @@ class NaviControl():
     self._frame_dec = 0
     self._visionTurnSpeed = 0
     self._current_lat_acc = 0
-    self._max_pred_lat_acc = 0 
+    self._max_pred_lat_acc = 0
+
+    
 
 
   def button_status(self, CS ):
