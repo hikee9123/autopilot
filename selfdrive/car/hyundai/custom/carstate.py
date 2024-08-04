@@ -189,7 +189,7 @@ class CarStateCustom():
 
     #log
     trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-    trace1.printf2( 'CV={:7.5f},X:{:5.1f},Y:{:5.1f}'.format( self.desiredCurvature, self.modelxDistance, self.modelyDistance ) )
+    trace1.printf2( 'X:{:5.1f},Y:{:5.1f},CV={:7.5f}'.format( self.modelxDistance, self.modelyDistance, self.desiredCurvature ) )
 
     if self.CP.openpilotLongitudinalControl:
       trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
