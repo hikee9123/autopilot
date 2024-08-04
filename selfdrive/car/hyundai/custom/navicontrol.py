@@ -1,14 +1,15 @@
 
 from cereal import car, log
 from openpilot.common.conversions import Conversions as CV
-from openpilot.selfdrive.car.hyundai.values import Buttons
 from openpilot.common.numpy_fast import interp
+from openpilot.selfdrive.car.hyundai.values import Buttons
+
 
 import cereal.messaging as messaging
 
 
 
-EventName = car.CarEvent.EventName
+
 
 
 class NaviControl():
@@ -50,7 +51,6 @@ class NaviControl():
     self.turnSpeedLimitsAheadDistances = 0
     self.turnSpeedLimitsAheadDistancesOld = 0
 
-    self.event_navi_alert = None 
 
     self._frame_inc = 0
     self._frame_dec = 0
@@ -58,7 +58,8 @@ class NaviControl():
     self._current_lat_acc = 0
     self._max_pred_lat_acc = 0
 
-    
+
+
 
 
   def button_status(self, CS ):
@@ -203,6 +204,8 @@ class NaviControl():
     cruise_set_speed_kph = min( spdTarget, v_ego_kph )
     return  cruise_set_speed_kph
 
+
+    
 
   def auto_speed_control( self, CC, CS, ctrl_speed ):
     cruise_set_mode = self.cruise_set_mode

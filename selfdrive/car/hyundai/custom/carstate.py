@@ -5,6 +5,7 @@ from panda import ALTERNATIVE_EXPERIENCE
 import numpy as np
 from openpilot.common.params import Params
 from openpilot.common.conversions import Conversions as CV
+from openpilot.selfdrive.controls.lib.events import Events
 from openpilot.selfdrive.car.hyundai.values import CAR, Buttons
 from openpilot.selfdrive.custom.params_json import read_json_file
 
@@ -12,7 +13,7 @@ import cereal.messaging as messaging
 
 import openpilot.selfdrive.custom.loger as  trace1
 
-
+EventName = car.CarEvent.EventName
 LaneChangeState = log.LaneChangeState
 
 class CarStateCustom():
@@ -31,6 +32,7 @@ class CarStateCustom():
 
 
     self.timer_init = 500   # 5sec
+    self.timer_resume = 500
 
     # cruise_speed_button
     self.old_acc_active = 0
@@ -51,6 +53,8 @@ class CarStateCustom():
     self.desiredCurvature = 0
     self.modelxDistance = 0
     self.modelyDistance = 0
+
+
 
     try:
       m_jsonobj = read_json_file("CustomParam")
@@ -189,7 +193,7 @@ class CarStateCustom():
 
     #log
     trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-    trace1.printf2( 'X:{:5.1f},Y:{:5.1f},CV={:7.5f}'.format( self.modelxDistance, self.modelyDistance, self.desiredCurvature ) )
+    trace1.printf2( 'Y={:5.1f}, X={:5.1f}, CV={:7.5f}'.format( self.modelyDistance, self.modelxDistance, self.desiredCurvature ) )
 
     if self.CP.openpilotLongitudinalControl:
       trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
@@ -209,12 +213,12 @@ class CarStateCustom():
 
       # last_x_value가 None이 아니면 clamp 적용
       if last_x_value is not None:
-          x_distance = np.clip(last_x_value, 10, 100)
+          x_distance = np.clip(last_x_value, 10, 500)
       else:
           x_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
 
       if last_y_value is not None:
-          y_distance = np.clip(last_y_value, -100, 100)
+          y_distance = np.clip(last_y_value, -60, 60)
       else:
           y_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
 
@@ -380,3 +384,16 @@ class CarStateCustom():
 
 
 
+
+  def create_events(self, CS):
+    events = Events()
+    if self.timer_resume > 0:
+      self.timer_resume -= 1
+
+    if CS.vEgo < 0.1 and self.modelxDistance > 20:
+      if self.timer_resume <= 0:
+        events.add(EventName.resumeRequired)
+    else:
+      self.timer_resume = 100
+
+    return events
