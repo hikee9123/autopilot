@@ -299,10 +299,8 @@ class CarStateCustom():
     if self.CP.openpilotLongitudinalControl:
       mainMode_ACC = cp.vl["TCS13"]["ACCEnable"] == 0
       self.acc_active = cp.vl["TCS13"]["ACC_REQ"] == 1
-      #ret.cruiseState.available = (ret.gearShifter == car.CarState.GearShifter.drive)
 
       self.lead_distance = 0
-      # self.VSetDis = 0      
       self.gapSet = 4
 
     else:
