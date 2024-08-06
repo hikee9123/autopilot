@@ -176,7 +176,7 @@ class CarInterface(CarInterfaceBase):
 
     events_custom = self.CS.customCS.create_events( self.CS )
     if events_custom:
-      events += events_custom
+      events.add( events_custom )
 
     ret.events = events.to_msg()
 
