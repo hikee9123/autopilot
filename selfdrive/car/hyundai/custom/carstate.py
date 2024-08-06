@@ -387,6 +387,6 @@ class CarStateCustom():
       if self.timer_resume <= 0:
         events.add( EventName.resumeRequired )
     else:
-      self.timer_resume = 100
+      self.timer_resume = 50
 
     return events
