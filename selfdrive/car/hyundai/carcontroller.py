@@ -171,7 +171,7 @@ class CarController(CarControllerBase):
         self.customCC.custom_acc_commands( can_sends, self.packer, accel, jerk, self.frame, 
                                           set_speed_in_units, stopping, CC, CS )
 
-        trace1.printf2( 'AS={:5.1f}'.format( apply_steer ) )
+        trace1.printf2( 'AS={:5.1f} {:5.1f}'.format( apply_steer,  CS.customCS.modelyDistance ) )
 
       #custom
       # 20 Hz LFA MFA message
