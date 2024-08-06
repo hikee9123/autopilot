@@ -388,7 +388,7 @@ class CarStateCustom():
     if self.timer_resume > 0:
       self.timer_resume -= 1
 
-    if CS.vEgo < 0.1 and self.modelxDistance > 20:
+    if  self.modelxDistance > 20:
       if self.timer_resume <= 0:
         events.add(EventName.resumeRequired)
     else:
