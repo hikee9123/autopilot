@@ -369,9 +369,7 @@ class CarStateCustom():
 
     if self.timer_engaged:
       self.timer_engaged -= 1
-
     self.frame += 1
-
     if self.timer_init > 0:
       return
     
@@ -380,17 +378,15 @@ class CarStateCustom():
 
 
 
-
-
-
   def create_events(self, CS):
     events = Events()
     if self.timer_resume > 0:
       self.timer_resume -= 1
 
-    if  self.modelxDistance > 20:
+    v_ego_kph = self.clu_Vanz   # CS.cluster_speed
+    if v_ego_kph > 0.1 and self.modelxDistance > 20:
       if self.timer_resume <= 0:
-        events.add(EventName.resumeRequired)
+        events.add( EventName.resumeRequired )
     else:
       self.timer_resume = 100
 
