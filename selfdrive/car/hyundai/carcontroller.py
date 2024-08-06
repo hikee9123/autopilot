@@ -10,7 +10,7 @@ from openpilot.selfdrive.car.interfaces import CarControllerBase
 
 
 from openpilot.selfdrive.car.hyundai.custom.carcontroller import CarControllerCustom   #custom
-
+import openpilot.selfdrive.custom.loger as  trace1
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 LongCtrlState = car.CarControl.Actuators.LongControlState
@@ -171,7 +171,7 @@ class CarController(CarControllerBase):
         self.customCC.custom_acc_commands( can_sends, self.packer, accel, jerk, self.frame, 
                                           set_speed_in_units, stopping, CC, CS )
 
-
+        trace1.printf2( 'AS={:5.1f}'.format( apply_steer ) )
 
       #custom
       # 20 Hz LFA MFA message

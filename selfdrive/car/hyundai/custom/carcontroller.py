@@ -136,5 +136,5 @@ class CarControllerCustom:
     can_sends.extend(create_acc_commands(packer, CC, CS, accel, jerk, int(frame / 2),
                                          set_speed_in_units, stopping, use_fca))
     
-    trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, speed,  CS.cluster_speed ) )
+    #trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, speed,  CS.cluster_speed ) )
 

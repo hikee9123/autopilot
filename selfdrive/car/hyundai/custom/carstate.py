@@ -192,6 +192,7 @@ class CarStateCustom():
     ret.carSCustom = carSCustom
 
     #log
+    """
     trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
     trace1.printf2( 'Y={:5.1f}, X={:5.1f}, CV={:7.5f}'.format( self.modelyDistance, self.modelxDistance, self.desiredCurvature ) )
 
@@ -200,7 +201,7 @@ class CarStateCustom():
           cp.vl["CLU11"]["CF_Clu_CruiseSwState"], cp.vl["CLU11"]["CF_Clu_CruiseSwMain"], cp.vl["CLU11"]["CF_Clu_SldMainSW"],
           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
       ))
-
+    """
 
   def max_distance( self, model_v2 ):
       model_position = model_v2.position
