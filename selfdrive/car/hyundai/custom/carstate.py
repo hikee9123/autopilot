@@ -378,8 +378,7 @@ class CarStateCustom():
 
 
 
-  def create_events(self, CS):
-    events = Events()
+  def create_events(self, CS, events):
     if self.timer_resume > 0:
       self.timer_resume -= 1
 
