@@ -383,7 +383,7 @@ class CarStateCustom():
       self.timer_resume -= 1
 
     v_ego_kph = self.clu_Vanz   # CS.cluster_speed
-    if v_ego_kph > 0.1 and self.modelxDistance > 20:
+    if v_ego_kph <= 0.1 and self.modelxDistance > 20:
       if self.timer_resume <= 0:
         events.add( EventName.resumeRequired )
     else:
