@@ -21,6 +21,9 @@ AnnotatedCameraWidget::AnnotatedCameraWidget(VisionStreamType type, QWidget* par
   main_layout->addWidget(experimental_btn, 0, Qt::AlignTop | Qt::AlignRight);
 
   dm_img = loadPixmap("../assets/img_driver_face.png", {img_size + 5, img_size + 5});
+
+  // #custom
+  m_pPaint = new OnPaint(this, width(), height());  
 }
 
 void AnnotatedCameraWidget::updateState(const UIState &s) {
@@ -30,14 +33,14 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
   const bool cs_alive = sm.alive("controlsState");
   const auto cs = sm["controlsState"].getControlsState();
   const auto car_state = sm["carState"].getCarState();
-
-  is_metric = s.scene.is_metric;
+  const bool nav_alive = sm.alive("navInstruction") && sm["navInstruction"].getValid();
+  const auto nav_instruction = sm["navInstruction"].getNavInstruction();
 
   // Handle older routes where vCruiseCluster is not set
   float v_cruise = cs.getVCruiseCluster() == 0.0 ? cs.getVCruise() : cs.getVCruiseCluster();
   setSpeed = cs_alive ? v_cruise : SET_SPEED_NA;
   is_cruise_set = setSpeed > 0 && (int)setSpeed != SET_SPEED_NA;
-  if (is_cruise_set && !is_metric) {
+  if (is_cruise_set && !s.scene.is_metric) {
     setSpeed *= KM_TO_MILE;
   }
 
@@ -45,9 +48,16 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
   v_ego_cluster_seen = v_ego_cluster_seen || car_state.getVEgoCluster() != 0.0;
   float v_ego = v_ego_cluster_seen ? car_state.getVEgoCluster() : car_state.getVEgo();
   speed = cs_alive ? std::max<float>(0.0, v_ego) : 0.0;
-  speed *= is_metric ? MS_TO_KPH : MS_TO_MPH;
+  speed *= s.scene.is_metric ? MS_TO_KPH : MS_TO_MPH;
 
-  speedUnit = is_metric ? tr("km/h") : tr("mph");
+  auto speed_limit_sign = nav_instruction.getSpeedLimitSign();
+  speedLimit = nav_alive ? nav_instruction.getSpeedLimit() : 0.0;
+  speedLimit *= (s.scene.is_metric ? MS_TO_KPH : MS_TO_MPH);
+
+  has_us_speed_limit = (nav_alive && speed_limit_sign == cereal::NavInstruction::SpeedLimitSign::MUTCD);
+  has_eu_speed_limit = (nav_alive && speed_limit_sign == cereal::NavInstruction::SpeedLimitSign::VIENNA);
+  is_metric = s.scene.is_metric;
+  speedUnit =  s.scene.is_metric ? tr("km/h") : tr("mph");
   hideBottomIcons = (cs.getAlertSize() != cereal::ControlsState::AlertSize::NONE);
   status = s.status;
 
@@ -60,6 +70,11 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
   rightHandDM = dm_state.getIsRHD();
   // DM icon transition
   dm_fade_state = std::clamp(dm_fade_state+0.2*(0.5-dmActive), 0.0, 1.0);
+
+
+  // #custom
+  if( m_pPaint )
+     m_pPaint->updateState(s);    
 }
 
 void AnnotatedCameraWidget::drawHud(QPainter &p) {
@@ -74,15 +89,27 @@ void AnnotatedCameraWidget::drawHud(QPainter &p) {
   QString speedStr = QString::number(std::nearbyint(speed));
   QString setSpeedStr = is_cruise_set ? QString::number(std::nearbyint(setSpeed)) : "–";
 
-  // Draw outer box + border to contain set speed
+  QString speedLimitStr = (speedLimit > 1) ? QString::number(std::nearbyint(speedLimit)) : "–";
+  // Draw outer box + border to contain set speed and speed limit
+  const int sign_margin = 12;
+  const int us_sign_height = 186;
+  const int eu_sign_size = 176;
+
   const QSize default_size = {172, 204};
   QSize set_speed_size = default_size;
-  if (is_metric) set_speed_size.rwidth() = 200;
+  if (is_metric || has_eu_speed_limit) set_speed_size.rwidth() = 200;
+  if (has_us_speed_limit && speedLimitStr.size() >= 3) set_speed_size.rwidth() = 223;
+
+  if (has_us_speed_limit) set_speed_size.rheight() += us_sign_height + sign_margin;
+  else if (has_eu_speed_limit) set_speed_size.rheight() += eu_sign_size + sign_margin;
+
+  int top_radius = 32;
+  int bottom_radius = has_eu_speed_limit ? 100 : 32;
 
   QRect set_speed_rect(QPoint(60 + (default_size.width() - set_speed_size.width()) / 2, 45), set_speed_size);
   p.setPen(QPen(whiteColor(75), 6));
   p.setBrush(blackColor(166));
-  p.drawRoundedRect(set_speed_rect, 32, 32);
+  drawRoundedRect(p, set_speed_rect, top_radius, top_radius, bottom_radius, bottom_radius);
 
   // Draw MAX
   QColor max_color = QColor(0x80, 0xd8, 0xa6, 0xff);
@@ -92,6 +119,12 @@ void AnnotatedCameraWidget::drawHud(QPainter &p) {
       max_color = whiteColor();
     } else if (status == STATUS_OVERRIDE) {
       max_color = QColor(0x91, 0x9b, 0x95, 0xff);
+    } else if (speedLimit > 0) {
+      auto interp_color = [=](QColor c1, QColor c2, QColor c3) {
+        return speedLimit > 0 ? interpColor(setSpeed, {speedLimit + 5, speedLimit + 15, speedLimit + 25}, {c1, c2, c3}) : c1;
+      };
+      max_color = interp_color(max_color, QColor(0xff, 0xe4, 0xbf), QColor(0xff, 0xbf, 0xbf));
+      set_speed_color = interp_color(set_speed_color, QColor(0xff, 0x95, 0x00), QColor(0xff, 0x00, 0x00));
     }
   } else {
     max_color = QColor(0xa6, 0xa6, 0xa6, 0xff);
@@ -104,11 +137,47 @@ void AnnotatedCameraWidget::drawHud(QPainter &p) {
   p.setPen(set_speed_color);
   p.drawText(set_speed_rect.adjusted(0, 77, 0, 0), Qt::AlignTop | Qt::AlignHCenter, setSpeedStr);
 
+  const QRect sign_rect = set_speed_rect.adjusted(sign_margin, default_size.height(), -sign_margin, -sign_margin);
+  // US/Canada (MUTCD style) sign
+  if (has_us_speed_limit) {
+    p.setPen(Qt::NoPen);
+    p.setBrush(whiteColor());
+    p.drawRoundedRect(sign_rect, 24, 24);
+    p.setPen(QPen(blackColor(), 6));
+    p.drawRoundedRect(sign_rect.adjusted(9, 9, -9, -9), 16, 16);
+
+    p.setFont(InterFont(28, QFont::DemiBold));
+    p.drawText(sign_rect.adjusted(0, 22, 0, 0), Qt::AlignTop | Qt::AlignHCenter, tr("SPEED"));
+    p.drawText(sign_rect.adjusted(0, 51, 0, 0), Qt::AlignTop | Qt::AlignHCenter, tr("LIMIT"));
+    p.setFont(InterFont(70, QFont::Bold));
+    p.drawText(sign_rect.adjusted(0, 85, 0, 0), Qt::AlignTop | Qt::AlignHCenter, speedLimitStr);
+  }
+
+  // EU (Vienna style) sign
+  if (has_eu_speed_limit) {
+    p.setPen(Qt::NoPen);
+    p.setBrush(whiteColor());
+    p.drawEllipse(sign_rect);
+    p.setPen(QPen(Qt::red, 20));
+    p.drawEllipse(sign_rect.adjusted(16, 16, -16, -16));
+
+    p.setFont(InterFont((speedLimitStr.size() >= 3) ? 60 : 70, QFont::Bold));
+    p.setPen(blackColor());
+    p.drawText(sign_rect, Qt::AlignCenter, speedLimitStr);
+  }
+
   // current speed
-  p.setFont(InterFont(176, QFont::Bold));
-  drawText(p, rect().center().x(), 210, speedStr);
-  p.setFont(InterFont(66));
-  drawText(p, rect().center().x(), 290, speedUnit, 200);
+  //p.setFont(InterFont(176, QFont::Bold));
+  //drawText(p, rect().center().x(), 210, speedStr);
+  //p.setFont(InterFont(66));
+  //drawText(p, rect().center().x(), 290, speedUnit, 200);
+
+  // #custom
+  if( m_pPaint )
+  {
+    m_pPaint->drawHud(p);
+    m_pPaint->drawSpeed(p, rect().center().x(), speedStr, speedUnit );
+  }
 
   p.restore();
 }
@@ -156,9 +225,24 @@ void AnnotatedCameraWidget::drawLaneLines(QPainter &painter, const UIState *s) {
   const UIScene &scene = s->scene;
   SubMaster &sm = *(s->sm);
 
-  // lanelines
-  for (int i = 0; i < std::size(scene.lane_line_vertices); ++i) {
-    painter.setBrush(QColor::fromRgbF(1.0, 1.0, 1.0, std::clamp<float>(scene.lane_line_probs[i], 0.0, 0.7)));
+  
+  // lanelines   #custom
+  int lane_max = std::size(scene.lane_line_vertices);
+  QColor color[lane_max];
+  // 기본 색상 설정
+  for (int i = 0; i < lane_max; ++i) {
+      color[i] = QColor::fromRgbF(1.0, 1.0, 1.0, std::clamp<float>(scene.lane_line_probs[i], 0.0, 0.7));
+  }
+  if( scene.lane_line_probs[0] > 0.5 )
+  {
+     color[1] = QColor::fromRgbF(0.0, 1.0, 0.2, std::clamp<float>(scene.lane_line_probs[1], 0.0, 0.7));
+  } 
+  if( scene.lane_line_probs[3] > 0.5 )  
+  {
+      color[2] = QColor::fromRgbF(0.0, 1.0, 0.2, std::clamp<float>(scene.lane_line_probs[2], 0.0, 0.7));
+  }
+  for (int i = 0; i < lane_max; ++i) {
+    painter.setBrush(color[i]);
     painter.drawPolygon(scene.lane_line_vertices[i]);
   }
 
@@ -253,6 +337,7 @@ void AnnotatedCameraWidget::drawDriverState(QPainter &painter, const UIState *s)
 void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd) {
   painter.save();
 
+/*
   const float speedBuff = 10.;
   const float leadBuff = 40.;
   const float d_rel = lead_data.getDRel();
@@ -282,6 +367,11 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::RadarState
   QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
   painter.setBrush(redColor(fillAlpha));
   painter.drawPolygon(chevron, std::size(chevron));
+*/
+
+  // #custom
+  m_pPaint->drawLead( painter, lead_data, vd, width(),  height() );
+
 
   painter.restore();
 }
@@ -343,7 +433,14 @@ void AnnotatedCameraWidget::paintGL() {
     update_model(s, model);
     drawLaneLines(painter, s);
 
-    if (s->scene.longitudinal_control && sm.rcv_frame("radarState") > s->scene.started_frame) {
+    // #custom
+    int  longitudinal_control = s->scene.longitudinal_control;
+    if( m_pPaint && m_pPaint->showCarTracking() )
+    { 
+        longitudinal_control |= 1;
+    }
+
+    if (longitudinal_control && sm.rcv_frame("radarState") > s->scene.started_frame) {
       auto radar_state = sm["radarState"].getRadarState();
       update_leads(s, radar_state, model.getPosition());
       auto lead_one = radar_state.getLeadOne();

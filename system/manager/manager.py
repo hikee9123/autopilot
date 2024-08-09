@@ -13,7 +13,7 @@ from openpilot.common.text_window import TextWindow
 from openpilot.system.hardware import HARDWARE, PC
 from openpilot.system.manager.helpers import unblock_stdout, write_onroad_params, save_bootlog
 from openpilot.system.manager.process import ensure_running
-from openpilot.system.manager.process_config import managed_processes
+from openpilot.system.manager.process_config import managed_processes, set_mapbox    #custom
 from openpilot.system.athena.registration import register, UNREGISTERED_DONGLE_ID
 from openpilot.common.swaglog import cloudlog, add_file_handler
 from openpilot.system.version import get_build_metadata, terms_version, training_version
@@ -21,7 +21,7 @@ from openpilot.system.version import get_build_metadata, terms_version, training
 
 
 def manager_init() -> None:
-  save_bootlog()
+  #save_bootlog()
 
   build_metadata = get_build_metadata()
 
@@ -46,6 +46,9 @@ def manager_init() -> None:
 
   if params.get_bool("RecordFrontLock"):
     params.put_bool("RecordFront", True)
+
+  if params.get_bool( "EnableLogging" ):
+    save_bootlog()
 
   # set unset params
   for k, v in default_params:
@@ -85,6 +88,11 @@ def manager_init() -> None:
 
   if not build_metadata.openpilot.is_dirty:
     os.environ['CLEAN'] = '1'
+
+  #custom
+  #print('#register= reg_res {}'.format( reg_res) )
+  #set_mapbox()
+
 
   # init logging
   sentry.init(sentry.SentryProject.SELFDRIVE)

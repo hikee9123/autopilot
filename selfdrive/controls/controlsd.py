@@ -681,6 +681,13 @@ class Controls:
                   and not CC.latActive and self.sm['liveCalibration'].calStatus == log.LiveCalibrationData.Status.calibrated
 
     model_v2 = self.sm['modelV2']
+    #custom
+    if len(model_v2.laneLineProbs):
+      hudControl.rightLaneVisible = bool(model_v2.laneLineProbs[2] > 0.5)
+      hudControl.leftLaneVisible = bool(model_v2.laneLineProbs[1] > 0.5)
+
+
+
     desire_prediction = model_v2.meta.desirePrediction
     if len(desire_prediction) and ldw_allowed:
       right_lane_visible = model_v2.laneLineProbs[2] > 0.5

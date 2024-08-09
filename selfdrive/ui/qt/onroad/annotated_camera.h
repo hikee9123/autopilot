@@ -5,6 +5,7 @@
 
 #include "selfdrive/ui/qt/onroad/buttons.h"
 #include "selfdrive/ui/qt/widgets/cameraview.h"
+#include "selfdrive/ui/qt/custom/paint.h"    // #custom
 
 class AnnotatedCameraWidget : public CameraWidget {
   Q_OBJECT
@@ -34,6 +35,13 @@ private:
 
   int skip_frame_count = 0;
   bool wide_cam_requested = false;
+
+  // #custom
+  float speedLimit;
+  bool has_us_speed_limit = false;
+  bool has_eu_speed_limit = false;
+
+  OnPaint *m_pPaint = nullptr;  
 
 protected:
   void paintGL() override;

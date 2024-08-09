@@ -101,6 +101,13 @@ typedef struct UIScene {
   bool started, ignition, is_metric, longitudinal_control;
   bool world_objects_visible = false;
   uint64_t started_frame;
+
+  // #custom
+  struct _CUSTOM
+  {
+    int  m_powerflag = 0;
+    float leadDistance;
+  } custom;
 } UIScene;
 
 class UIState : public QObject {
