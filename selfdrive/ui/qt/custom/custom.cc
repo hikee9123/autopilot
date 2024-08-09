@@ -697,13 +697,14 @@ ModelTab::ModelTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidget(paren
 
   QObject::connect( changeModel, &ButtonControl::clicked, [=]() {
     QStringList items = {
-      "1.Certified_Herbalist1,supercombo_CH1", 
-      "2.Certified_Herbalist2,supercombo_CH2", 
-      "3.Los_Angeles model,supercombo_LA", 
-      "4.Recertified_Herbalist,supercombo_RH", 
-      "5.Duck_Amigo model,supercombo_DA",
-      "6.WD40 model,supercombo_WD40",
+      "8.Notre Dame Model,supercombo_ND",
       "7.North Dakota Model,supercombo_DM",
+      "6.WD40 model,supercombo_WD40",
+      "5.Duck_Amigo model,supercombo_DA",
+      "4.Recertified_Herbalist,supercombo_RH", 
+      "3.Los_Angeles model,supercombo_LA", 
+      "2.Certified_Herbalist2,supercombo_CH2", 
+      "1.Certified_Herbalist1,supercombo_CH1", 
       };
 
     QString selection = MultiOptionDialog::getSelection(tr("Select a model"), items, selected_model, this);
