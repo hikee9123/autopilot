@@ -83,7 +83,7 @@ class ModelState:
   def select_supercombo(self):
     model_name = Params().get("SelectedModel", encoding='utf-8')
 
-    print(f"model Custom Param  JSON document name{model_name}")
+    print(f"model Custom Param  JSON document name={model_name}")
     print(f"model name1 = {MODEL_PATHS}")
     if model_name == "8.Notre Dame Model,supercombo_ND":
       self.supercombo_name = 'models/supercombos/supercombo_ND.onnx'
