@@ -1,4 +1,4 @@
-
+import numpy as np
 from cereal import car, log
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.numpy_fast import interp
@@ -30,7 +30,7 @@ class NaviControl():
     self.trafficType = 0
     self.ctrl_speed = 0
 
-    self.speed_kps = 0      # comma speed control
+    self.speed_plan_kps = 0      # comma speed control
 
     self.cruiseGap = 0
     self.cruise_set_mode = 0
@@ -58,8 +58,9 @@ class NaviControl():
     self._current_lat_acc = 0
     self._max_pred_lat_acc = 0
 
-
-
+    self.model_v2 = None
+    self.modelxDistance = 0
+    self.modelyDistance = 0
 
 
   def button_status(self, CS ):
@@ -164,7 +165,28 @@ class NaviControl():
     btn_signal = self.switch( self.seq_command, CS )
     return btn_signal
 
+  def max_distance( self, model_v2 ):
+      model_position = model_v2.position
+      x_positions = model_position.x  # X 좌표 배열을 가져옵니다.
+      y_positions = model_position.y  # Y 좌표 배열을 가져옵니다.
 
+      # 배열의 마지막 요소를 가져옵니다.
+      last_x_value = x_positions[-1] if x_positions else None
+      last_y_value = y_positions[-1] if y_positions else None
+
+      # last_x_value가 None이 아니면 clamp 적용
+      if last_x_value is not None:
+          x_distance = np.clip(last_x_value, 10, 500)
+      else:
+          x_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
+
+      if last_y_value is not None:
+          y_distance = np.clip(last_y_value, -60, 60)
+      else:
+          y_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
+
+
+      return x_distance, y_distance
 
   def get_navi_speed(self, sm, CS, cruiseState_speed, frame ):
     cruise_set_speed_kph = cruiseState_speed
@@ -211,7 +233,7 @@ class NaviControl():
     cruise_set_mode = self.cruise_set_mode
 
     if cruise_set_mode & 2  and (self.cruiseGap == CS.customCS.gapSet):  # comma long control speed.
-      vFuture = self.speed_kps
+      vFuture = self.speed_plan_kps
       ctrl_speed = min( vFuture, ctrl_speed )
 
 
@@ -223,12 +245,19 @@ class NaviControl():
 
   def message_update( self ):
     self.sm.update(0)
-   
+
+    self.model_v2 = self.sm['modelV2']
+    self.modelxDistance, self.modelyDistance =  self.max_distance( self.model_v2 )     
 
   def update(self, c, CS, frame ):
     speeds = self.sm['longitudinalPlan'].speeds
     if len( speeds ):
-      self.speed_kps = speeds[-1] * CV.MS_TO_KPH
+      self.speed_plan_kps = speeds[-1] * CV.MS_TO_KPH
+
+      #curv speed control
+      spd_curv = interp( abs(self.modelyDistance), [10, 60], [ 5, 20 ] )
+      self.speed_plan_kps -= spd_curv
+
 
     if self.sm.updated["uICustom"]:
       cruiseMode = self.sm['uICustom'].community.cruiseMode

@@ -2,7 +2,6 @@ import copy
 
 from cereal import car, log, custom
 from panda import ALTERNATIVE_EXPERIENCE
-import numpy as np
 from openpilot.common.params import Params
 from openpilot.common.conversions import Conversions as CV
 from openpilot.selfdrive.controls.lib.events import Events
@@ -51,8 +50,7 @@ class CarStateCustom():
     self.rightLaneTime = 50
 
     self.desiredCurvature = 0
-    self.modelxDistance = 0
-    self.modelyDistance = 0
+
 
 
 
@@ -192,7 +190,7 @@ class CarStateCustom():
     #log
     """
     trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-    trace1.printf2( 'Y={:5.1f}, X={:5.1f}, CV={:7.5f}'.format( self.modelyDistance, self.modelxDistance, self.desiredCurvature ) )
+    trace1.printf2( 'Y={:5.1f}, X={:5.1f}, CV={:7.5f}'.format( self.NC.modelyDistance, self.NC.modelxDistance, self.desiredCurvature ) )
 
     if self.CP.openpilotLongitudinalControl:
       trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
@@ -201,46 +199,22 @@ class CarStateCustom():
       ))
     """
 
-  def max_distance( self, model_v2 ):
-      model_position = model_v2.position
-      x_positions = model_position.x  # X 좌표 배열을 가져옵니다.
-      y_positions = model_position.y  # Y 좌표 배열을 가져옵니다.
 
-      # 배열의 마지막 요소를 가져옵니다.
-      last_x_value = x_positions[-1] if x_positions else None
-      last_y_value = y_positions[-1] if y_positions else None
-
-      # last_x_value가 None이 아니면 clamp 적용
-      if last_x_value is not None:
-          x_distance = np.clip(last_x_value, 10, 500)
-      else:
-          x_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
-
-      if last_y_value is not None:
-          y_distance = np.clip(last_y_value, -60, 60)
-      else:
-          y_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
-
-
-      return x_distance, y_distance
 
   def auto_lene_change( self, ret ):
-    if not self.autoLaneChange:
-      return
-
     if self.NC == None:
       self.lanechange_wait = 150
       return
     
-    leftLaneVisible = 0
-    rightLaneVisible = 0
+
     model_v2 = self.NC.sm['modelV2']
-
-
     self.desiredCurvature = model_v2.action.desiredCurvature 
     self.laneChangeState = model_v2.meta.laneChangeState
-
-    self.modelxDistance, self.modelyDistance =  self.max_distance( model_v2 )
+    if not self.autoLaneChange:
+      return
+    
+    leftLaneVisible = 0
+    rightLaneVisible = 0        
     if len(model_v2.laneLineProbs):
       if bool(model_v2.laneLineProbs[3] > 0.5):
         rightLaneVisible |= 2   
@@ -384,7 +358,7 @@ class CarStateCustom():
     v_ego_kph = self.clu_Vanz   # CS.cluster_speed
     if ret_cs.cruiseState.enabled or ret_cs.gasPressed:
       self.timer_resume = 50
-    elif v_ego_kph <= 0.1 and self.modelxDistance > 30:
+    elif v_ego_kph <= 0.1 and self.NC.modelxDistance > 30:
       if self.timer_resume <= 0:
         events.add( EventName.chimeAtResume )
     else:
