@@ -2383,7 +2383,7 @@ struct Event {
 
     # *********** Custom: reserved for forks ***********
     #custom
-    carStateCustom @107 :Custom.CarStateCustom;
+    customReserved0 @107 :Custom.CustomReserved0;
     carControlCustom @108 :Custom.CarControlCustom;
     naviCustom @109 :Custom.NaviCustom;
     uICustom @110 :Custom.UICustom;

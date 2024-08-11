@@ -10,8 +10,7 @@ using Car = import "car.capnp";
 # cereal, so use these if you want custom events in your fork.
 
 # you can rename the struct, but don't change the identifier
-struct CarStateCustom @0x81c2f05a394cf4af {
-
+struct CarSCustom {
   tpms @0 :Tpms;
   alertTextMsg1  @1 :Text;
   alertTextMsg2  @2 :Text;
@@ -31,7 +30,10 @@ struct CarStateCustom @0x81c2f05a394cf4af {
     rl @3 :Float32;
     rr @4 :Float32;
   }
+}
 
+
+struct CustomReserved0 @0x81c2f05a394cf4af {
 }
 
 struct CarControlCustom @0xaedffd8f31e7b55d {

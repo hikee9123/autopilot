@@ -1,6 +1,6 @@
 import copy
 
-from cereal import car, log
+from cereal import car, log, custom
 from panda import ALTERNATIVE_EXPERIENCE
 import numpy as np
 from openpilot.common.params import Params
@@ -169,8 +169,8 @@ class CarStateCustom():
     if self.menu_debug == 0:
       return
 
-        
-    carSCustom = car.CarState.CarSCustom.new_message()
+
+    carSCustom = custom.CarSCustom.new_message()
     carSCustom.supportedCars = self.cars
     carSCustom.breakPos = self.brakePos
     carSCustom.leadDistance = self.lead_distance
