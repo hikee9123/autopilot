@@ -145,7 +145,8 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     noTargetDEPRECATED @25;
     brakeUnavailableDEPRECATED @2;
     plannerErrorDEPRECATED @32;
-    gpsMalfunctionDEPRECATED @94;
+    #gpsMalfunctionDEPRECATED @94;
+    chimeAtResume @94;
   }
 }
 
