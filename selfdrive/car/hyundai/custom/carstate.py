@@ -169,17 +169,12 @@ class CarStateCustom():
     if self.menu_debug == 0:
       return
 
-    global trace1
+        
     carSCustom = car.CarState.CarSCustom.new_message()
     carSCustom.supportedCars = self.cars
     carSCustom.breakPos = self.brakePos
     carSCustom.leadDistance = self.lead_distance
     carSCustom.gapSet = self.gapSet
-
-    carSCustom.alertTextMsg1 = str(trace1.global_alertTextMsg1)
-    carSCustom.alertTextMsg2 = str(trace1.global_alertTextMsg2)
-    carSCustom.alertTextMsg3 = str(trace1.global_alertTextMsg3)
-
     carSCustom.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr
     self.get_tpms( carSCustom.tpms,
       cp.vl["TPMS11"]["UNIT"],
@@ -188,6 +183,9 @@ class CarStateCustom():
       cp.vl["TPMS11"]["PRESSURE_RL"],
       cp.vl["TPMS11"]["PRESSURE_RR"],
     )
+
+
+
 
     ret.carSCustom = carSCustom
 

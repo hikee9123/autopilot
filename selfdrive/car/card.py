@@ -20,6 +20,8 @@ from openpilot.selfdrive.car.car_helpers import get_car
 from openpilot.selfdrive.car.interfaces import CarInterfaceBase
 from openpilot.selfdrive.controls.lib.events import Events
 
+import openpilot.selfdrive.custom.loger as  trace1
+
 REPLAY = "REPLAY" in os.environ
 
 EventName = car.CarEvent.EventName
@@ -183,6 +185,12 @@ class Car:
     co_send.valid = self.sm.all_checks(['carControl'])
     co_send.carOutput.actuatorsOutput = self.last_actuators_output
     self.pm.send('carOutput', co_send)
+
+
+    global trace1
+    CS.carSCustom.alertTextMsg1 = str(trace1.global_alertTextMsg1)
+    CS.carSCustom.alertTextMsg2 = str(trace1.global_alertTextMsg2)
+    CS.carSCustom.alertTextMsg3 = str(trace1.global_alertTextMsg3)
 
     # kick off controlsd step while we actuate the latest carControl packet
     cs_send = messaging.new_message('carState')
