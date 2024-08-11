@@ -174,7 +174,7 @@ class CarInterface(CarInterfaceBase):
     if self.low_speed_alert:
       events.add(car.CarEvent.EventName.belowSteerSpeed)
 
-    self.CS.customCS.create_events( self.CS, events )
+    self.CS.customCS.create_events( ret, self.CS, events )
 
     ret.events = events.to_msg()
 

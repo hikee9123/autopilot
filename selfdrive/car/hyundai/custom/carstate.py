@@ -377,12 +377,14 @@ class CarStateCustom():
 
 
 
-  def create_events(self, CS, events):
+  def create_events(self, ret_cs, CS, events):
     if self.timer_resume > 0:
       self.timer_resume -= 1
 
     v_ego_kph = self.clu_Vanz   # CS.cluster_speed
-    if v_ego_kph <= 0.1 and self.modelxDistance > 30:
+    if ret_cs.cruiseState.enabled:
+      self.timer_resume = 50
+    elif v_ego_kph <= 0.1 and self.modelxDistance > 30:
       if self.timer_resume <= 0:
         events.add( EventName.resumeRequired )
     else:
