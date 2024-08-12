@@ -354,9 +354,9 @@ class CarStateCustom():
   def create_events(self, ret_cs, CS, events):
     if self.timer_resume > 0:
         self.timer_resume -= 1
-     if self.NC == None:
+   if self.NC == None:
          modelxDistance = self.NC.modelxDistance
-     else:
+    else:
        modelxDistance = 0
       
     
