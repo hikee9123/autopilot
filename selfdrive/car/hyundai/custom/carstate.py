@@ -1,6 +1,6 @@
 import copy
 
-from cereal import car, log, custom
+from cereal import car, log
 from panda import ALTERNATIVE_EXPERIENCE
 from openpilot.common.params import Params
 from openpilot.common.conversions import Conversions as CV
@@ -168,7 +168,7 @@ class CarStateCustom():
       return
 
 
-    carSCustom = custom.CarSCustom.new_message()
+    carSCustom = car.CarState.CarSCustom.new_message()
     carSCustom.supportedCars = self.cars
     carSCustom.breakPos = self.brakePos
     carSCustom.leadDistance = self.lead_distance
