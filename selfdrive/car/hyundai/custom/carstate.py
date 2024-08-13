@@ -50,8 +50,7 @@ class CarStateCustom():
     self.rightLaneTime = 50
 
     self.desiredCurvature = 0
-
-
+    self.modelxDistance = 0
 
 
     try:
