@@ -372,10 +372,6 @@ static safety_config hyundai_community_init(uint16_t param) {
     hyundai_longitudinal = false;
   }
 
-
-
-
-
   safety_config ret;
   if (hyundai_longitudinal) {
     static RxCheck hyundai_community_long_rx_checks[] = {
