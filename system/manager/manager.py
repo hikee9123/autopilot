@@ -21,7 +21,7 @@ from openpilot.system.hardware.hw import Paths
 
 
 def manager_init() -> None:
-  save_bootlog()
+  #save_bootlog()
 
   build_metadata = get_build_metadata()
 
@@ -44,6 +44,9 @@ def manager_init() -> None:
 
   if params.get_bool("RecordFrontLock"):
     params.put_bool("RecordFront", True)
+
+  if params.get_bool( "EnableLogging" ):
+    save_bootlog()
 
   # set unset params
   for k, v in default_params:

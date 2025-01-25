@@ -11,6 +11,7 @@
 #include "safety/safety_gm.h"
 #include "safety/safety_ford.h"
 #include "safety/safety_hyundai.h"
+#include "safety/safety_hyundai_community.h"   // #custom
 #include "safety/safety_chrysler.h"
 #include "safety/safety_subaru.h"
 #include "safety/safety_subaru_preglobal.h"
@@ -373,6 +374,7 @@ int set_safety_hooks(uint16_t mode, uint16_t param) {
     {SAFETY_NISSAN, &nissan_hooks},
     {SAFETY_NOOUTPUT, &nooutput_hooks},
     {SAFETY_HYUNDAI_LEGACY, &hyundai_legacy_hooks},
+    {SAFETY_HYUNDAI_COMMUNITY, &hyundai_community_hooks},  // #custom
     {SAFETY_MAZDA, &mazda_hooks},
     {SAFETY_BODY, &body_hooks},
     {SAFETY_FORD, &ford_hooks},

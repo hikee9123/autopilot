@@ -140,7 +140,7 @@ struct OnroadEventDEPRECATED @0x9b1657f34caf3ad3 {
     noTargetDEPRECATED @25;
     brakeUnavailableDEPRECATED @2;
     plannerErrorDEPRECATED @32;
-    gpsMalfunctionDEPRECATED @94;
+    #gpsMalfunctionDEPRECATED @94;
     roadCameraErrorDEPRECATED @100;
     driverCameraErrorDEPRECATED @101;
     wideRoadCameraErrorDEPRECATED @102;
@@ -149,6 +149,7 @@ struct OnroadEventDEPRECATED @0x9b1657f34caf3ad3 {
     lowSpeedLockoutDEPRECATED @31;
     lkasDisabledDEPRECATED @107;
     soundsUnavailableDEPRECATED @56;
+    chimeAtResume @94;
   }
 }
 
@@ -287,13 +288,36 @@ struct CarState {
     }
   }
 
+   struct CarSCustom {
+    tpms @0 :Tpms;
+    alertTextMsg1  @1 :Text;
+    alertTextMsg2  @2 :Text;
+    alertTextMsg3  @3 :Text;
+
+    electGearStep @4 :Int16;
+    supportedCars @5 :List(Text);
+
+    breakPos @6 :Float32;
+    leadDistance @7 :Float32;
+    gapSet @8 :Int16;
+
+    struct Tpms {
+      unit @0 :Int16;
+      fl @1 :Float32;
+      fr @2 :Float32;
+      rl @3 :Float32;
+      rr @4 :Float32;
+    }
+  }
+
   # deprecated
   errorsDEPRECATED @0 :List(OnroadEventDEPRECATED.EventName);
   brakeLightsDEPRECATED @19 :Bool;
   steeringRateLimitedDEPRECATED @29 :Bool;
   canMonoTimesDEPRECATED @12: List(UInt64);
-  canRcvTimeoutDEPRECATED @49 :Bool;
+  #canRcvTimeoutDEPRECATED @49 :Bool;
   eventsDEPRECATED @13 :List(OnroadEventDEPRECATED);
+  carSCustom @49 :CarSCustom;
 }
 
 # ******* radar state @ 20hz *******

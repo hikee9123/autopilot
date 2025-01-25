@@ -159,6 +159,8 @@ class CarSpecificEvents:
       if self.low_speed_alert:
         events.add(EventName.belowSteerSpeed)
 
+      #self.CS.customCS.create_events( self.CS, events )
+
     else:
       raise ValueError(f"Unsupported car: {self.CP.carName}")
 

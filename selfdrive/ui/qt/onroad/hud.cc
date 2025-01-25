@@ -6,7 +6,12 @@
 
 constexpr int SET_SPEED_NA = 255;
 
-HudRenderer::HudRenderer() {}
+HudRenderer::HudRenderer()
+{
+
+  // #custom
+  m_pPaint = new OnPaint(this, width(), height());
+}
 
 void HudRenderer::updateState(const UIState &s) {
   is_metric = s.scene.is_metric;
@@ -35,6 +40,10 @@ void HudRenderer::updateState(const UIState &s) {
   v_ego_cluster_seen = v_ego_cluster_seen || car_state.getVEgoCluster() != 0.0;
   float v_ego = v_ego_cluster_seen ? car_state.getVEgoCluster() : car_state.getVEgo();
   speed = std::max<float>(0.0f, v_ego * (is_metric ? MS_TO_KPH : MS_TO_MPH));
+
+  // #custom
+  if( m_pPaint )
+     m_pPaint->updateState(s);
 }
 
 void HudRenderer::draw(QPainter &p, const QRect &surface_rect) {
@@ -49,6 +58,7 @@ void HudRenderer::draw(QPainter &p, const QRect &surface_rect) {
 
   drawSetSpeed(p, surface_rect);
   drawCurrentSpeed(p, surface_rect);
+
 
   p.restore();
 }
@@ -93,11 +103,19 @@ void HudRenderer::drawSetSpeed(QPainter &p, const QRect &surface_rect) {
 void HudRenderer::drawCurrentSpeed(QPainter &p, const QRect &surface_rect) {
   QString speedStr = QString::number(std::nearbyint(speed));
 
-  p.setFont(InterFont(176, QFont::Bold));
-  drawText(p, surface_rect.center().x(), 210, speedStr);
+  //p.setFont(InterFont(176, QFont::Bold));
+  //drawText(p, surface_rect.center().x(), 210, speedStr);
 
-  p.setFont(InterFont(66));
-  drawText(p, surface_rect.center().x(), 290, is_metric ? tr("km/h") : tr("mph"), 200);
+  //p.setFont(InterFont(66));
+  //drawText(p, surface_rect.center().x(), 290, is_metric ? tr("km/h") : tr("mph"), 200);
+
+
+  // #custom
+  if( m_pPaint )
+  {
+    m_pPaint->drawHud(p);
+    m_pPaint->drawSpeed(p, rect().center().x(), speedStr, is_metric ? tr("km/h") : tr("mph") );
+  }
 }
 
 void HudRenderer::drawText(QPainter &p, int x, int y, const QString &text, int alpha) {
