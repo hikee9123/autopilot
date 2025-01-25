@@ -147,6 +147,8 @@ static uint32_t hyundai_community_compute_checksum(const CANPacket_t *to_push) {
 
 
 static void generic_community_rx_checks(bool stock_ecu_detected) {
+  // allow 1s of transition timeout after relay changes state before assessing malfunctioning
+  const uint32_t RELAY_TRNS_TIMEOUT = 1U;
   // exit controls on rising edge of gas press
   if (gas_pressed && !gas_pressed_prev && !(alternative_experience & ALT_EXP_DISABLE_DISENGAGE_ON_GAS)) {
     controls_allowed = false;
