@@ -41,6 +41,7 @@
     "xtree": "cpp",
     "xutility": "cpp",
     "cmath": "cpp",
-    "memory": "cpp"
+    "memory": "cpp",
+    "xiosbase": "cpp"
   }
 }

@@ -515,7 +515,7 @@ void OnPaint::ui_draw_debug1( QPainter &p )
 
   int bb_x = 250;
   int bb_y = 930;
-  int bb_w = state->fb_w - 500;// 1600;//width();
+  int bb_w = width() - 500;// 1600;//width();
 
   QRect rc( bb_x, bb_y, bb_w, 90);
 
@@ -1039,7 +1039,7 @@ void OnPaint::bb_ui_draw_UI(QPainter &p)
 
 
   const int bb_dmr_w = 180;
-  const int bb_dmr_x = 0 + state->fb_w - bb_dmr_w - bdr_s;
+  const int bb_dmr_x = 0 + width() - bb_dmr_w - bdr_s;
   const int bb_dmr_y = (0 + bdr_s) + 220;
 
 
