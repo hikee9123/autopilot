@@ -20,7 +20,7 @@ AnnotatedCameraWidget::AnnotatedCameraWidget(VisionStreamType type, QWidget *par
   experimental_btn = new ExperimentalButton(this);
   main_layout->addWidget(experimental_btn, 0, Qt::AlignTop | Qt::AlignRight);
 
-
+  hud.Create( width(), height() );
 }
 
 void AnnotatedCameraWidget::updateState(const UIState &s) {

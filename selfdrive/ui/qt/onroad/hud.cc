@@ -9,9 +9,15 @@ constexpr int SET_SPEED_NA = 255;
 HudRenderer::HudRenderer()
 {
 
+
+}
+
+void HudRenderer::Create( int width, int height )
+{
   // #custom
   m_pPaint = new OnPaint(this, width(), height());
 }
+
 
 void HudRenderer::updateState(const UIState &s) {
   is_metric = s.scene.is_metric;
