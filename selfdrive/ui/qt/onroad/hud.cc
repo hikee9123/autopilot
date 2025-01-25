@@ -15,7 +15,9 @@ HudRenderer::HudRenderer()
 void HudRenderer::Create( int width, int height )
 {
   // #custom
-  m_pPaint = new OnPaint(this, width(), height());
+  int widget_width = width();
+  int widget_height = height();
+  m_pPaint = new OnPaint(this, widget_width, widget_height);
 }
 
 
@@ -120,7 +122,7 @@ void HudRenderer::drawCurrentSpeed(QPainter &p, const QRect &surface_rect) {
   if( m_pPaint )
   {
     m_pPaint->drawHud(p);
-    m_pPaint->drawSpeed(p, rect().center().x(), speedStr, is_metric ? tr("km/h") : tr("mph") );
+    m_pPaint->drawSpeed(p, surface_rect.center().x(), speedStr, is_metric ? tr("km/h") : tr("mph") );
   }
 }
 
