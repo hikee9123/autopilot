@@ -313,7 +313,7 @@ void safety_tick(const safety_config *cfg) {
   safety_rx_checks_invalid = rx_checks_invalid;
 }
 
-void relay_malfunction_set(void) {
+void relay_malfunction_set(void) {  // #custom
   relay_malfunction = true;
   fault_occurred(FAULT_RELAY_MALFUNCTION);
 }

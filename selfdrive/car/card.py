@@ -219,6 +219,7 @@ class Car:
     co_send.carOutput.actuatorsOutput = self.last_actuators_output
     self.pm.send('carOutput', co_send)
 
+    #custom
     global trace1
     CS.carSCustom.alertTextMsg1 = str(trace1.global_alertTextMsg1)
     CS.carSCustom.alertTextMsg2 = str(trace1.global_alertTextMsg2)

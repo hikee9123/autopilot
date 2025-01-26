@@ -140,7 +140,7 @@ struct OnroadEventDEPRECATED @0x9b1657f34caf3ad3 {
     noTargetDEPRECATED @25;
     brakeUnavailableDEPRECATED @2;
     plannerErrorDEPRECATED @32;
-    #gpsMalfunctionDEPRECATED @94;
+    gpsMalfunctionDEPRECATED @94;
     roadCameraErrorDEPRECATED @100;
     driverCameraErrorDEPRECATED @101;
     wideRoadCameraErrorDEPRECATED @102;
@@ -149,7 +149,6 @@ struct OnroadEventDEPRECATED @0x9b1657f34caf3ad3 {
     lowSpeedLockoutDEPRECATED @31;
     lkasDisabledDEPRECATED @107;
     soundsUnavailableDEPRECATED @56;
-    chimeAtResume @94;
   }
 }
 
