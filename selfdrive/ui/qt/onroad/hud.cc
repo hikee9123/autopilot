@@ -12,12 +12,10 @@ HudRenderer::HudRenderer()
 
 }
 
-void HudRenderer::Create( int width, int height )
+void HudRenderer::Create( QWidget *parent, int width, int height )
 {
   // #custom
-  int widget_width = width();
-  int widget_height = height();
-  m_pPaint = new OnPaint(this, widget_width, widget_height);
+  m_pPaint = new OnPaint(parent, width, height);
 }
 
 

@@ -48,11 +48,6 @@ void Sidebar::mousePressEvent(QMouseEvent *event) {
     flag_pressed = true;
     update();
 
-    // #custom
-    auto userFlag = msg.initEvent().initUserFlag();
-    m_pSideBar->mouseReleaseEvent( event, userFlag );
-
-
   } else if (settings_btn.contains(event->pos())) {
     settings_pressed = true;
     update();
@@ -66,8 +61,14 @@ void Sidebar::mouseReleaseEvent(QMouseEvent *event) {
   }
   if (onroad && home_btn.contains(event->pos())) {
     MessageBuilder msg;
-    msg.initEvent().initUserFlag();
+    //msg.initEvent().initUserFlag();
+
+    // #custom
+    auto userFlag = msg.initEvent().initUserFlag();
+    m_pSideBar->mouseReleaseEvent( event, userFlag );
+
     pm->send("userFlag", msg);
+
   } else if (settings_btn.contains(event->pos())) {
     emit openSettings();
   }
