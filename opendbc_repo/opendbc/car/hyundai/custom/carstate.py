@@ -3,9 +3,8 @@ import copy
 from cereal import car, log
 from panda import ALTERNATIVE_EXPERIENCE
 from openpilot.common.params import Params
-from openpilot.common.conversions import Conversions as CV
-from openpilot.selfdrive.controls.lib.events import Events
-from openpilot.selfdrive.car.hyundai.values import CAR, Buttons
+from opendbc.car.common.conversions import Conversions as CV
+from opendbc.car.hyundai.values import CAR, Buttons
 from openpilot.selfdrive.custom.params_json import read_json_file
 
 import cereal.messaging as messaging
