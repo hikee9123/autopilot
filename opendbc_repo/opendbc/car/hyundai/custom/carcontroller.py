@@ -1,9 +1,9 @@
 from cereal import car
 
-from openpilot.selfdrive.car.hyundai.values import HyundaiFlags, Buttons, CAR
-from openpilot.selfdrive.car.hyundai    import hyundaican
-from openpilot.selfdrive.car.hyundai.custom.hyundaican import  create_clu11, create_hda_mfc, create_mdps12, create_acc_commands
-from openpilot.selfdrive.car.hyundai.custom.navicontrol  import NaviControl
+from opendbc.car.hyundai.values import HyundaiFlags, Buttons, CAR
+from opendbc.car.hyundai    import hyundaican
+from opendbc.car.hyundai.custom.hyundaican import  create_clu11, create_hda_mfc, create_mdps12, create_acc_commands
+from opendbc.car.hyundai.custom.navicontrol  import NaviControl
 
 import openpilot.selfdrive.custom.loger as  trace1
 
@@ -12,7 +12,7 @@ VisualAlert = car.CarControl.HUDControl.VisualAlert
 class CarControllerCustom:
   def __init__(self, CP):
     self.CP = CP
-    self.car_fingerprint = CP.carFingerprint    
+    self.car_fingerprint = CP.carFingerprint
     self.NC = NaviControl( CP)
     self.resume_cnt = 0
     self.time_left = 0
@@ -25,7 +25,7 @@ class CarControllerCustom:
   def process_hud_alert(self, enabled, hud_control):
     sys_warning = (hud_control.visualAlert in (VisualAlert.steerRequired, VisualAlert.ldw))
 
-    left = hud_control.leftLaneVisible 
+    left = hud_control.leftLaneVisible
     right = hud_control.rightLaneVisible
 
     if left:
@@ -68,7 +68,7 @@ class CarControllerCustom:
 
   def custom_lkas11(self, can_sends, packer, frame, apply_steer, steer_req, CS, CC ):
     hud_control = CC.hudControl
-    left_lane = hud_control.leftLaneVisible, 
+    left_lane = hud_control.leftLaneVisible,
     right_lane = hud_control.rightLaneVisible
     enable = CC.enabled
 
@@ -90,7 +90,7 @@ class CarControllerCustom:
         apply_steer = int(round(float(apply_torque)))
 
 
-      
+
     can_sends.append( hyundaican.create_lkas11(packer, frame, self.CP, apply_steer, steer_req,
                                     torque_fault, CS.lkas11, sys_warning, sys_state, enable,
                                     left_lane, right_lane,
@@ -112,7 +112,7 @@ class CarControllerCustom:
     if CC.cruiseControl.cancel:
       can_sends.append(create_clu11( packer, frame, CS.clu11, Buttons.CANCEL, self.CP.carFingerprint))
     elif CS.customCS.acc_active:
-      #custom 
+      #custom
       btn_signal = self.NC.update( CC, CS, frame )
       if btn_signal != None:
         can_sends.extend( [create_clu11( packer, self.resume_cnt, CS.clu11, btn_signal, self.CP.carFingerprint)] * 2 )
@@ -135,6 +135,6 @@ class CarControllerCustom:
     use_fca = self.CP.flags & HyundaiFlags.USE_FCA.value
     can_sends.extend(create_acc_commands(packer, CC, CS, accel, jerk, int(frame / 2),
                                          set_speed_in_units, stopping, use_fca))
-    
+
     #trace1.printf2( 'L={:.3f},{:.3f}  S={:.0f},{:.0f}'.format( accel, jerk, speed,  CS.cluster_speed ) )
 
