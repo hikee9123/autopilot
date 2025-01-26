@@ -12,7 +12,7 @@ import cereal.messaging as messaging
 
 import openpilot.selfdrive.custom.loger as  trace1
 
-EventName = car.CarEvent.EventName
+EventName = log.OnroadEvent.EventName
 LaneChangeState = log.LaneChangeState
 
 class CarStateCustom():
