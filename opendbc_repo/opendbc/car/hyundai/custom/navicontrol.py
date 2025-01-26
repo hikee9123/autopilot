@@ -1,8 +1,7 @@
 import numpy as np
 from cereal import car, log
-from openpilot.common.conversions import Conversions as CV
-from openpilot.common.numpy_fast import interp
-from openpilot.selfdrive.car.hyundai.values import Buttons
+from opendbc.car.common.conversions  import Conversions as CV
+from opendbc.car.hyundai.values import Buttons
 
 
 import cereal.messaging as messaging
@@ -15,7 +14,7 @@ import cereal.messaging as messaging
 class NaviControl():
   def __init__(self,  CP ):
     self.CP = CP
-    self.sm = messaging.SubMaster(['longitudinalPlan','naviCustom','uICustom','modelV2','pandaStates'], ignore_avg_freq=['naviCustom', 'uICustom']) 
+    self.sm = messaging.SubMaster(['longitudinalPlan','naviCustom','uICustom','modelV2','pandaStates'], ignore_avg_freq=['naviCustom', 'uICustom'])
     self.btn_cnt = 0
     self.seq_command = 0
     self.target_speed = 0
@@ -41,10 +40,10 @@ class NaviControl():
     self.waittime_none = 6
 
     self.wait_timer2 = 0
-    self.wait_accsafety = 0 
+    self.wait_accsafety = 0
 
     # 미사용.
-    self.gasPressed_time = 0 
+    self.gasPressed_time = 0
     self.frame_VSetDis = 30
 
     self.turnSpeedLimitsAhead = 0
@@ -66,11 +65,11 @@ class NaviControl():
   def button_status(self, CS ):
     if self.cruise_set_mode == 0:
       return 0
-    
-    cruise_button = CS.cruise_buttons[-1] 
-    if not CS.customCS.acc_active or cruise_button != Buttons.NONE or CS.out.brakePressed: #  or CS.out.gasPressed: 
-      self.wait_timer2 = 100 
-    elif self.wait_timer2: 
+
+    cruise_button = CS.cruise_buttons[-1]
+    if not CS.customCS.acc_active or cruise_button != Buttons.NONE or CS.out.brakePressed: #  or CS.out.gasPressed:
+      self.wait_timer2 = 100
+    elif self.wait_timer2:
       self.wait_timer2 -= 1
     else:
       return 1
@@ -87,7 +86,7 @@ class NaviControl():
   def case_default(self, CS):
       self.seq_command = 0
       return None
- 
+
   def case_0(self, CS):
       self.btn_cnt = 0
       self.target_speed = self.set_point
@@ -123,7 +122,7 @@ class NaviControl():
       self.btn_cnt += 1
       if self.target_speed == self.VSetDis:
         self.btn_cnt = 0
-        self.seq_command = 3            
+        self.seq_command = 3
       elif self.btn_cnt > self.waittime_press:
         self.btn_cnt = 0
         self.seq_command = 3
@@ -131,7 +130,7 @@ class NaviControl():
 
   def case_3(self, CS):  # None
       self.btn_cnt += 1
-      if self.btn_cnt > self.waittime_none: 
+      if self.btn_cnt > self.waittime_none:
         self.seq_command = 0
       return None
 
@@ -141,7 +140,7 @@ class NaviControl():
         self.seq_command = 0
       elif CS.customCS.lead_distance <= 5:
         self.last_lead_distance = 0
-      elif self.last_lead_distance == 0:  
+      elif self.last_lead_distance == 0:
         self.last_lead_distance = CS.customCS.lead_distance
       elif CS.customCS.lead_distance > self.last_lead_distance:
         self.seq_command = 6
@@ -178,12 +177,12 @@ class NaviControl():
       if last_x_value is not None:
           x_distance = np.clip(last_x_value, 10, 500)
       else:
-          x_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
+          x_distance = None  # X 좌표가 비어있는 경우에 대한 처리
 
       if last_y_value is not None:
           y_distance = np.clip(last_y_value, -60, 60)
       else:
-          y_distance = None  # X 좌표가 비어있는 경우에 대한 처리      
+          y_distance = None  # X 좌표가 비어있는 경우에 대한 처리
 
 
       return x_distance, y_distance
@@ -196,14 +195,14 @@ class NaviControl():
       self.speedLimit = naviData.camLimitSpeed
       self.speedLimitDistance = naviData.camLimitSpeedLeftDist
       self.mapValid = naviData.active
-      self.trafficType = naviData.camType      
+      self.trafficType = naviData.camType
 
 
     speedLimit = self.speedLimit
     speedLimitDistance = self.speedLimitDistance
     mapValid = self.mapValid
 
-  
+
 
     if not mapValid:
       return  cruise_set_speed_kph
@@ -212,11 +211,11 @@ class NaviControl():
       return  cruise_set_speed_kph
     elif v_ego_kph < 80:
       if speedLimit <= 60:
-        spdTarget = interp( speedLimitDistance, [100, 600], [ speedLimit, speedLimit + 30 ] )
+        spdTarget = np.interp( speedLimitDistance, [100, 600], [ speedLimit, speedLimit + 30 ] )
       else:
-        spdTarget = interp( speedLimitDistance, [200, 800], [ speedLimit, speedLimit + 40 ] )
+        spdTarget = np.interp( speedLimitDistance, [200, 800], [ speedLimit, speedLimit + 40 ] )
     elif speedLimitDistance >= 50:
-        spdTarget = interp( speedLimitDistance, [300, 900], [ speedLimit, speedLimit + 50 ] )
+        spdTarget = np.interp( speedLimitDistance, [300, 900], [ speedLimit, speedLimit + 50 ] )
     else:
       spdTarget = speedLimit
 
@@ -227,7 +226,7 @@ class NaviControl():
     return  cruise_set_speed_kph
 
 
-    
+
 
   def auto_speed_control( self, CC, CS, ctrl_speed ):
     cruise_set_mode = self.cruise_set_mode
@@ -247,7 +246,7 @@ class NaviControl():
     self.sm.update(0)
 
     self.model_v2 = self.sm['modelV2']
-    self.modelxDistance, self.modelyDistance =  self.max_distance( self.model_v2 )     
+    self.modelxDistance, self.modelyDistance =  self.max_distance( self.model_v2 )
 
   def update(self, c, CS, frame ):
     speeds = self.sm['longitudinalPlan'].speeds
@@ -255,7 +254,7 @@ class NaviControl():
       self.speed_plan_kps = speeds[-1] * CV.MS_TO_KPH
 
       #curv speed control
-      spd_curv = interp( abs(self.modelyDistance), [10, 60], [ 0, 10 ] )
+      spd_curv = np.interp( abs(self.modelyDistance), [10, 60], [ 0, 10 ] )
       self.speed_plan_kps -= spd_curv
 
 
@@ -274,7 +273,7 @@ class NaviControl():
       self.wait_accsafety = 200
       pass
     elif CS.customCS.acc_active:
-      cruiseState_speed = CS.out.cruiseState.speed * CV.MS_TO_KPH      
+      cruiseState_speed = CS.out.cruiseState.speed * CV.MS_TO_KPH
       kph_set_vEgo = self.get_navi_speed(  self.sm , CS, cruiseState_speed, frame )
       self.ctrl_speed = min( cruiseState_speed, kph_set_vEgo)
 
@@ -282,7 +281,7 @@ class NaviControl():
         self.wait_accsafety -= 1
       elif self.cruise_set_mode:
         self.ctrl_speed = self.auto_speed_control( c, CS, self.ctrl_speed )
- 
+
       if not self.CP.openpilotLongitudinalControl:
         btn_signal = self.ascc_button_control( CS, self.ctrl_speed )
     else:
