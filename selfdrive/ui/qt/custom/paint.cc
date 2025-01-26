@@ -42,6 +42,12 @@ OnPaint::OnPaint(QWidget *parent, int width, int height ) : QWidget(parent)
 }
 
 
+void    OnPaint::windowSize( int width, int height )
+{
+  m_width = width;
+  m_height = height;
+}
+
 float OnPaint::interp( float xv, float xp[], float fp[], int N)
 {
 	float dResult = 0;

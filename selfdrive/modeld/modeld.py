@@ -79,12 +79,10 @@ class ModelState:
     self.parser = Parser()
 
     if TICI:
-      print("model => TICI")
       self.tensor_inputs = {k: Tensor(v, device='NPY').realize() for k,v in self.numpy_inputs.items()}
       with open(MODEL_PKL_PATH, "rb") as f:
         self.model_run = pickle.load(f)
     else:
-      print("model => make_onnx_cpu_runner")
       self.onnx_cpu_runner = make_onnx_cpu_runner(MODEL_PATH)
 
   def slice_outputs(self, model_outputs: np.ndarray) -> dict[str, np.ndarray]:

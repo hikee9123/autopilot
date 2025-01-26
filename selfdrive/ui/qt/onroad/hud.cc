@@ -18,6 +18,12 @@ void HudRenderer::Create( QWidget *parent, int width, int height )
   m_pPaint = new OnPaint(parent, width, height);
 }
 
+void HudRenderer::windowSize( int width, int height )
+{
+  if( m_pPaint )
+    m_pPaint->windowSize( width, height );
+}
+
 
 void HudRenderer::updateState(const UIState &s) {
   is_metric = s.scene.is_metric;

@@ -10,9 +10,14 @@ class HudRenderer : public QObject {
 
 public:
   HudRenderer();
-  void Create( QWidget *parent, int width, int height );  // #custom
   void updateState(const UIState &s);
   void draw(QPainter &p, const QRect &surface_rect);
+
+  // #custom
+  void Create( QWidget *parent, int width, int height );
+  void windowSize( int width, int height );
+
+
 
 private:
   void drawSetSpeed(QPainter &p, const QRect &surface_rect);

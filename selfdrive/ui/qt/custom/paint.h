@@ -9,22 +9,22 @@
 
 
 /*
-Qt::white, 
-Qt::black, 
-Qt::red, 
-Qt::darkRed, 
-Qt::green, 
-Qt::darkGreen, 
-Qt::blue, 
-Qt::darkBlue, 
-Qt::cyan, 
-Qt::darkCyan, 
-Qt::magenta, 
-Qt::darkMagenta, 
-Qt::yellow, 
-Qt::darkYellow, 
-Qt::gray, 
-Qt::darkGray, 
+Qt::white,
+Qt::black,
+Qt::red,
+Qt::darkRed,
+Qt::green,
+Qt::darkGreen,
+Qt::blue,
+Qt::darkBlue,
+Qt::cyan,
+Qt::darkCyan,
+Qt::magenta,
+Qt::darkMagenta,
+Qt::yellow,
+Qt::darkYellow,
+Qt::gray,
+Qt::darkGray,
 Qt::lightGray
 */
 
@@ -33,7 +33,7 @@ typedef struct {
     int id;
     float x, y, d, v, y_rel, v_lat;
 } lead_vertex_data;
-class OnPaint : public QWidget 
+class OnPaint : public QWidget
 {
   Q_OBJECT
 
@@ -44,6 +44,7 @@ public:
   void    drawHud(QPainter &p);
   void    drawSpeed(QPainter &p, int x, QString speedStr, QString speedUnit );
   void    drawLead(QPainter &p, const cereal::RadarState::LeadData::Reader &lead_data, const QPointF &vd, int w, int h );
+  void    windowSize( int width, int height );
 
 private:
   void    drawText1(QPainter &p, int x, int y, const QString &text, QColor qColor = QColor(255,255,255,255), int nAlign = Qt::AlignCenter  );
@@ -82,7 +83,7 @@ private:
 
 
     int   cpuPerc;
-    float cpuTemp; 
+    float cpuTemp;
 
     int   electGearStep;
     float   breakPos;
@@ -92,7 +93,7 @@ private:
 
     float batteryVoltage;
 
-    float altitudeUblox;    
+    float altitudeUblox;
     float gpsAccuracyUblox;
 
     float cumLagMs;
@@ -101,11 +102,11 @@ private:
     int   controlsAllowed;
 
   } m_param;
-  
+
   struct _STATUS_
   {
       std::string alertTextMsg1;
-      std::string alertTextMsg2; 
+      std::string alertTextMsg2;
       std::string alertTextMsg3;
   } alert;
 
@@ -118,7 +119,7 @@ private:
      int camLimitSpeedLeftDist;
      int cntIdx;
   } m_nda;
-  
+
 
 private:
    NetworkImageWidget *icon_01;
@@ -140,13 +141,13 @@ private:
   QString   gearGap( int gear_step, QColor &color );
 // tpms
 private:
-  QColor   get_tpms_color(int tpms); 
+  QColor   get_tpms_color(int tpms);
   QString  get_tpms_text(int tpms);
   void     bb_draw_tpms(QPainter &p, int x, int y );
   void     ui_draw_debug1( QPainter &p );
   void     ui_main_debug(QPainter &p);
   void     ui_graph( QPainter &p );
- 
+
 // kegmen
 private:
   int  bb_ui_draw_measure(QPainter &p,  const QString &bb_value, const QString &bb_uom, const QString &bb_label,
@@ -164,7 +165,7 @@ private:
 
 // apilot
  private:
-    void  ui_draw_text( QPainter &p, const QRect& rc, const QString& text, float  size, const QColor& crBrush, const QColor& color=Qt::white ); 
+    void  ui_draw_text( QPainter &p, const QRect& rc, const QString& text, float  size, const QColor& crBrush, const QColor& color=Qt::white );
 
 
 public:
