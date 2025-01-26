@@ -126,7 +126,9 @@ struct OnroadEvent @0xc4fa6047f024e718 {
     personalityChanged @91;
     aeb @92;
 
-    soundsUnavailableDEPRECATED @47;
+    #soundsUnavailableDEPRECATED @47;
+
+    chimeAtResume @47;  #custtom
   }
 }
 
