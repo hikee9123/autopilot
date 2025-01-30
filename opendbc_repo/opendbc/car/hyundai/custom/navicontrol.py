@@ -254,7 +254,7 @@ class NaviControl():
       self.speed_plan_kps = speeds[-1] * CV.MS_TO_KPH
 
       #curv speed control
-      if (self.cruise_set_mode & 4) and  (self.speed_plan_kps > 80):
+      if (self.cruise_set_mode & 4) and  (self.speed_plan_kps > 90):
         spd_curv = np.interp( abs(self.modelyDistance), [10, 60], [ 0, 10 ] )
         self.speed_plan_kps -= spd_curv
 
