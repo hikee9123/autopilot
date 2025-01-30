@@ -569,8 +569,8 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
         Params().put("SelectedCar", selection.toStdString());
 
         // ✅ UI 업데이트
-        changeCar->setLabel(selection);
-        changeCar->setButtonText(tr("CHANGE"));
+       // changeCar->setLabel(selection);
+        //changeCar->setButtonText(tr("CHANGE"));
     }
   });
   addItem(changeCar);
