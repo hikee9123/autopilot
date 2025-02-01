@@ -555,7 +555,7 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
   auto changeCar = new ButtonControl(selected_car.isEmpty() ?  tr("Select your car") : selected_car,
                                      selected_car.isEmpty() ?  tr("SELECT") : tr("CHANGE"), "");
 
-  QObject::connect( changeCar, &ButtonControl::clicked, [this,changeCar]() {
+  QObject::connect( changeCar, &ButtonControl::clicked, [this]() {
     QString selected_car = QString::fromStdString(Params().get("SelectedCar"));
     QStringList items = m_pCustom->m_cars;
 
@@ -569,8 +569,8 @@ CommunityTab::CommunityTab(CustomPanel *parent, QJsonObject &jsonobj) : ListWidg
         Params().put("SelectedCar", selection.toStdString());
 
         // ✅ UI 업데이트
-        //changeCar->setLabel(selection);
-        //changeCar->setButtonText(tr("CHANGE"));
+        selected_car->setLabel(selection);
+        selected_car->setButtonText(tr("CHANGE"));
     }
   });
   addItem(changeCar);
