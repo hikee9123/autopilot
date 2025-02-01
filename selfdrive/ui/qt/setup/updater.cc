@@ -98,10 +98,13 @@ Updater::Updater(const QString &updater_path, const QString &manifest_path, QWid
 
     layout->addStretch();
 
-    reboot = new QPushButton(tr("Reboot"));
+    reboot = new QPushButton(tr("Reboot error"));
     reboot->setObjectName("navBtn");
     reboot->setStyleSheet("padding-left: 60px; padding-right: 60px;");
     QObject::connect(reboot, &QPushButton::clicked, [=]() {
+      QString gitCommand = "git pull"; // 실행할 명령어
+      QProcess::execute( gitCommand );
+
       Hardware::reboot();
     });
     layout->addWidget(reboot, 0, Qt::AlignLeft);
