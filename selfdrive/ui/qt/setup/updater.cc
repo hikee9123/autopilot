@@ -102,6 +102,7 @@ Updater::Updater(const QString &updater_path, const QString &manifest_path, QWid
     reboot->setObjectName("navBtn");
     reboot->setStyleSheet("padding-left: 60px; padding-right: 60px;");
     QObject::connect(reboot, &QPushButton::clicked, [=]() {
+      // #custom
       QString gitCommand = "git pull"; // 실행할 명령어
       QProcess::execute( gitCommand );
 
