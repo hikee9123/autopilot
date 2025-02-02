@@ -295,9 +295,6 @@ static bool hyundai_community_tx_hook( const CANPacket_t *to_send) {
       tx = false;
     }
 
-  if( !controls_allowed )
-     tx = false;
-
   }
 
   // UDS: Only tester present ("\x02\x3E\x80\x00\x00\x00\x00\x00") allowed on diagnostics address
