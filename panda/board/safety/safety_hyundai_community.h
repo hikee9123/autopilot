@@ -253,8 +253,8 @@ static bool hyundai_community_tx_hook( const CANPacket_t *to_send) {
   bool tx = true;
   int addr = GET_ADDR(to_send);
 
-  //if( !controls_allowed )
-  //   return false;
+  if( !controls_allowed )
+     return false;
 
   // FCA11: Block any potential actuation
   if (addr == 0x38D) {
