@@ -253,8 +253,6 @@ static bool hyundai_community_tx_hook( const CANPacket_t *to_send) {
   bool tx = true;
   int addr = GET_ADDR(to_send);
 
-  if( !controls_allowed )
-     return false;
 
   // FCA11: Block any potential actuation
   if (addr == 0x38D) {
@@ -296,6 +294,10 @@ static bool hyundai_community_tx_hook( const CANPacket_t *to_send) {
     if (steer_torque_cmd_checks(desired_torque, steer_req, limits)) {
       tx = false;
     }
+
+  if( !controls_allowed )
+     tx = false;
+
   }
 
   // UDS: Only tester present ("\x02\x3E\x80\x00\x00\x00\x00\x00") allowed on diagnostics address
@@ -316,6 +318,8 @@ static bool hyundai_community_tx_hook( const CANPacket_t *to_send) {
       tx = false;
     }
   }
+
+
 
   return tx;
 }
