@@ -104,7 +104,6 @@ public:
   inline void setText(const QString &text) { btn.setText(text); }
   inline QString text() const { return btn.text(); }
 
-
 signals:
   void clicked();
 

@@ -45,6 +45,7 @@ def manager_init() -> None:
   if params.get_bool("RecordFrontLock"):
     params.put_bool("RecordFront", True)
 
+  #custom
   if params.get_bool( "EnableLogging" ):
     save_bootlog()
 

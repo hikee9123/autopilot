@@ -20,7 +20,7 @@ AnnotatedCameraWidget::AnnotatedCameraWidget(VisionStreamType type, QWidget *par
   experimental_btn = new ExperimentalButton(this);
   main_layout->addWidget(experimental_btn, 0, Qt::AlignTop | Qt::AlignRight);
 
-  hud.Create( this, width(), height() );
+  hud.Create( this, width(), height() ); // #custom
 }
 
 void AnnotatedCameraWidget::updateState(const UIState &s) {
@@ -68,7 +68,7 @@ mat4 AnnotatedCameraWidget::calcFrameMatrix() {
   float x_offset = std::clamp<float>((Kep.x() / Kep.z() - center_x) * zoom, -max_x_offset, max_x_offset);
   float y_offset = std::clamp<float>((Kep.y() / Kep.z() - center_y) * zoom, -max_y_offset, max_y_offset);
 
-  hud.windowSize( w, h );
+  hud.windowSize( w, h ); // #custom
 
   // Apply transformation such that video pixel coordinates match video
   // 1) Put (0, 0) in the middle of the video

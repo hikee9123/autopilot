@@ -6,15 +6,11 @@
 
 constexpr int SET_SPEED_NA = 255;
 
-HudRenderer::HudRenderer()
-{
+HudRenderer::HudRenderer() {}
 
-
-}
-
+// #custom
 void HudRenderer::Create( QWidget *parent, int width, int height )
 {
-  // #custom
   m_pPaint = new OnPaint(parent, width, height);
 }
 
@@ -23,6 +19,7 @@ void HudRenderer::windowSize( int width, int height )
   if( m_pPaint )
     m_pPaint->windowSize( width, height );
 }
+
 
 
 void HudRenderer::updateState(const UIState &s) {
@@ -70,7 +67,6 @@ void HudRenderer::draw(QPainter &p, const QRect &surface_rect) {
 
   drawSetSpeed(p, surface_rect);
   drawCurrentSpeed(p, surface_rect);
-
 
   p.restore();
 }

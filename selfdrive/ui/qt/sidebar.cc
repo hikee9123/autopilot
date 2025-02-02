@@ -47,7 +47,6 @@ void Sidebar::mousePressEvent(QMouseEvent *event) {
   if (onroad && home_btn.contains(event->pos())) {
     flag_pressed = true;
     update();
-
   } else if (settings_btn.contains(event->pos())) {
     settings_pressed = true;
     update();
@@ -68,7 +67,6 @@ void Sidebar::mouseReleaseEvent(QMouseEvent *event) {
     m_pSideBar->mouseReleaseEvent( event, userFlag );
 
     pm->send("userFlag", msg);
-
   } else if (settings_btn.contains(event->pos())) {
     emit openSettings();
   }

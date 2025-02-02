@@ -347,20 +347,3 @@ class CarStateCustom():
 
     self.auto_lene_change( ret )
     self.send_carstatus( ret, cp, CS )
-
-
-
-  def create_events(self, CS, events):
-    if self.timer_resume > 0:
-        self.timer_resume -= 1
-
-    v_ego_kph = self.clu_Vanz   # CS.cluster_speed
-    if CS.cruiseState.enabled or CS.gasPressed:
-      self.timer_resume = 50
-    elif v_ego_kph <= 0.1 and  self.modelxDistance > 30:
-      if self.timer_resume <= 0:
-        events.add( EventName.chimeAtResume )
-    else:
-      self.timer_resume = 50
-
-    return events
