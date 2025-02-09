@@ -187,7 +187,7 @@ class CarStateCustom():
 
     #log
     trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-    trace1.printf2( 'L={:5.1f}, R={:5.1f}'.format( carSCustom.tpms.fl, carSCustom.tpms.fr ) )
+    trace1.printf2( 'CB={:5.1f}'.format( CS.prev_cruise_buttons ) )
 
     if self.CP.openpilotLongitudinalControl:
       trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
