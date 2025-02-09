@@ -490,7 +490,7 @@ QString OnPaint::get_tpms_text(int tpms)
 
 void OnPaint::bb_draw_tpms(QPainter &p, int x, int y )
 {
-    int fl = 38;// m_param.tpmsData.getFl();
+    int fl = m_param.tpmsData.getFl();
     int fr = m_param.tpmsData.getFr();
     int rl = m_param.tpmsData.getRl();
     int rr = m_param.tpmsData.getRr();
