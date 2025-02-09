@@ -501,7 +501,7 @@ void OnPaint::bb_draw_tpms(QPainter &p, int x, int y )
 
 
 
-    p.setFont(InterFont(38, QFont::Bold));
+    p.setFont(InterFont(138, QFont::Bold));
     drawText2( p, x   -margin, y+10,   Qt::AlignRight, get_tpms_text(fl), get_tpms_color(fl)  );
     drawText2( p, x+w +margin, y+10,   Qt::AlignLeft,  get_tpms_text(fr), get_tpms_color(fr)  );
 
