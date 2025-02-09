@@ -186,16 +186,15 @@ class CarStateCustom():
     ret.carSCustom = carSCustom
 
     #log
-    """
     trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-    trace1.printf2( 'Y={:5.1f}, X={:5.1f}, CV={:7.5f}'.format( self.NC.modelyDistance, self.NC.modelxDistance, self.desiredCurvature ) )
+    trace1.printf2( 'L={:5.1f}, R={:5.1f}'.format( carSCustom.tpms.fl, carSCustom.tpms.fr ) )
 
     if self.CP.openpilotLongitudinalControl:
       trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
           cp.vl["CLU11"]["CF_Clu_CruiseSwState"], cp.vl["CLU11"]["CF_Clu_CruiseSwMain"], cp.vl["CLU11"]["CF_Clu_SldMainSW"],
           cp.vl["TCS13"]["ACCEnable"], cp.vl["TCS13"]["ACC_REQ"]
       ))
-    """
+
 
 
 
