@@ -71,7 +71,7 @@ static const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
   {.msg = {{SCC12, (scc_bus), 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}}, \
 
 
- int  boot_init_wait_time = 1000;
+
 
 static uint8_t hyundai_community_get_counter(const CANPacket_t *to_push) {
   int addr = GET_ADDR(to_push);
@@ -188,11 +188,7 @@ static void hyundai_community_rx_hook( const CANPacket_t *to_push) {
   }
   else
   {
-    if( boot_init_wait_time > 0 )
-    {
-      boot_init_wait_time--;
-    }
-    else if ((addr == SCC11) && (((bus == 0) && !hyundai_camera_scc) || ((bus == 2) && hyundai_camera_scc))) {
+    if ((addr == SCC11) && (((bus == 0) && !hyundai_camera_scc) || ((bus == 2) && hyundai_camera_scc))) {
       // 0 bits
       int cruise_engaged = GET_BYTES(to_push, 0, 4) & 0x1U; // ACC main_on signal
 
