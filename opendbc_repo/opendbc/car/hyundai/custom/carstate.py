@@ -29,8 +29,7 @@ class CarStateCustom():
     self.is_highway = False
 
 
-    self.timer_init = 500   # 5sec
-    self.timer_resume = 500
+    self.timer_init = 100   # 1sec
 
     # cruise_speed_button
     self.old_acc_active = 0
@@ -42,7 +41,6 @@ class CarStateCustom():
     self.lead_distance = 0
 
     self.gapSet = 4
-    self.timer_engaged = 0
     self.slow_engage = 1
 
     self.leftLaneTime = 50
@@ -288,6 +286,7 @@ class CarStateCustom():
 
       if not mainMode_ACC:
         self.cruise_control_mode()
+        ret.cruiseState.enabled = False
 
     # save the entire LFAHDA_MFC
     self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
@@ -314,37 +313,25 @@ class CarStateCustom():
       elif self.acc_active:
         pass
       elif ret.parkingBrake:
-        self.timer_engaged = 100
         self.oldCruiseStateEnabled = False
       elif ret.doorOpen:
-        self.timer_engaged = 100
         self.oldCruiseStateEnabled = False
       elif ret.seatbeltUnlatched:
-        self.timer_engaged = 100
         self.oldCruiseStateEnabled = False
       elif ret.gearShifter != car.CarState.GearShifter.drive:
-        self.timer_engaged = 100
         self.oldCruiseStateEnabled = False
       elif not ret.cruiseState.available:
         self.slow_engage = 1
-        self.timer_engaged = 0
         self.oldCruiseStateEnabled = True
       elif self.CS.prev_cruise_buttons == Buttons.CANCEL:
-        ret.cruiseState.enabled = False
         self.oldCruiseStateEnabled = False
       elif self.CS.prev_cruise_buttons == Buttons.GAP_DIST:
-        self.oldCruiseStateEnabled = True
+        if self.controlsAllowed == 1:
+          self.oldCruiseStateEnabled = True
       elif self.oldCruiseStateEnabled:
         ret.cruiseState.enabled = True
-      elif self.controlsAllowed == 0:
-        self.timer_engaged = 50
-      elif (self.timer_engaged <= 0):
-        self.slow_engage = 0
-        self.oldCruiseStateEnabled = True
-        CS.cruise_buttons.append( Buttons.CANCEL )
 
-    if self.timer_engaged:
-      self.timer_engaged -= 1
+
     self.frame += 1
     if self.timer_init > 0:
       return
