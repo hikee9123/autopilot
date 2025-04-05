@@ -30,6 +30,7 @@ class CarStateCustom():
 
 
     self.timer_init = 100   # 1sec
+    self.timer_acc = 100    # 1 sec
 
     # cruise_speed_button
     self.old_acc_active = 0
@@ -311,6 +312,7 @@ class CarStateCustom():
       if not (CS.CP.alternativeExperience & ALTERNATIVE_EXPERIENCE.DISABLE_DISENGAGE_ON_GAS):
         pass
       elif self.acc_active:
+        self.timer_acc = 100
         pass
       elif ret.parkingBrake:
         self.oldCruiseStateEnabled = False
@@ -323,6 +325,8 @@ class CarStateCustom():
       elif not ret.cruiseState.available:
         self.slow_engage = 1
         self.oldCruiseStateEnabled = True
+      elif self.timer_acc > 0:
+        pass        
       elif self.CS.prev_cruise_buttons == Buttons.CANCEL:
         self.oldCruiseStateEnabled = False
       elif self.CS.prev_cruise_buttons == Buttons.GAP_DIST:
@@ -333,6 +337,9 @@ class CarStateCustom():
 
 
     self.frame += 1
+     if self.timer_acc > 0:
+       timer_acc -= 1 
+       
     if self.timer_init > 0:
       return
 
