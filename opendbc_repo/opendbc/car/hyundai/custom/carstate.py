@@ -179,14 +179,11 @@ class CarStateCustom():
       cp.vl["TPMS11"]["PRESSURE_RR"],
     )
 
-
-
-
     ret.carSCustom = carSCustom
 
     #log
-    trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  CS.customCS.timer_init, self.controlsAllowed ) )
-    trace1.printf2( 'CB={:5.1f}'.format( CS.prev_cruise_buttons ) )
+    trace1.printf1( 'MD={:.0f},{:.0f},{:.0f}'.format( self.control_mode,  self.timer_acc, self.controlsAllowed ) )
+    trace1.printf2( 'CB={:5.0f},{:.0f},{:.0f}'.format( CS.prev_cruise_buttons, ret.cruiseState.available, ret.cruiseState.enabled ) )
 
     if self.CP.openpilotLongitudinalControl:
       trace1.printf3( 'SW={:.0f},{:.0f},{:.0f} T={:.0f},{:.0f}'.format(
@@ -326,7 +323,7 @@ class CarStateCustom():
         self.slow_engage = 1
         self.oldCruiseStateEnabled = True
       elif self.timer_acc > 0:
-        pass        
+        pass
       elif self.CS.prev_cruise_buttons == Buttons.CANCEL:
         self.oldCruiseStateEnabled = False
       elif self.CS.prev_cruise_buttons == Buttons.GAP_DIST:
@@ -338,8 +335,8 @@ class CarStateCustom():
 
     self.frame += 1
     if self.timer_acc > 0:
-       self.timer_acc -= 1 
-       
+       self.timer_acc -= 1
+
     if self.timer_init > 0:
       return
 
