@@ -6,7 +6,6 @@ Version 0.9.9 (2025-04-30)
   * New driving model supervised by MLSIM
   * An online learner for steering actuator delay
 
-
 Version 0.9.8 (2025-02-28)
 ========================
 * New driving model
