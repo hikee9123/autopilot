@@ -41,8 +41,8 @@ class CarStateCustom():
     self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
     self.mdps12 = copy.copy(cp.vl["MDPS12"])
 
-    if self.acc_active:
-      pass
-    elif mainMode_ACC:
-      ret.cruiseState.enabled = True
+    #if self.acc_active:
+    #  pass
+    #elif mainMode_ACC:
+    #  ret.cruiseState.enabled = True
 
