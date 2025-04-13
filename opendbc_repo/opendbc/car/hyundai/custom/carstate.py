@@ -37,8 +37,12 @@ class CarStateCustom():
       self.VSetDis = cp_cruise.vl["SCC11"]["VSetDis"]   # kph   크루즈 설정 속도.
 
 
-      if self.acc_active:
-        pass
-      elif mainMode_ACC:
-        ret.cruiseState.enabled = True
+    # save the entire LFAHDA_MFC
+    self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
+    self.mdps12 = copy.copy(cp.vl["MDPS12"])
+
+    if self.acc_active:
+      pass
+    elif mainMode_ACC:
+      ret.cruiseState.enabled = True
 
