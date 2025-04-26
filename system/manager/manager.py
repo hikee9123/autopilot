@@ -21,8 +21,7 @@ from openpilot.system.hardware.hw import Paths
 
 
 def manager_init() -> None:
-  #custom
-  #save_bootlog()
+  save_bootlog()
 
   build_metadata = get_build_metadata()
 

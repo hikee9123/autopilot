@@ -1504,7 +1504,7 @@ struct ModelDataV2::Action {
   class Pipeline;
 
   struct _capnpPrivate {
-    CAPNP_DECLARE_STRUCT_HEADER(94d0bcb35a764584, 1, 0)
+    CAPNP_DECLARE_STRUCT_HEADER(94d0bcb35a764584, 2, 0)
     #if !CAPNP_LITE
     static constexpr ::capnp::_::RawBrandedSchema const* brand() { return &schema->defaultBrand; }
     #endif  // !CAPNP_LITE
@@ -2401,7 +2401,7 @@ struct LiveDelayData {
 
 
   struct _capnpPrivate {
-    CAPNP_DECLARE_STRUCT_HEADER(98dfdb22c44df8d4, 2, 1)
+    CAPNP_DECLARE_STRUCT_HEADER(98dfdb22c44df8d4, 3, 1)
     #if !CAPNP_LITE
     static constexpr ::capnp::_::RawBrandedSchema const* brand() { return &schema->defaultBrand; }
     #endif  // !CAPNP_LITE
@@ -10489,6 +10489,10 @@ public:
 
   inline float getDesiredCurvature() const;
 
+  inline float getDesiredAcceleration() const;
+
+  inline bool getShouldStop() const;
+
 private:
   ::capnp::_::StructReader _reader;
   template <typename, ::capnp::Kind>
@@ -10519,6 +10523,12 @@ public:
 
   inline float getDesiredCurvature();
   inline void setDesiredCurvature(float value);
+
+  inline float getDesiredAcceleration();
+  inline void setDesiredAcceleration(float value);
+
+  inline bool getShouldStop();
+  inline void setShouldStop(bool value);
 
 private:
   ::capnp::_::StructBuilder _builder;
@@ -18692,6 +18702,8 @@ public:
   inline bool hasPoints() const;
   inline  ::capnp::List<float,  ::capnp::Kind::PRIMITIVE>::Reader getPoints() const;
 
+  inline float getLateralDelayEstimateStd() const;
+
 private:
   ::capnp::_::StructReader _reader;
   template <typename, ::capnp::Kind>
@@ -18739,6 +18751,9 @@ public:
   inline  ::capnp::List<float,  ::capnp::Kind::PRIMITIVE>::Builder initPoints(unsigned int size);
   inline void adoptPoints(::capnp::Orphan< ::capnp::List<float,  ::capnp::Kind::PRIMITIVE>>&& value);
   inline ::capnp::Orphan< ::capnp::List<float,  ::capnp::Kind::PRIMITIVE>> disownPoints();
+
+  inline float getLateralDelayEstimateStd();
+  inline void setLateralDelayEstimateStd(float value);
 
 private:
   ::capnp::_::StructBuilder _builder;
@@ -35580,6 +35595,34 @@ inline void ModelDataV2::Action::Builder::setDesiredCurvature(float value) {
       ::capnp::bounded<0>() * ::capnp::ELEMENTS, value);
 }
 
+inline float ModelDataV2::Action::Reader::getDesiredAcceleration() const {
+  return _reader.getDataField<float>(
+      ::capnp::bounded<1>() * ::capnp::ELEMENTS);
+}
+
+inline float ModelDataV2::Action::Builder::getDesiredAcceleration() {
+  return _builder.getDataField<float>(
+      ::capnp::bounded<1>() * ::capnp::ELEMENTS);
+}
+inline void ModelDataV2::Action::Builder::setDesiredAcceleration(float value) {
+  _builder.setDataField<float>(
+      ::capnp::bounded<1>() * ::capnp::ELEMENTS, value);
+}
+
+inline bool ModelDataV2::Action::Reader::getShouldStop() const {
+  return _reader.getDataField<bool>(
+      ::capnp::bounded<64>() * ::capnp::ELEMENTS);
+}
+
+inline bool ModelDataV2::Action::Builder::getShouldStop() {
+  return _builder.getDataField<bool>(
+      ::capnp::bounded<64>() * ::capnp::ELEMENTS);
+}
+inline void ModelDataV2::Action::Builder::setShouldStop(bool value) {
+  _builder.setDataField<bool>(
+      ::capnp::bounded<64>() * ::capnp::ELEMENTS, value);
+}
+
 inline  ::uint32_t EncodeIndex::Reader::getFrameId() const {
   return _reader.getDataField< ::uint32_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS);
@@ -48811,6 +48854,20 @@ inline void LiveDelayData::Builder::adoptPoints(
 inline ::capnp::Orphan< ::capnp::List<float,  ::capnp::Kind::PRIMITIVE>> LiveDelayData::Builder::disownPoints() {
   return ::capnp::_::PointerHelpers< ::capnp::List<float,  ::capnp::Kind::PRIMITIVE>>::disown(_builder.getPointerField(
       ::capnp::bounded<0>() * ::capnp::POINTERS));
+}
+
+inline float LiveDelayData::Reader::getLateralDelayEstimateStd() const {
+  return _reader.getDataField<float>(
+      ::capnp::bounded<4>() * ::capnp::ELEMENTS);
+}
+
+inline float LiveDelayData::Builder::getLateralDelayEstimateStd() {
+  return _builder.getDataField<float>(
+      ::capnp::bounded<4>() * ::capnp::ELEMENTS);
+}
+inline void LiveDelayData::Builder::setLateralDelayEstimateStd(float value) {
+  _builder.setDataField<float>(
+      ::capnp::bounded<4>() * ::capnp::ELEMENTS, value);
 }
 
 inline bool LiveMapDataDEPRECATED::Reader::getSpeedLimitValid() const {

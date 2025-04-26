@@ -2633,7 +2633,7 @@ public:
 
   inline bool getStartingState() const;
 
-  inline bool getExperimentalLongitudinalAvailable() const;
+  inline bool getAlphaLongitudinalAvailable() const;
 
   inline float getTireStiffnessFactor() const;
 
@@ -2937,8 +2937,8 @@ public:
   inline bool getStartingState();
   inline void setStartingState(bool value);
 
-  inline bool getExperimentalLongitudinalAvailable();
-  inline void setExperimentalLongitudinalAvailable(bool value);
+  inline bool getAlphaLongitudinalAvailable();
+  inline void setAlphaLongitudinalAvailable(bool value);
 
   inline float getTireStiffnessFactor();
   inline void setTireStiffnessFactor(float value);
@@ -7750,16 +7750,16 @@ inline void CarParams::Builder::setStartingState(bool value) {
       ::capnp::bounded<994>() * ::capnp::ELEMENTS, value);
 }
 
-inline bool CarParams::Reader::getExperimentalLongitudinalAvailable() const {
+inline bool CarParams::Reader::getAlphaLongitudinalAvailable() const {
   return _reader.getDataField<bool>(
       ::capnp::bounded<995>() * ::capnp::ELEMENTS);
 }
 
-inline bool CarParams::Builder::getExperimentalLongitudinalAvailable() {
+inline bool CarParams::Builder::getAlphaLongitudinalAvailable() {
   return _builder.getDataField<bool>(
       ::capnp::bounded<995>() * ::capnp::ELEMENTS);
 }
-inline void CarParams::Builder::setExperimentalLongitudinalAvailable(bool value) {
+inline void CarParams::Builder::setAlphaLongitudinalAvailable(bool value) {
   _builder.setDataField<bool>(
       ::capnp::bounded<995>() * ::capnp::ELEMENTS, value);
 }
